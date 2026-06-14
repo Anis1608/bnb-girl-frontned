@@ -14,7 +14,7 @@ export default function Footer() {
           <div>
              <div className="bbgf-logo-pill">
               <img
-                src={cms.cms_navbar_logo || cms.cms_footer_logo || "https://bnbgirl.com/wp-content/uploads/2026/03/logo-BjMcg-i3__2___1_-removebg-preview.png"}
+                src={cms.cms_navbar_logo || cms.cms_footer_logo || "/logo-main.png"}
                 alt="Bold &amp; Brilliant Girls"
               />
             </div>
