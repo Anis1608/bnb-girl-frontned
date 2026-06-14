@@ -28,6 +28,7 @@ export default function AppContextProvider({ children }) {
   const [mentors, setMentors] = useState([]);
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cms, setCms] = useState({});
 
   // Format DB episode to frontend EP structure
   const formatDbEpisode = (ep) => ({
@@ -90,6 +91,13 @@ export default function AppContextProvider({ children }) {
   const loadData = async () => {
     setLoading(true);
     try {
+      // 0. Fetch CMS
+      const cmsRes = await fetch(`${API_BASE}/api/cms`);
+      if (cmsRes.ok) {
+        const cmsData = await cmsRes.json();
+        setCms(cmsData);
+      }
+
       // 1. Fetch Stats
       const statsRes = await fetch(`${API_BASE}/api/stats`);
       if (statsRes.ok) {
@@ -203,6 +211,7 @@ export default function AppContextProvider({ children }) {
       mentors,
       resources,
       loading,
+      cms,
       refreshData: loadData,
       submitForm
     }}>

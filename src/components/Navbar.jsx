@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useApp } from '../context/AppContext';
 
 export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
+  const { cms } = useApp();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const toggleDrawer = () => {
@@ -35,7 +37,7 @@ export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
       {/* ══ DESKTOP NAV ══ */}
       <nav className="bbg-nav">
         <a href="/" className="bbg-logo" onClick={(e) => handleLinkClick(e, 'home')}>
-          <img src="https://bnbgirl.com/wp-content/uploads/2026/03/logo-BjMcg-i3__2___1_-removebg-preview.png" alt="Bold & Brilliant Girls" draggable="false" />
+          <img src={cms.cms_navbar_logo || "https://bnbgirl.com/wp-content/uploads/2026/03/logo-BjMcg-i3__2___1_-removebg-preview.png"} alt="Bold & Brilliant Girls" draggable="false" />
         </a>
         <div className="bbg-links">
           <a href="/" className={activeNav === 'home' ? 'bbg-on' : ''} onClick={(e) => handleLinkClick(e, 'home')}>
@@ -99,7 +101,7 @@ export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
       {/* ══ MOBILE TOP BAR ══ */}
       <div className="bbg-mob-bar">
         <a href="/" className="bbg-logo bbg-logo-sm" onClick={(e) => handleLinkClick(e, 'home')}>
-          <img src="https://bnbgirl.com/wp-content/uploads/2026/03/logo-BjMcg-i3__2___1_-removebg-preview.png" alt="Bold & Brilliant Girls" draggable="false" />
+          <img src={cms.cms_navbar_logo || "https://bnbgirl.com/wp-content/uploads/2026/03/logo-BjMcg-i3__2___1_-removebg-preview.png"} alt="Bold & Brilliant Girls" draggable="false" />
         </a>
         <button className={`bbg-ham ${isDrawerOpen ? 'is-open' : ''}`} onClick={toggleDrawer} aria-label="Menu">
           <div className="bbg-bar"></div>

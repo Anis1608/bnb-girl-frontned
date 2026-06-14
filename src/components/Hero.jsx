@@ -17,7 +17,7 @@ const TOPICS = [
 ];
 
 export default function Hero({ onWatchNow }) {
-  const { stats } = useApp();
+  const { stats, cms } = useApp();
   // Sparkle configuration
   const sparkles = [
     { top: '12%', left: '16%', delay: '0s' },
@@ -80,23 +80,21 @@ export default function Hero({ onWatchNow }) {
       <div className="hero__inner">
         <div className="hero__content">
           <div className="hero__eyebrow">
-            <div className="hero__dot"></div>New Episode Live Now
+            <div className="hero__dot"></div>{cms.cms_hero_eyebrow || "New Episode Live Now"}
           </div>
-          <h1 className="hero__title">
-            Bold &amp; <em className="gold">Brilliant</em> Girls
-          </h1>
+          <h1 className="hero__title" dangerouslySetInnerHTML={{ __html: cms.cms_hero_title || "Bold &amp; <em class=\"gold\">Brilliant</em> Girls" }} />
           <p className="hero__sub">
-            Real stories from inspiring women across every career — so you can see what's possible for you.
+            {cms.cms_hero_subtitle || "Real stories from inspiring women across every career — so you can see what's possible for you."}
           </p>
           <div className="hero__ctas">
             <button className="btn btn--primary" onClick={onWatchNow}>
               <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24" style={{ marginRight: '4px' }}>
                 <polygon points="5 3 19 12 5 21" />
               </svg>
-              Watch Now
+              {cms.cms_hero_cta_primary_text || "Watch Now"}
             </button>
             <a href="#mentorship" className="btn btn--secondary">
-              Find a Mentor &rarr;
+              {cms.cms_hero_cta_secondary_text || "Find a Mentor \u2192"}
             </a>
           </div>
           <div className="hero__social-proof">
@@ -107,7 +105,7 @@ export default function Hero({ onWatchNow }) {
               <div className="hero__avatar" style={{ background: 'linear-gradient(135deg,#9333EA,#EAB308)' }}>S</div>
             </div>
             <div className="hero__sp-text">
-              <span className="hero__sp-stars">★★★★★</span>Loved by 50+ bold women
+              <span className="hero__sp-stars">★★★★★</span>{cms.cms_hero_social_proof || "Loved by 50+ bold women"}
             </div>
           </div>
 

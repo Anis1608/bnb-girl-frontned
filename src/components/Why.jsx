@@ -1,4 +1,5 @@
 import React from 'react';
+import { useApp } from '../context/AppContext';
 
 const CARDS = [
   {
@@ -58,20 +59,51 @@ const CARDS = [
 ];
 
 export default function Why() {
+  const { cms } = useApp();
+
+  const cards = [
+    {
+      ...CARDS[0],
+      kicker: cms.cms_why_card1_kicker || CARDS[0].kicker,
+      title: cms.cms_why_card1_title || CARDS[0].title,
+      desc: cms.cms_why_card1_desc || CARDS[0].desc,
+      cta: cms.cms_why_card1_cta || CARDS[0].cta
+    },
+    {
+      ...CARDS[1],
+      kicker: cms.cms_why_card2_kicker || CARDS[1].kicker,
+      title: cms.cms_why_card2_title || CARDS[1].title,
+      desc: cms.cms_why_card2_desc || CARDS[1].desc,
+      cta: cms.cms_why_card2_cta || CARDS[1].cta
+    },
+    {
+      ...CARDS[2],
+      kicker: cms.cms_why_card3_kicker || CARDS[2].kicker,
+      title: cms.cms_why_card3_title || CARDS[2].title,
+      desc: cms.cms_why_card3_desc || CARDS[2].desc,
+      cta: cms.cms_why_card3_cta || CARDS[2].cta
+    },
+    {
+      ...CARDS[3],
+      kicker: cms.cms_why_card4_kicker || CARDS[3].kicker,
+      title: cms.cms_why_card4_title || CARDS[3].title,
+      desc: cms.cms_why_card4_desc || CARDS[3].desc,
+      cta: cms.cms_why_card4_cta || CARDS[3].cta
+    }
+  ];
+
   return (
     <section className="why-section">
       <div className="section-header reveal visible">
-        <div className="eyebrow">What We Offer</div>
-        <h2 className="section-h2">
-          Why <span className="grad">Bold &amp; Brilliant</span> Girls?
-        </h2>
+        <div className="eyebrow">{cms.cms_why_eyebrow || "What We Offer"}</div>
+        <h2 className="section-h2" dangerouslySetInnerHTML={{ __html: cms.cms_why_title || `Why <span class="grad">Bold &amp; Brilliant</span> Girls?` }} />
         <p className="section-sub">
-          Every young woman deserves guidance to transform her career aspirations into reality.
+          {cms.cms_why_subtitle || "Every young woman deserves guidance to transform her career aspirations into reality."}
         </p>
         <div className="sdiv"></div>
       </div>
       <div className="why-grid container">
-        {CARDS.map((card, idx) => (
+        {cards.map((card, idx) => (
           <div key={idx} className={`why-card reveal reveal-d${idx + 1} visible`}>
             <div className="why-card__inner">
               <div className="why-card__front">
