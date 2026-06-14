@@ -2151,6 +2151,7 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
                       placeholder="Your first name"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
+                      maxLength={50}
                     />
                   </div>
                   <div className="ff">
@@ -2161,6 +2162,7 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
                       placeholder="Optional"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
+                      maxLength={50}
                     />
                   </div>
                 </div>

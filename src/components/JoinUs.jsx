@@ -2165,6 +2165,7 @@ export default function JoinUs({ onShowToast, onNavChange }) {
                             autoComplete="name"
                             value={name}
                             onChange={(e) => handleInputChange('name', e.target.value, setName)}
+                            maxLength={50}
                           />
                           <span className="emsg">Please enter your name.</span>
                         </div>

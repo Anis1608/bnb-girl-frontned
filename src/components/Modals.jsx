@@ -371,6 +371,7 @@ export function GuestModal({ episodeIndex, onClose, onOpenVideo, onOpenAudio, on
                     placeholder="Your name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    maxLength={50}
                     required
                   />
                   <div className="gm-ask-label">Email</div>

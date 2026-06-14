@@ -142,6 +142,7 @@ export default function Ask({ onShowToast }) {
                         placeholder="e.g. Priya Singh"
                         value={askName}
                         onChange={(e) => setAskName(e.target.value)}
+                        maxLength={50}
                       />
                     </div>
                     <div className="ask-field">
@@ -254,6 +255,7 @@ export default function Ask({ onShowToast }) {
                             placeholder="Optional"
                             value={suggestName}
                             onChange={(e) => setSuggestName(e.target.value)}
+                            maxLength={50}
                           />
                         </div>
                         <div className="ask-field">
