@@ -11698,6 +11698,8 @@ textarea.ask-input {
   overflow: hidden
 }
 
+}
+
 @keyframes hgShift {
 
   0%,
@@ -11709,6 +11711,8 @@ textarea.ask-input {
     background-position: 100% 50%
   }
 }
+
+.resources-page-container {
 
 .newsletter::before {
   content: '';
