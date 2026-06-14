@@ -28,7 +28,14 @@ export default function AppContextProvider({ children }) {
   const [mentors, setMentors] = useState([]);
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [cms, setCms] = useState({});
+  const [cms, setCms] = useState(() => {
+    try {
+      const cached = localStorage.getItem('bbg_cms');
+      return cached ? JSON.parse(cached) : {};
+    } catch (e) {
+      return {};
+    }
+  });
 
   // Format DB episode to frontend EP structure
   const formatDbEpisode = (ep) => ({
@@ -96,6 +103,11 @@ export default function AppContextProvider({ children }) {
       if (cmsRes.ok) {
         const cmsData = await cmsRes.json();
         setCms(cmsData);
+        try {
+          localStorage.setItem('bbg_cms', JSON.stringify(cmsData));
+        } catch (e) {
+          console.error('Error saving CMS cache:', e);
+        }
       }
 
       // 1. Fetch Stats
