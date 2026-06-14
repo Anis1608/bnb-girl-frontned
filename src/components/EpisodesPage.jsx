@@ -1,0 +1,1138 @@
+import React, { useState, useEffect, useRef } from 'react';
+
+// Unified episodes dataset from episode.html
+export const EPS = {
+  maha: {
+    key: 'maha',
+    epNum: '52',
+    title: 'Identity, Reinvention & Building Yourself From the Ground Up',
+    meta: 'Maha Abouelenein · EP.52 · 48 MIN · Leadership',
+    ytId: 'wFqMkA-BYIU',
+    ytUrl: 'https://www.youtube.com/watch?v=wFqMkA-BYIU',
+    yt: 'wFqMkA-BYIU',
+    av: 'MA',
+    grad: 'linear-gradient(135deg,#6B21A8,#EC4899)',
+    name: 'Maha Abouelenein',
+    role: 'Global Communications Strategist & Author',
+    tags: ['Leadership', 'Business', 'Branding', 'Author'],
+    bio: 'Maha Abouelenein is a globally recognised communications expert with 25+ years experience at Netflix, Google, and the Dubai government. She is the author of "7 Rules of Self-Reliance" and an inspiring voice for women in leadership worldwide.',
+    highlights: 'A masterclass in resilience. Maha breaks down the exact mental shifts required to reinvent yourself without losing who you are.',
+    facts: [
+      { l: 'Based in', v: 'Dubai, UAE' },
+      { l: 'Episode', v: 'EP. 52 · Mar 2026' },
+      { l: 'Duration', v: '48 Minutes' },
+      { l: 'Industry', v: 'Communications' }
+    ],
+    link: 'https://www.mahaabouelenein.com',
+    dur: '48 MIN',
+    isNew: true,
+    prog: 0,
+    cat: 'leadership',
+    catL: 'Leadership',
+    subtopic: 'Founders',
+    popularity: 98,
+    ins: {
+      quote: '"The bravest thing I ever did was choose myself over the version of me others needed me to be."',
+      takeaways: ['Your identity is not your job title — it evolves across every chapter.', 'Reinvention takes more courage than staying comfortable.', 'Build genuine relationships before you need them.', 'Clarity about your values is your compass.', 'Storytelling is the most underrated business skill.'],
+      themes: ['Identity', 'Reinvention', 'Leadership', 'Communication'],
+      summary: 'A masterclass in resilience and intentional living from one of the world\'s top communications strategists.'
+    }
+  },
+  sara: {
+    key: 'sara',
+    epNum: '51',
+    title: 'Letting Go of Toxic Love, Standing in Your Worth & Ego Healing',
+    meta: 'Dr Sara Al Madani · EP.51 · 54 MIN · Health',
+    ytId: 'D7Q9p5P4Ofo',
+    ytUrl: 'https://www.youtube.com/watch?v=D7Q9p5P4Ofo',
+    yt: 'D7Q9p5P4Ofo',
+    av: 'SA',
+    grad: 'linear-gradient(135deg,#831843,#DB2777)',
+    name: 'Dr Sara Al Madani',
+    role: 'Entrepreneur · Author · Public Figure',
+    tags: ['Wellness', 'Self-Love', 'Entrepreneurship'],
+    bio: 'Dr Sara Al Madani is a multi-award winning Emirati entrepreneur, author, and television personality. She has built multiple businesses and is known for her raw honesty about love, self-worth, and healing.',
+    highlights: 'Raw, honest conversation about choosing yourself, setting boundaries in love, and the real work of ego healing.',
+    facts: [
+      { l: 'Based in', v: 'UAE' },
+      { l: 'Episode', v: 'EP. 51 · Feb 2026' },
+      { l: 'Duration', v: '54 Minutes' },
+      { l: 'Industry', v: 'Wellness & Business' }
+    ],
+    link: 'https://www.youtube.com/@SheenGurrib',
+    dur: '54 MIN',
+    isNew: true,
+    prog: 100,
+    cat: 'health',
+    catL: 'Health & Wellness',
+    subtopic: 'Wellness',
+    popularity: 95,
+    ins: {
+      quote: '"You cannot love someone into treating you right."',
+      takeaways: ['Toxic love often masquerades as passion — learn to tell the difference.', 'Self-worth is not arrogance — it is your foundation.', 'Boundaries are doors you choose who enters.', 'Ego healing starts with radical honesty about your own patterns.'],
+      themes: ['Toxic Relationships', 'Self-Worth', 'Ego Healing'],
+      summary: 'Raw, honest conversation about choosing yourself when love has let you down.'
+    }
+  },
+  saliha: {
+    key: 'saliha',
+    epNum: '50',
+    title: 'Avoiding Burnout & Listening to Your Inner Guide in the Digital Age',
+    meta: 'Dr Saliha Afridi · EP.50 · 47 MIN · Mental Health',
+    ytId: 'hBsZiXb9r8M',
+    ytUrl: 'https://www.youtube.com/watch?v=hBsZiXb9r8M',
+    yt: 'hBsZiXb9r8M',
+    av: 'SA',
+    grad: 'linear-gradient(135deg,#1E3A5F,#2563EB)',
+    name: 'Dr Saliha Afridi',
+    role: 'Clinical Psychologist · 20+ Years',
+    tags: ['Mental Health', 'Burnout', 'Psychology'],
+    bio: 'Dr Saliha Afridi is one of the UAE\'s most trusted clinical psychologists. She is the founder of The LightHouse Arabia and has worked with thousands of clients across stress, burnout, trauma, and identity.',
+    highlights: 'Clinical yet deeply human — Dr Saliha gives practical, science-backed tools for recognising and recovering from burnout.',
+    facts: [
+      { l: 'Based in', v: 'Dubai, UAE' },
+      { l: 'Episode', v: 'EP. 50 · Jan 2026' },
+      { l: 'Duration', v: '47 Minutes' },
+      { l: 'Industry', v: 'Psychology' }
+    ],
+    link: 'https://www.lighthousearabia.com',
+    dur: '47 MIN',
+    isNew: false,
+    prog: 65,
+    cat: 'health',
+    catL: 'Mental Health',
+    subtopic: 'Mental Health',
+    popularity: 92,
+    ins: {
+      quote: '"Rest is not a reward. Rest is the foundation."',
+      takeaways: ['Burnout is depletion of meaning, energy, and identity simultaneously.', 'Your body gives warning signs months before total burnout.', 'Rest is the foundation of sustainable output — not the finish line.', 'The digital world is designed to keep you addicted to busy.'],
+      themes: ['Burnout', 'Mental Health', 'Digital Wellness'],
+      summary: 'Clinical yet deeply human perspective on burnout, recovery, and building sustainable wellbeing.'
+    }
+  },
+  mehreen: {
+    key: 'mehreen',
+    epNum: '49',
+    title: 'Dual Cultural Identity, Authenticity & Making It in Media',
+    meta: 'Mehreen · EP.49 · 39 MIN · Arts & Media',
+    ytId: 'D41xKKwNPDw',
+    ytUrl: 'https://www.youtube.com/watch?v=D41xKKwNPDw',
+    yt: 'D41xKKwNPDw',
+    av: 'ME',
+    grad: 'linear-gradient(135deg,#4C1D95,#7C3AED)',
+    name: 'Mehreen',
+    role: 'Content Creator · Media Personality',
+    tags: ['Arts', 'Media', 'Identity'],
+    bio: 'Mehreen is a British-Pakistani content creator who has carved her own space in the digital media world, navigating the expectations of two cultures while staying fiercely authentic.',
+    highlights: 'A conversation about carving your own lane when two worlds pull you in different directions — and why authenticity always wins.',
+    facts: [
+      { l: 'Based in', v: 'London, UK' },
+      { l: 'Episode', v: 'EP. 49 · Dec 2025' },
+      { l: 'Duration', v: '39 Minutes' },
+      { l: 'Industry', v: 'Media & Content' }
+    ],
+    link: 'https://www.youtube.com/@SheenGurrib',
+    dur: '39 MIN',
+    isNew: false,
+    prog: 0,
+    cat: 'arts',
+    catL: 'Arts & Media',
+    subtopic: 'Social Media',
+    popularity: 88,
+    ins: {
+      quote: '"I stopped trying to be a bridge and started being proud of being both."',
+      takeaways: ['Authenticity is the only sustainable media strategy.', 'Dual cultural identity is a superpower, not a burden.', 'The right audience will find you — stop shrinking for the wrong one.'],
+      themes: ['Cultural Identity', 'Authenticity', 'Representation'],
+      summary: 'Finding your voice while navigating expectations of two cultures.'
+    }
+  },
+  amy: {
+    key: 'amy',
+    epNum: '48',
+    title: 'From Zero to Brand: The Real Journey of Building an Empire',
+    meta: 'Amy Roko · EP.48 · 43 MIN · Business',
+    ytId: 'UlZts1AgYGE',
+    ytUrl: 'https://www.youtube.com/watch?v=UlZts1AgYGE',
+    yt: 'UlZts1AgYGE',
+    av: 'AR',
+    grad: 'linear-gradient(135deg,#92400E,#D97706)',
+    name: 'Amy Roko',
+    role: 'Founder · Brand Builder',
+    tags: ['Business', 'Branding', 'Entrepreneurship'],
+    bio: 'Amy Roko built her brand empire from nothing but a laptop and relentless work ethic. She now advises some of the fastest-growing consumer brands in the world.',
+    highlights: 'No filters, no success theatre — just the real unglamorous work of building a brand from scratch and the lessons paid in full.',
+    facts: [
+      { l: 'Based in', v: 'New York, USA' },
+      { l: 'Episode', v: 'EP. 48 · Nov 2025' },
+      { l: 'Duration', v: '43 Minutes' },
+      { l: 'Industry', v: 'Branding' }
+    ],
+    link: 'https://www.youtube.com/@SheenGurrib',
+    dur: '43 MIN',
+    isNew: false,
+    prog: 45,
+    cat: 'business',
+    catL: 'Business',
+    subtopic: 'Branding',
+    popularity: 91,
+    ins: {
+      quote: '"I didn\'t wait until I was ready. I got ready by starting."',
+      takeaways: ['A brand is a promise, a feeling, and a relationship — not a logo.', 'Revenue is vanity. Profit is sanity. Cash flow is reality.', 'The first version of your brand should embarrass you slightly.'],
+      themes: ['Branding', 'Business'],
+      summary: 'The real, unglamorous journey of building a brand from zero.'
+    }
+  },
+  liz: {
+    key: 'liz',
+    epNum: '47',
+    title: 'Navigating Your Soft Girl Era & Protecting Your Peace',
+    meta: 'TheWizardLiz · EP.47 · 52 MIN · Mindset',
+    ytId: 'q1I77BC0BeA',
+    ytUrl: 'https://www.youtube.com/watch?v=q1I77BC0BeA',
+    yt: 'q1I77BC0BeA',
+    av: 'TL',
+    grad: 'linear-gradient(135deg,#1E1035,#7C3AED)',
+    name: 'TheWizardLiz',
+    role: 'Mindset Coach · 5M+ Followers',
+    tags: ['Mindset', 'Peace', 'Boundaries'],
+    bio: 'TheWizardLiz is a viral mindset creator with over 5 million followers across platforms. She is known for her unflinching approach to self-love, boundaries, and manifesting the life you actually want.',
+    highlights: 'Being soft is a power move — not weakness. Liz explains the whole soft girl era and why inner peace is the hardest flex.',
+    facts: [
+      { l: 'Based in', v: 'Netherlands' },
+      { l: 'Episode', v: 'EP. 47 · Oct 2025' },
+      { l: 'Duration', v: '52 Minutes' },
+      { l: 'Industry', v: 'Self-Development' }
+    ],
+    link: 'https://www.instagram.com/thewizardliz',
+    dur: '52 MIN',
+    isNew: false,
+    prog: 80,
+    cat: 'health',
+    catL: 'Mindset',
+    subtopic: 'Wellness',
+    popularity: 99,
+    ins: {
+      quote: '"Being soft is a choice for the strong."',
+      takeaways: ['Your soft girl era is choosing yourself — unapologetically.', 'You are not responsible for others\' reactions to your boundaries.', 'Peace is not given to you — it is built, defended, and maintained.'],
+      themes: ['Soft Life', 'Peace', 'Self-Love'],
+      summary: 'What the soft girl era really means and how to build unshakeable inner peace.'
+    }
+  },
+  lamide: {
+    key: 'lamide',
+    epNum: '46',
+    title: 'Building a Music Career on Your Own Terms: No Compromise',
+    meta: 'Lamide Elizabeth · EP.46 · 36 MIN · Music',
+    ytId: '2TENulPeqY0',
+    ytUrl: 'https://www.youtube.com/watch?v=2TENulPeqY0',
+    yt: '2TENulPeqY0',
+    av: 'LE',
+    grad: 'linear-gradient(135deg,#C2410C,#EA580C)',
+    name: 'Lamide Elizabeth',
+    role: 'Recording Artist · Songwriter',
+    tags: ['Music', 'Arts', 'Independence'],
+    bio: 'Lamide Elizabeth is an independently signed recording artist navigating the music industry on her own terms. Her refusal to compromise has become her greatest creative and commercial asset.',
+    highlights: 'They told her to change her sound. She changed her team instead. This is the blueprint for artistic integrity in the streaming age.',
+    facts: [
+      { l: 'Based in', v: 'Lagos, Nigeria' },
+      { l: 'Episode', v: 'EP. 46 · Sep 2025' },
+      { l: 'Duration', v: '36 Minutes' },
+      { l: 'Industry', v: 'Music' }
+    ],
+    link: 'https://www.youtube.com/@SheenGurrib',
+    dur: '36 MIN',
+    isNew: false,
+    prog: 20,
+    cat: 'arts',
+    catL: 'Music & Arts',
+    subtopic: 'Music',
+    popularity: 84,
+    ins: {
+      quote: '"They told me to change my sound. I changed my team instead."',
+      takeaways: ['Independent does not mean small — it means free.', 'Your artistic integrity is your most bankable asset.', 'Build your audience before you need the industry to notice you.'],
+      themes: ['Music', 'Artistic Integrity'],
+      summary: 'Navigating the music industry while refusing to dilute your artistry.'
+    }
+  },
+  hasia: {
+    key: 'hasia',
+    epNum: '45',
+    title: 'Skincare: The Good, The Bad & The Impact of Beauty Culture',
+    meta: 'Dr Hasia · EP.45 · 41 MIN · Health',
+    ytId: '',
+    ytUrl: 'https://www.youtube.com/@SheenGurrib',
+    yt: '',
+    av: 'DH',
+    grad: 'linear-gradient(135deg,#1E3A5F,#2563EB)',
+    name: 'Dr Hasia',
+    role: 'Dermatologist · Beauty Educator',
+    tags: ['Skincare', 'Dermatology', 'Beauty'],
+    bio: 'Dr Hasia is a board-certified dermatologist and one of the most trusted skin health educators in the Arab world. She is known for cutting through the noise of beauty culture with evidence-based guidance.',
+    highlights: 'Skincare doesn\'t need to be expensive or complicated. Dr Hasia breaks down what actually works — and what beauty culture is selling you.',
+    facts: [
+      { l: 'Based in', v: 'Dubai, UAE' },
+      { l: 'Episode', v: 'EP. 45 · Aug 2025' },
+      { l: 'Duration', v: '41 Minutes' },
+      { l: 'Industry', v: 'Dermatology' }
+    ],
+    link: 'https://www.youtube.com/@SheenGurrib',
+    dur: '41 MIN',
+    isNew: false,
+    prog: 55,
+    cat: 'health',
+    catL: 'Health & Beauty',
+    subtopic: 'Beauty & Skincare',
+    popularity: 86,
+    ins: {
+      quote: '"Healthy skin is about feeling at home in your own face."',
+      takeaways: ['Skincare needs to be consistent, not expensive.', 'SPF daily is the single most effective anti-ageing step.', 'Beauty culture profits from your insecurity — recognise this.'],
+      themes: ['Skincare', 'Beauty Culture'],
+      summary: 'Busting skincare myths and calling out toxic beauty culture with clinical authority.'
+    }
+  },
+  djbliss: {
+    key: 'djbliss',
+    epNum: '44',
+    title: 'Virality, Journalism & Building a Platform That Matters',
+    meta: 'DJ Bliss · EP.44 · 45 MIN · Media',
+    ytId: 'BBwiBAWBGVM',
+    ytUrl: 'https://www.youtube.com/watch?v=BBwiBAWBGVM',
+    yt: 'BBwiBAWBGVM',
+    av: 'DB',
+    grad: 'linear-gradient(135deg,#0E7490,#06B6D4)',
+    name: 'DJ Bliss',
+    role: 'DJ · Media Personality · Radio Host',
+    tags: ['Media', 'Tech', 'Journalism'],
+    bio: 'DJ Bliss is one of the Middle East\'s most recognisable media personalities, with two decades of experience building platforms that cut through the noise.',
+    highlights: 'Two decades of media wisdom: the difference between going viral and building something that actually lasts.',
+    facts: [
+      { l: 'Based in', v: 'Dubai, UAE' },
+      { l: 'Episode', v: 'EP. 44 · Jul 2025' },
+      { l: 'Duration', v: '45 Minutes' },
+      { l: 'Industry', v: 'Media' }
+    ],
+    link: 'https://www.youtube.com/@SheenGurrib',
+    dur: '45 MIN',
+    isNew: false,
+    prog: 10,
+    cat: 'tech',
+    catL: 'Media & Tech',
+    subtopic: 'Social Media',
+    popularity: 85,
+    ins: {
+      quote: '"Anyone can get attention. The skill is keeping it with something worth their time."',
+      takeaways: ['Viral gets views. Meaningful builds a following.', 'Restraint in the attention economy is a superpower.', 'Authenticity always outlasts the algorithm.'],
+      themes: ['Virality', 'Journalism', 'Integrity'],
+      summary: 'Two decades of media wisdom on building a platform with integrity.'
+    }
+  },
+  jet: {
+    key: 'jet',
+    epNum: '43',
+    title: 'How to Build a Business That Survives Every Season of Your Life',
+    meta: 'Jet Van Wijk · EP.43 · 38 MIN · Entrepreneurship',
+    ytId: '21xLnDWxgzI',
+    ytUrl: 'https://www.youtube.com/watch?v=21xLnDWxgzI',
+    yt: '21xLnDWxgzI',
+    av: 'JV',
+    grad: 'linear-gradient(135deg,#065F46,#059669)',
+    name: 'Jet Van Wijk',
+    role: 'Serial Entrepreneur · Investor',
+    tags: ['Entrepreneurship', 'Business', 'Resilience'],
+    bio: 'Jet Van Wijk is a South African serial entrepreneur and investor who has built, sold, and restructured multiple companies. Her philosophy: your business should serve your life, not consume it.',
+    highlights: 'The unsexy framework for building businesses that are resilient across economic cycles and personal life seasons.',
+    facts: [
+      { l: 'Based in', v: 'Cape Town, SA' },
+      { l: 'Episode', v: 'EP. 43 · Jun 2025' },
+      { l: 'Duration', v: '38 Minutes' },
+      { l: 'Industry', v: 'Investment' }
+    ],
+    link: 'https://www.youtube.com/@SheenGurrib',
+    dur: '38 MIN',
+    isNew: false,
+    prog: 0,
+    cat: 'business',
+    catL: 'Entrepreneurship',
+    subtopic: 'Entrepreneurship',
+    popularity: 90,
+    ins: {
+      quote: '"Never confuse your business with your identity."',
+      takeaways: ['A business should serve your life — not consume it.', 'Investors fund people first, ideas second.', 'Build for resilience before you build for scale.'],
+      themes: ['Resilience', 'Entrepreneurship'],
+      summary: 'Framework for building businesses resilient across economic and personal seasons.'
+    }
+  }
+};
+
+const SUBTOPICS = {
+  all: [],
+  arts: ['All', 'Film & TV', 'Music', 'Social Media', 'Writing'],
+  business: ['All', 'Entrepreneurship', 'Branding', 'Marketing', 'Strategy'],
+  health: ['All', 'Mental Health', 'Fitness', 'Beauty & Skincare', 'Wellness'],
+  tech: ['All', 'AI & Future', 'Engineering', 'Product', 'Software'],
+  leadership: ['All', 'Founders', 'Corporate', 'Activism'],
+  finance: ['All', 'Investing', 'Personal Finance', 'Wealth Building'],
+  law: ['All', 'Corporate Law', 'Human Rights', 'IP & Tech Law'],
+  social: ['All', 'Activism', 'Community', 'Policy']
+};
+
+const CAT_LABELS = {
+  all: 'All Episodes',
+  arts: 'Arts & Media',
+  business: 'Business',
+  health: 'Health & Wellness',
+  tech: 'Tech & STEM',
+  leadership: 'Leadership',
+  finance: 'Finance',
+  law: 'Law',
+  social: 'Social'
+};
+
+const SUBTOPIC_MAP = {
+  'Mental Health': 'mental',
+  'Wellness': 'wellness',
+  'Beauty & Skincare': 'beauty',
+  'Fitness': 'fitness',
+  'Branding': 'branding',
+  'Entrepreneurship': 'entrepreneurship',
+  'Marketing': 'marketing',
+  'Music': 'music',
+  'Film & TV': 'film',
+  'Social Media': 'social',
+  'Writing': 'writing',
+  'Tech': 'media',
+  'Investing': 'investing'
+};
+
+export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onShowToast }) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedSubtopic, setSelectedSubtopic] = useState('All');
+  const [sortOrder, setSortOrder] = useState('newest');
+  const [visibleCount, setVisibleCount] = useState(9);
+  const [placeholder, setPlaceholder] = useState('Search episodes, guests, topics…');
+
+  // Quiz state
+  const [quizActive, setQuizActive] = useState(false);
+  const [quizStep, setQuizStep] = useState(0);
+  const [quizAnswers, setQuizAnswers] = useState([]);
+  const [quizResult, setQuizResult] = useState(null);
+
+  // Search input typing placeholders
+  useEffect(() => {
+    const phrases = [
+      'Entrepreneurship…',
+      'Mental health…',
+      'Leadership…',
+      'Burnout & recovery…',
+      'Identity & reinvention…',
+      'Building your brand…',
+      'Soft girl era…'
+    ];
+    let pi = 0;
+    let ci = 0;
+    let del = false;
+    let timer;
+
+    const tick = () => {
+      const cur = phrases[pi];
+      if (del) {
+        ci--;
+        setPlaceholder(cur.substring(0, ci));
+        if (ci === 0) {
+          del = false;
+          pi = (pi + 1) % phrases.length;
+          timer = setTimeout(tick, 500);
+        } else {
+          timer = setTimeout(tick, 40);
+        }
+      } else {
+        ci++;
+        setPlaceholder(cur.substring(0, ci));
+        if (ci === cur.length) {
+          del = true;
+          timer = setTimeout(tick, 1900);
+        } else {
+          timer = setTimeout(tick, ci === 1 ? 300 : 65);
+        }
+      }
+    };
+
+    timer = setTimeout(tick, 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleCategorySelect = (cat) => {
+    setSelectedCategory(cat);
+    setSelectedSubtopic('All');
+    setVisibleCount(9);
+  };
+
+  const handleSubtopicSelect = (sub) => {
+    setSelectedSubtopic(sub);
+    setVisibleCount(9);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setVisibleCount(9);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+  };
+
+  // Filter & sort database items
+  const getFilteredEpisodes = () => {
+    let list = Object.values(EPS);
+
+    // Filter by Category
+    if (selectedCategory !== 'all') {
+      list = list.filter(ep => ep.cat === selectedCategory);
+    }
+
+    // Filter by Subtopic
+    if (selectedSubtopic !== 'All') {
+      list = list.filter(ep => ep.subtopic === selectedSubtopic);
+    }
+
+    // Filter by Search Query
+    if (searchQuery.trim().length > 0) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(ep => 
+        ep.title.toLowerCase().includes(q) || 
+        ep.name.toLowerCase().includes(q) || 
+        ep.role.toLowerCase().includes(q) || 
+        ep.tags.some(t => t.toLowerCase().includes(q))
+      );
+    }
+
+    // Sort order
+    if (sortOrder === 'newest') {
+      // Keep defined order (which is newest first)
+    } else if (sortOrder === 'popular') {
+      list = [...list].sort((a, b) => b.popularity - a.popularity);
+    } else if (sortOrder === 'az') {
+      list = [...list].sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return list;
+  };
+
+  const filteredList = getFilteredEpisodes();
+  const displayedList = filteredList.slice(0, visibleCount);
+
+  // Matchmaker Quiz logic
+  const quizQuestions = [
+    {
+      q: "What's your biggest focus right now?",
+      opts: [
+        { i: '💼', t: 'Career or business', v: 'business' },
+        { i: '❤️', t: 'Health & wellbeing', v: 'health' },
+        { i: '✨', t: 'Personal growth', v: 'growth' },
+        { i: '🎨', t: 'Creative expression', v: 'arts' }
+      ]
+    },
+    {
+      q: "Where are you in life right now?",
+      opts: [
+        { i: '🌱', t: 'Just starting out', v: 'starter' },
+        { i: '🔄', t: 'Rebuilding myself', v: 'rebuild' },
+        { i: '🚀', t: 'Growing fast', v: 'growing' },
+        { i: '🧘', t: 'Seeking peace', v: 'peace' }
+      ]
+    },
+    {
+      q: "What type of conversation fires you up?",
+      opts: [
+        { i: '🔥', t: 'Raw, unfiltered talk', v: 'raw' },
+        { i: '📚', t: 'Practical advice', v: 'practical' },
+        { i: '💭', t: 'Deep mindset shifts', v: 'deep' },
+        { i: '🌍', t: 'World-changing stories', v: 'impact' }
+      ]
+    }
+  ];
+
+  const startQuiz = () => {
+    setQuizActive(true);
+    setQuizStep(0);
+    setQuizAnswers([]);
+    setQuizResult(null);
+  };
+
+  const handleQuizSelect = (val) => {
+    const newAnswers = [...quizAnswers];
+    newAnswers[quizStep] = val;
+    setQuizAnswers(newAnswers);
+  };
+
+  const nextQuizStep = () => {
+    if (quizStep < quizQuestions.length - 1) {
+      setQuizStep(quizStep + 1);
+    } else {
+      finishQuiz();
+    }
+  };
+
+  const skipQuizStep = () => {
+    const newAnswers = [...quizAnswers];
+    newAnswers[quizStep] = null;
+    setQuizAnswers(newAnswers);
+    if (quizStep < quizQuestions.length - 1) {
+      setQuizStep(quizStep + 1);
+    } else {
+      finishQuiz();
+    }
+  };
+
+  const finishQuiz = () => {
+    const a = quizAnswers;
+    const fm = {
+      business: ['maha', 'amy', 'jet'],
+      health: ['sara', 'saliha', 'hasia'],
+      growth: ['liz', 'mehreen', 'maha'],
+      arts: ['mehreen', 'lamide', 'djbliss']
+    };
+    const sm = {
+      starter: ['amy', 'lamide', 'mehreen'],
+      rebuild: ['maha', 'sara', 'liz'],
+      growing: ['jet', 'djbliss', 'saliha'],
+      peace: ['liz', 'saliha', 'sara']
+    };
+    const tm = {
+      raw: ['sara', 'liz', 'lamide'],
+      practical: ['amy', 'jet', 'hasia'],
+      deep: ['saliha', 'maha', 'liz'],
+      impact: ['djbliss', 'maha', 'jet']
+    };
+
+    const allPicks = [
+      ...(fm[a[0]] || []),
+      ...(sm[a[1]] || []),
+      ...(tm[a[2]] || [])
+    ];
+
+    const freq = {};
+    allPicks.forEach(k => {
+      freq[k] = (freq[k] || 0) + 1;
+    });
+
+    let picks = Object.entries(freq)
+      .sort((x, y) => y[1] - x[1])
+      .slice(0, 3)
+      .map(e => e[0]);
+
+    if (!picks.length) {
+      picks = ['maha', 'sara', 'saliha'];
+    }
+
+    const il = {
+      business: '💼',
+      health: '❤️',
+      growth: '✨',
+      arts: '🎨'
+    };
+
+    const ll = {
+      business: 'Career & Business',
+      health: 'Health & Mind',
+      growth: 'Personal Growth',
+      arts: 'Creative Expression'
+    };
+
+    const f = a[0] || 'growth';
+
+    setQuizResult({
+      icon: il[f] || '🎯',
+      title: `Perfect for ${ll[f] || 'You'}`,
+      desc: "Based on your answers, these episodes are made for exactly where you are right now.",
+      picks: picks.map(k => EPS[k]).filter(Boolean)
+    });
+  };
+
+  const restartQuiz = () => {
+    setQuizActive(false);
+    setQuizResult(null);
+  };
+
+  return (
+    <div className="episodes-page-container">
+      {/* ── TICKER ── */}
+      <div className="ticker">
+        <div className="ticker-track">
+          <span className="ticker-item"><span className="t-dot">✦</span> NEW: Maha Abouelenein on Identity &amp; Reinvention</span>
+          <span className="ticker-item"><span className="t-dot">✦</span> Mentorship Spots Limited — Apply Now</span>
+          <span className="ticker-item"><span className="t-dot">✦</span> Dr Sara Al Madani — Letting Go of Toxic Love</span>
+          <span className="ticker-item"><span className="t-dot">✦</span> Dr Saliha Afridi on Burnout &amp; Mental Health</span>
+          <span className="ticker-item"><span className="t-dot">✦</span> 100M+ Views · 500K+ Community</span>
+          {/* Duplicate for infinite loop */}
+          <span className="ticker-item"><span className="t-dot">✦</span> NEW: Maha Abouelenein on Identity &amp; Reinvention</span>
+          <span className="ticker-item"><span className="t-dot">✦</span> Mentorship Spots Limited — Apply Now</span>
+          <span className="ticker-item"><span className="t-dot">✦</span> Dr Sara Al Madani — Letting Go of Toxic Love</span>
+          <span className="ticker-item"><span className="t-dot">✦</span> Dr Saliha Afridi on Burnout &amp; Mental Health</span>
+        </div>
+      </div>
+
+      {/* ── HERO ── */}
+      <section className="hero">
+        <div className="hero-orb hero-orb-1"></div>
+        <div className="hero-orb hero-orb-2"></div>
+        <div className="hero-orb hero-orb-3"></div>
+        <div className="hero-inner">
+          <div>
+            <div className="hero-eyebrow">
+              <div className="hero-dot"></div>
+              <span>Bold &amp; Brilliant Girls Podcast</span>
+            </div>
+            <h1 className="hero-h1">
+              Stories That<br />
+              <em>Shape You.</em>
+            </h1>
+            <p className="hero-p">Conversations with women rewriting the rules. New episodes every week — watch, listen, and take notes.</p>
+            
+            <div className="hero-search">
+              <div className="hero-search-wrap">
+                <span className="hero-search-icon">
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.35-4.35"/>
+                  </svg>
+                </span>
+                <input 
+                  type="text" 
+                  autoComplete="off" 
+                  placeholder={placeholder} 
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+                <button className="hero-search-btn">Search</button>
+              </div>
+              <div className="hero-hints">
+                <span className="hint-pill" onClick={() => setSearchQuery('Entrepreneurship')}>💼 Business</span>
+                <span className="hint-pill" onClick={() => setSearchQuery('Mental Health')}>🧠 Mental Health</span>
+                <span className="hint-pill" onClick={() => setSearchQuery('Leadership')}>🌟 Leadership</span>
+                <span className="hint-pill" onClick={() => setSearchQuery('Burnout')}>🔥 Burnout</span>
+                <span className="hint-pill" onClick={() => setSearchQuery('Identity')}>✨ Identity</span>
+              </div>
+            </div>
+
+            <div className="hero-stats">
+              <div className="stat-item" style={{ cursor: 'pointer' }}>
+                <div className="stat-num">52</div>
+                <div className="stat-label">Episodes</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-num">30</div>
+                <div className="stat-label">Mentors</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-num">100<sup>M+</sup></div>
+                <div className="stat-label">Views</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-num">500<sup>K+</sup></div>
+                <div className="stat-label">Community</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="hero-right">
+            <div className="hero-cat-card" onClick={() => handleCategorySelect('health')} style={{ '--card-col': '#EC4899' }}>
+              <div className="hero-cat-icon" style={{ background: 'linear-gradient(135deg,rgba(131,24,67,.5),rgba(219,39,119,.4))' }}>❤️</div>
+              <div className="hero-cat-info">
+                <div className="hero-cat-name">Health &amp; Wellness</div>
+                <div className="hero-cat-count">Mental health · Fitness · Beauty</div>
+              </div>
+              <div className="hero-cat-arrow">→</div>
+            </div>
+            <div className="hero-cat-card" onClick={() => handleCategorySelect('business')}>
+              <div className="hero-cat-icon" style={{ background: 'linear-gradient(135deg,rgba(146,64,14,.5),rgba(217,119,6,.4))' }}>💼</div>
+              <div className="hero-cat-info">
+                <div className="hero-cat-name">Business &amp; Branding</div>
+                <div className="hero-cat-count">Entrepreneurship · Strategy</div>
+              </div>
+              <div className="hero-cat-arrow">→</div>
+            </div>
+            <div className="hero-cat-card" onClick={() => handleCategorySelect('arts')}>
+              <div className="hero-cat-icon" style={{ background: 'linear-gradient(135deg,rgba(76,29,149,.5),rgba(124,58,237,.4))' }}>🎨</div>
+              <div className="hero-cat-info">
+                <div className="hero-cat-name">Arts &amp; Media</div>
+                <div className="hero-cat-count">Film · Music · Social Media</div>
+              </div>
+              <div className="hero-cat-arrow">→</div>
+            </div>
+            <div className="hero-cat-card" onClick={() => handleCategorySelect('tech')}>
+              <div className="hero-cat-icon" style={{ background: 'linear-gradient(135deg,rgba(14,116,144,.5),rgba(6,182,212,.4))' }}>⚡</div>
+              <div className="hero-cat-info">
+                <div className="hero-cat-name">Tech &amp; STEM</div>
+                <div className="hero-cat-count">AI · Engineering · Product</div>
+              </div>
+              <div className="hero-cat-arrow">→</div>
+            </div>
+            <div className="hero-cat-card" onClick={() => handleCategorySelect('leadership')}>
+              <div className="hero-cat-icon" style={{ background: 'linear-gradient(135deg,rgba(107,33,168,.5),rgba(147,51,234,.4))' }}>🌟</div>
+              <div className="hero-cat-info">
+                <div className="hero-cat-name">Leadership</div>
+                <div className="hero-cat-count">Founders · Executives · Activism</div>
+              </div>
+              <div className="hero-cat-arrow">→</div>
+            </div>
+            <div className="hero-cat-card" onClick={() => handleCategorySelect('finance')}>
+              <div className="hero-cat-icon" style={{ background: 'linear-gradient(135deg,rgba(6,95,70,.5),rgba(5,150,105,.4))' }}>💰</div>
+              <div className="hero-cat-info">
+                <div className="hero-cat-name">Finance &amp; Wealth</div>
+                <div className="hero-cat-count">Investing · Money · Freedom</div>
+              </div>
+              <div className="hero-cat-arrow">→</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Latest episode strip */}
+        <div className="hero-latest">
+          <div className="hero-latest-badge">▶ Latest Episode</div>
+          <div className="hero-latest-title">{EPS.maha.title}</div>
+          <div className="hero-latest-guest">{EPS.maha.name} · EP.52</div>
+          <div className="hero-latest-play" onClick={() => onOpenGuestModal(EPS.maha)}>
+            <div className="hero-latest-play-tri"></div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FILTER BAR ── */}
+      <div className="filter-bar" id="filterBar">
+        <div className="filter-inner">
+          <div className="search-row">
+            <div className="search-outer">
+              <div className="search-wrap">
+                <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--gm)', flexShrink: 0 }}>
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input 
+                  type="text" 
+                  placeholder="Search guest, topic, keyword…" 
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+                {searchQuery && (
+                  <button onClick={handleClearSearch} style={{ background: 'none', border: 'none', color: 'var(--gm)', cursor: 'pointer', fontSize: '.8rem', padding: 0 }}>✕</button>
+                )}
+              </div>
+            </div>
+            <select className="sort-sel" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
+              <option value="newest">Newest First</option>
+              <option value="popular">Most Popular</option>
+              <option value="az">A – Z</option>
+            </select>
+          </div>
+
+          <div className="pill-wrap">
+            <div className="pill-row" id="pillRow">
+              <button className={`pill ${selectedCategory === 'all' ? 'active' : ''}`} onClick={() => handleCategorySelect('all')}>All Episodes</button>
+              <button className={`pill ${selectedCategory === 'tech' ? 'active' : ''}`} onClick={() => handleCategorySelect('tech')}>⚡ Tech &amp; STEM</button>
+              <button className={`pill ${selectedCategory === 'business' ? 'active' : ''}`} onClick={() => handleCategorySelect('business')}>💼 Business</button>
+              <button className={`pill ${selectedCategory === 'health' ? 'active' : ''}`} onClick={() => handleCategorySelect('health')}>❤️ Health</button>
+              <button className={`pill ${selectedCategory === 'arts' ? 'active' : ''}`} onClick={() => handleCategorySelect('arts')}>🎨 Arts &amp; Media</button>
+              <button className={`pill ${selectedCategory === 'leadership' ? 'active' : ''}`} onClick={() => handleCategorySelect('leadership')}>🌟 Leadership</button>
+              <button className={`pill ${selectedCategory === 'finance' ? 'active' : ''}`} onClick={() => handleCategorySelect('finance')}>💰 Finance</button>
+              <button className={`pill ${selectedCategory === 'law' ? 'active' : ''}`} onClick={() => handleCategorySelect('law')}>⚖️ Law</button>
+              <button className={`pill ${selectedCategory === 'social' ? 'active' : ''}`} onClick={() => handleCategorySelect('social')}>🌍 Social</button>
+            </div>
+            
+            {/* Subtopic pills */}
+            <div className={`sub-pill-row ${selectedCategory !== 'all' ? 'visible' : ''}`}>
+              {selectedCategory !== 'all' && SUBTOPICS[selectedCategory] && SUBTOPICS[selectedCategory].map((sub, i) => (
+                <button 
+                  key={i}
+                  className={`sub-pill ${selectedSubtopic === sub ? 'active' : ''}`}
+                  onClick={() => handleSubtopicSelect(sub)}
+                >
+                  {sub}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="results-count">Showing {filteredList.length} episodes</div>
+        </div>
+      </div>
+
+      {/* ── FEATURED WEEKLY EPISODE ── */}
+      <section className="featured">
+        <div className="featured-inner">
+          <div className="sec-label">⭐ Featured This Week</div>
+          <div className="featured-grid fade-up visible">
+            <div className="vid-frame" onClick={() => onOpenGuestModal(EPS.maha)}>
+              <img className="vid-thumb" src="https://i.ytimg.com/vi/wFqMkA-BYIU/hqdefault.jpg" alt="Maha Abouelenein" />
+              <div className="vid-overlay"></div>
+              <div className="play-btn">
+                <div className="play-tri"></div>
+              </div>
+              <div className="ep-tag">▶ EP.52 · 48 MIN</div>
+              <div className="new-badge">NEW</div>
+            </div>
+            <div className="feat-details">
+              <div className="feat-ep-num">EP. 52 · March 2026 · Leadership &amp; Business</div>
+              <h2 className="feat-title">{EPS.maha.title}</h2>
+              <div className="guest-row" style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '14px 0' }}>
+                <div className="g-avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', background: EPS.maha.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-d)', fontWeight: 800, fontSize: '.9rem' }}>{EPS.maha.av}</div>
+                <div>
+                  <div className="g-name" style={{ fontWeight: 700, fontSize: '.95rem' }}>{EPS.maha.name}</div>
+                  <div className="g-role" style={{ fontSize: '.76rem', color: 'var(--grey-text)' }}>{EPS.maha.role}</div>
+                </div>
+              </div>
+              <div style={{ marginBottom: '14px' }}>
+                <span className="ind-pill" style={{ display: 'inline-block', background: 'rgba(147,51,234,.08)', color: 'var(--purple-deep)', padding: '4px 10px', borderRadius: '20px', fontSize: '.7rem', fontWeight: 600, marginRight: '6px' }}>Leadership</span>
+                <span className="ind-pill" style={{ display: 'inline-block', background: 'rgba(147,51,234,.08)', color: 'var(--purple-deep)', padding: '4px 10px', borderRadius: '20px', fontSize: '.7rem', fontWeight: 600, marginRight: '6px' }}>Business</span>
+                <span className="ind-pill" style={{ display: 'inline-block', background: 'rgba(147,51,234,.08)', color: 'var(--purple-deep)', padding: '4px 10px', borderRadius: '20px', fontSize: '.7rem', fontWeight: 600 }}>Personal Growth</span>
+              </div>
+              <p className="feat-desc" style={{ fontSize: '.88rem', color: 'var(--grey-text)', lineHeight: 1.6, marginBottom: '20px' }}>{EPS.maha.highlights}</p>
+              <div className="feat-actions" style={{ display: 'flex', gap: '10px' }}>
+                <button className="btn-p" onClick={() => onOpenGuestModal(EPS.maha)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--bk)', color: '#fff', padding: '12px 24px', borderRadius: '12px', fontSize: '.78rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', textTransform: 'uppercase', cursor: 'pointer' }}>
+                  <svg width="12" height="12" fill="white" viewBox="0 0 24 24">
+                    <polygon points="5 3 19 12 5 21" />
+                  </svg>
+                  Watch &amp; Listen
+                </button>
+                <button className="btn-audio" onClick={() => onOpenAudioPlayer(EPS.maha)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', border: '1.5px solid rgba(0,0,0,.15)', background: '#fff', color: 'var(--bk)', padding: '12px 24px', borderRadius: '12px', fontSize: '.78rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', textTransform: 'uppercase', cursor: 'pointer' }}>
+                  <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                    <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+                  </svg>
+                  Audio Only
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── EPISODES GRID ── */}
+      <section className="grid-sec" id="gridSec" data-theme={selectedCategory}>
+        <div className="grid-inner">
+          <div className="grid-header">
+            <h2 className="grid-title">{CAT_LABELS[selectedCategory] || 'All Episodes'}</h2>
+            <a href="https://www.youtube.com/@BoldandBrilliantgirl" target="_blank" rel="noopener noreferrer" className="grid-yt-link">Watch on YouTube →</a>
+          </div>
+
+          <div className="ep-grid">
+            {displayedList.map((ep) => (
+              <div key={ep.key} className="ep-card fade-up visible">
+                <div className="card-thumb" onClick={() => onOpenGuestModal(ep)}>
+                  <img src={ep.ytId ? `https://i.ytimg.com/vi/${ep.ytId}/hqdefault.jpg` : 'https://placehold.co/400x225/1E3A5F/ffffff?text=Podcast'} alt={ep.name} />
+                  <div className="thumb-ov"></div>
+                  <div className="thumb-play">
+                    <div className="thumb-play-tri"></div>
+                  </div>
+                  <div className="card-cat">{ep.catL}</div>
+                  {ep.isNew && <div className="card-new">NEW</div>}
+                </div>
+                <span className="card-accent" style={{ background: ep.grad }}></span>
+                <div className="card-body">
+                  <div className="card-ep-meta">
+                    <span>EP. {ep.epNum}</span>
+                    <span>·</span>
+                    <span>{ep.dur}</span>
+                  </div>
+                  <div className="card-title">{ep.title}</div>
+                  <div className="card-guest">
+                    <div className="card-av" style={{ background: ep.grad }}>{ep.av}</div>
+                    <div>
+                      <div className="card-g-name">{ep.name}</div>
+                      <div className="card-g-role">{ep.role.split('·')[0]}</div>
+                    </div>
+                  </div>
+                  {ep.prog > 0 && (
+                    <div className="card-prog-track">
+                      <div className="card-prog-fill" style={{ width: `${ep.prog}%` }}></div>
+                    </div>
+                  )}
+                  <div className="card-actions">
+                    <button className="cbtn cbtn-play" onClick={() => onOpenGuestModal(ep)}>▶ Play</button>
+                    <button className="cbtn cbtn-ins" onClick={() => onOpenGuestModal(ep)}>✦ Insights</button>
+                    <button className="cbtn cbtn-aud" onClick={() => onOpenAudioPlayer(ep)}>🎧</button>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Coming Soon cards */}
+            {selectedCategory === 'all' && (
+              <>
+                <div className="ep-card coming-soon-card">
+                  <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>⚖️</div>
+                  <div className="cs-badge">✦ Coming Soon</div>
+                  <div className="cs-title">Breaking Barriers in Law</div>
+                  <div className="cs-text">New episodes with trailblazing women in law dropping soon.</div>
+                  <button className="cs-notify" onClick={() => onShowToast('🔔', 'Notification set!', 'You will be notified for law episodes.')}>🔔 Notify Me</button>
+                </div>
+                <div className="ep-card coming-soon-card">
+                  <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>💰</div>
+                  <div className="cs-badge">✦ Coming Soon</div>
+                  <div className="cs-title">Finance &amp; Wealth Building</div>
+                  <div className="cs-text">Conversations about money, investing, and financial freedom.</div>
+                  <button className="cs-notify" onClick={() => onShowToast('🔔', 'Notification set!', 'You will be notified for finance episodes.')}>🔔 Notify Me</button>
+                </div>
+                <div className="ep-card coming-soon-card">
+                  <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>🌟</div>
+                  <div className="cs-badge">✦ Coming Soon</div>
+                  <div className="cs-title">Women in Leadership</div>
+                  <div className="cs-text">In-depth conversations with CEOs and change-makers.</div>
+                  <button className="cs-notify" onClick={() => onShowToast('🔔', 'Notification set!', 'You will be notified for leadership episodes.')}>🔔 Notify Me</button>
+                </div>
+              </>
+            )}
+          </div>
+
+          {visibleCount < filteredList.length && (
+            <div className="load-more-wrap">
+              <button className="btn-lm" onClick={() => setVisibleCount(visibleCount + 6)}>↓ Load More Episodes</button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── QUIZ MATCHMAKER ── */}
+      <section className="quiz-sec" id="quizSec">
+        <div style={{ maxWidth: '760px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          {!quizActive && !quizResult && (
+            <div id="qzIntro" style={{ textAlign: 'center' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(234,179,8,.35)', background: 'rgba(234,179,8,.08)', color: '#FEF08A', fontFamily: 'Syne, sans-serif', fontSize: '.65rem', fontWeight: 800, letterSpacing: '.12em', textTransform: 'uppercase', padding: '7px 16px', borderRadius: '30px', marginBottom: '28px' }}>✦ Episode Matchmaker</div>
+              <h2 style={{ fontFamily: 'var(--font-d)', fontSize: 'clamp(2rem,5vw,3.5rem)', fontWeight: 900, color: '#fff', lineHeight: 1.1, marginBottom: '12px' }}>
+                Lost in the Archive?<br />
+                <span style={{ background: 'linear-gradient(135deg,#9333EA,#EC4899,#F97316)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Find Your Episode.</span>
+              </h2>
+              <p style={{ fontSize: '.95rem', color: 'rgba(255,255,255,.45)', margin: '16px auto 0', maxWidth: '380px', lineHeight: 1.75, fontFamily: 'DM Sans, sans-serif' }}>3 questions. Your perfect episode, matched in seconds.</p>
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', margin: '28px 0' }}>
+                <div style={{ background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.1)', borderRadius: '50px', padding: '9px 18px', color: 'rgba(255,255,255,.6)', fontFamily: 'Syne, sans-serif', fontSize: '.7rem', fontWeight: 600, letterSpacing: '.04em' }}>⚡ UNDER 30 SECONDS</div>
+                <div style={{ background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.1)', borderRadius: '50px', padding: '9px 18px', color: 'rgba(255,255,255,.6)', fontFamily: 'Syne, sans-serif', fontSize: '.7rem', fontWeight: 600, letterSpacing: '.04em' }}>🎯 PERSONALISED PICK</div>
+              </div>
+              <button className="btn btn--primary" onClick={startQuiz} style={{ padding: '18px 48px', borderRadius: '60px', textTransform: 'uppercase', margin: '0 auto', display: 'inline-block' }}>Find My Episode →</button>
+            </div>
+          )}
+
+          {quizActive && !quizResult && (
+            <div id="qzActive">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '36px' }} id="qzDots">
+                {[0, 1, 2].map((stepIdx) => (
+                  <div 
+                    key={stepIdx}
+                    style={{
+                      height: '8px',
+                      width: quizStep === stepIdx ? '36px' : '8px',
+                      borderRadius: quizStep === stepIdx ? '4px' : '50%',
+                      background: quizStep === stepIdx ? 'linear-gradient(90deg,#9333EA,#EC4899)' : 'rgba(255,255,255,.2)',
+                      transition: 'all .4s'
+                    }}
+                  ></div>
+                ))}
+              </div>
+              <div style={{ background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)', borderRadius: '24px', overflow: 'hidden' }}>
+                <div style={{ padding: '36px 40px 24px' }}>
+                  <div style={{ fontFamily: 'Syne, sans-serif', fontSize: '.65rem', fontWeight: 800, color: 'rgba(255,255,255,.3)', letterSpacing: '.12em', textTransform: 'uppercase', marginBottom: '12px' }}>Question {quizStep + 1} of 3</div>
+                  <div style={{ fontFamily: 'var(--font-d)', fontSize: 'clamp(1.2rem,2.2vw,1.65rem)', fontWeight: 700, color: '#fff', lineHeight: 1.35, marginBottom: '28px' }}>{quizQuestions[quizStep].q}</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    {quizQuestions[quizStep].opts.map((opt, i) => {
+                      const isSelected = quizAnswers[quizStep] === opt.v;
+                      return (
+                        <button 
+                          key={i}
+                          onClick={() => handleQuizSelect(opt.v)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '14px 16px',
+                            borderRadius: '12px',
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            background: isSelected ? 'linear-gradient(135deg,rgba(124,58,237,.32),rgba(236,72,153,.22))' : 'rgba(255,255,255,.05)',
+                            border: isSelected ? '1.5px solid #EC4899' : '1.5px solid rgba(255,255,255,.1)',
+                            color: isSelected ? '#fff' : 'rgba(255,255,255,.72)',
+                            fontFamily: 'DM Sans, sans-serif',
+                            fontSize: '.87rem',
+                            fontWeight: 500,
+                            transition: 'all .2s',
+                            width: '100%'
+                          }}
+                        >
+                          <span style={{ fontSize: '1.3rem', flexShrink: 0 }}>{opt.i}</span>
+                          <span>{opt.t}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div style={{ padding: '18px 40px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,.06)' }}>
+                  <button onClick={skipQuizStep} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,.3)', fontFamily: 'Syne, sans-serif', fontSize: '.75rem', fontWeight: 700, cursor: 'pointer', letterSpacing: '.04em' }}>Skip →</button>
+                  <button 
+                    onClick={nextQuizStep}
+                    disabled={!quizAnswers[quizStep]}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      background: 'linear-gradient(135deg,#7C3AED,#EC4899)',
+                      color: '#fff',
+                      padding: '12px 28px',
+                      borderRadius: '12px',
+                      fontFamily: 'Syne, sans-serif',
+                      fontWeight: 800,
+                      fontSize: '.75rem',
+                      letterSpacing: '.06em',
+                      textTransform: 'uppercase',
+                      border: 'none',
+                      cursor: 'pointer',
+                      opacity: quizAnswers[quizStep] ? 1 : 0.4,
+                      transition: 'opacity .2s'
+                    }}
+                  >
+                    Next →
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {quizResult && (
+            <div id="qzResult" style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '3.5rem', marginBottom: '14px' }}>{quizResult.icon}</div>
+              <div style={{ fontFamily: 'var(--font-d)', fontSize: 'clamp(1.6rem,4vw,2.5rem)', fontWeight: 900, color: '#fff', marginBottom: '10px', lineHeight: 1.1 }}>{quizResult.title}</div>
+              <div style={{ color: 'rgba(255,255,255,.45)', fontSize: '.9rem', maxWidth: '400px', margin: '0 auto 32px', lineHeight: 1.75, fontFamily: 'DM Sans, sans-serif' }}>{quizResult.desc}</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px', textAlign: 'left' }}>
+                {quizResult.picks.map((ep, idx) => (
+                  <div 
+                    key={idx}
+                    onClick={() => onOpenGuestModal(ep)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '14px',
+                      background: 'rgba(255,255,255,.05)',
+                      border: '1px solid rgba(255,255,255,.08)',
+                      borderRadius: '14px',
+                      padding: '14px 18px',
+                      cursor: 'pointer',
+                      transition: 'all .2s'
+                    }}
+                  >
+                    <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: ep.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Playfair Display, serif', fontSize: '.8rem', fontWeight: 800, color: '#fff', flexShrink: 0 }}>{ep.av}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontFamily: 'Playfair Display, serif', fontSize: '.9rem', fontWeight: 700, color: '#fff', marginBottom: '2px' }}>{ep.name}</div>
+                      <div style={{ fontSize: '.72rem', color: 'rgba(255,255,255,.38)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ep.title}</div>
+                    </div>
+                    <div style={{ color: 'rgba(255,255,255,.3)', fontSize: '.9rem' }}>▶</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <button onClick={restartQuiz} style={{ background: 'rgba(255,255,255,.07)', color: 'rgba(255,255,255,.6)', border: '1.5px solid rgba(255,255,255,.12)', padding: '11px 22px', borderRadius: '12px', fontFamily: 'Syne, sans-serif', fontSize: '.75rem', fontWeight: 700, letterSpacing: '.04em', cursor: 'pointer' }}>↩ Retake</button>
+                <button onClick={() => { restartQuiz(); handleCategorySelect('all'); }} style={{ background: 'linear-gradient(135deg,#7C3AED,#EC4899)', color: '#fff', border: 'none', padding: '11px 22px', borderRadius: '12px', fontFamily: 'Syne, sans-serif', fontSize: '.75rem', fontWeight: 700, letterSpacing: '.04em', cursor: 'pointer' }}>Browse All →</button>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
