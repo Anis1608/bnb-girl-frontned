@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useApp } from '../context/AppContext';
 
 const TESTIMONIALS = [
   {
@@ -24,6 +25,7 @@ const TESTIMONIALS = [
 ];
 
 export default function Stats() {
+  const { stats } = useApp();
   const [tIdx, setTIdx] = useState(0);
   const [fade, setFade] = useState(true);
   const [counts, setCounts] = useState({ episodes: 0, mentors: 0, community: 0, downloads: 0 });
@@ -75,10 +77,27 @@ export default function Stats() {
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [stats]);
+
+  // If stats load after we already scrolled and animated, update counts instantly
+  useEffect(() => {
+    if (animatedRef.current) {
+      setCounts({
+        episodes: stats.episodes || 5,
+        mentors: stats.mentors || 10,
+        community: stats.community || 50,
+        downloads: stats.downloads || 100
+      });
+    }
+  }, [stats]);
 
   const animateAll = () => {
-    const targets = { episodes: 5, mentors: 10, community: 50, downloads: 100 };
+    const targets = {
+      episodes: stats.episodes || 5,
+      mentors: stats.mentors || 10,
+      community: stats.community || 50,
+      downloads: stats.downloads || 100
+    };
     const duration = 1600; // ms
     const startTime = performance.now();
 

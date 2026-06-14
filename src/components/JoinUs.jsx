@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useApp } from '../context/AppContext';
 
 export default function JoinUs({ onShowToast, onNavChange }) {
+  const { submitForm } = useApp();
   // Form input states
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
@@ -80,7 +82,7 @@ export default function JoinUs({ onShowToast, onNavChange }) {
   }, [isSubmitted]);
 
   // Form submission handler
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) {
       if (onShowToast) {
@@ -104,25 +106,26 @@ export default function JoinUs({ onShowToast, onNavChange }) {
       payload.guardian_email = guardianEmail;
     }
 
-    fetch('/wp-json/bbg/v1/community-join', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    })
-      .catch(() => {})
-      .finally(() => {
-        setIsSubmitting(false);
-        setIsSubmitted(true);
-        if (onShowToast) {
-          onShowToast('✨', 'Welcome to the circle!', 'Application sent successfully.');
+    try {
+      await submitForm('community', payload);
+      setIsSubmitted(true);
+      if (onShowToast) {
+        onShowToast('✨', 'Welcome to the circle!', 'Application sent successfully.');
+      }
+    } catch (err) {
+      console.error(err);
+      if (onShowToast) {
+        onShowToast('❌', 'Error', err.message || 'Failed to submit application.');
+      }
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => {
+        const card = document.getElementById('formCard');
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-        setTimeout(() => {
-          const card = document.getElementById('formCard');
-          if (card) {
-            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }, 100);
-      });
+      }, 100);
+    }
   };
 
   const toggleFaq = (index) => {

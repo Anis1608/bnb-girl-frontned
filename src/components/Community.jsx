@@ -1,22 +1,36 @@
 import React, { useState } from 'react';
+import { useApp } from '../context/AppContext';
 
 export default function Community({ onShowToast }) {
+  const { submitForm } = useApp();
   const [emailMain, setEmailMain] = useState('');
   const [emailNL, setEmailNL] = useState('');
   const [nlSubscribed, setNlSubscribed] = useState(false);
 
-  const handleMainJoin = (e) => {
+  const handleMainJoin = async (e) => {
     e.preventDefault();
     if (!emailMain.trim()) return;
-    onShowToast('🎉', 'Welcome!', 'You joined BBG!');
-    setEmailMain('');
+    try {
+      await submitForm('community', { email: emailMain });
+      onShowToast('🎉', 'Welcome!', 'You joined BBG!');
+      setEmailMain('');
+    } catch (err) {
+      console.error(err);
+      onShowToast('❌', 'Error', err.message || 'Failed to join community.');
+    }
   };
 
-  const handleNLSubmit = (e) => {
+  const handleNLSubmit = async (e) => {
     e.preventDefault();
     if (!emailNL.trim()) return;
-    setNlSubscribed(true);
-    setEmailNL('');
+    try {
+      await submitForm('community', { email: emailNL });
+      setNlSubscribed(true);
+      setEmailNL('');
+    } catch (err) {
+      console.error(err);
+      onShowToast('❌', 'Error', err.message || 'Subscription failed.');
+    }
   };
 
   return (

@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { useApp } from '../context/AppContext';
 
 // Data from resources.html
 const FIELDS = [
@@ -103,32 +104,44 @@ const FIELD_COLORS = {
   creative: '#F97316', finance: '#0284C7', health: '#10B981', education: '#9333EA',
 };
 
-// Flatten all resources with field info for quick search
-const ALL_RESOURCES = [];
-FIELDS.forEach(f => {
-  f.resources.forEach((r, i) => {
-    ALL_RESOURCES.push({
-      ...r,
-      field: f.id,
-      fieldName: f.name,
-      fieldEmoji: f.emoji,
-      fieldColor: FIELD_COLORS[f.id] || '#9333EA',
-      uid: `${f.id}_${i}`
-    });
-  });
-});
-
 export default function ResourcesPage({ onNavChange, onShowToast }) {
+  const { resources: dbFields, loading, submitForm } = useApp();
+  const fields = dbFields.length > 0 ? dbFields : FIELDS;
+
   const [activeType, setActiveType] = useState('all');
   const [activeField, setActiveField] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchSuggestionsOpen, setSearchSuggestionsOpen] = useState(false);
-  const [subfieldFilters, setSubfieldFilters] = useState(
-    FIELDS.reduce((acc, curr) => {
-      acc[curr.id] = 'All';
-      return acc;
-    }, {})
-  );
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [subfieldFilters, setSubfieldFilters] = useState({});
+
+  // Reset or initialize subfieldFilters when fields change
+  useEffect(() => {
+    setSubfieldFilters(
+      fields.reduce((acc, curr) => {
+        acc[curr.id] = 'All';
+        return acc;
+      }, {})
+    );
+  }, [fields]);
+
+  // Flatten all resources with field info for quick search
+  const ALL_RESOURCES = useMemo(() => {
+    const list = [];
+    fields.forEach(f => {
+      f.resources.forEach((r, i) => {
+        list.push({
+          ...r,
+          field: f.id,
+          fieldName: f.name,
+          fieldEmoji: f.emoji,
+          fieldColor: f.color || '#9333EA',
+          uid: `${f.id}_${i}`
+        });
+      });
+    });
+    return list;
+  }, [fields]);
 
   const searchWrapRef = useRef(null);
 
@@ -154,10 +167,20 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
     }
   };
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    if (onShowToast) {
-      onShowToast('✉️', 'Subscribed!', 'Welcome to the BBG Resource newsletter!');
+    if (!newsletterEmail.trim()) return;
+    try {
+      await submitForm('community', { email: newsletterEmail });
+      if (onShowToast) {
+        onShowToast('✉️', 'Subscribed!', 'Welcome to the BBG Resource newsletter!');
+      }
+      setNewsletterEmail('');
+    } catch (err) {
+      console.error(err);
+      if (onShowToast) {
+        onShowToast('❌', 'Error', err.message || 'Subscription failed.');
+      }
     }
   };
 
@@ -174,7 +197,7 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
     setSearchQuery('');
     setSearchSuggestionsOpen(false);
     setSubfieldFilters(
-      FIELDS.reduce((acc, curr) => {
+      fields.reduce((acc, curr) => {
         acc[curr.id] = 'All';
         return acc;
       }, {})
@@ -233,7 +256,7 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
 
   // Calculate total visible items
   let totalVisible = 0;
-  FIELDS.forEach(f => {
+  fields.forEach(f => {
     if (activeField === 'all' || activeField === f.id) {
       f.resources.forEach(r => {
         if (matchesFilters(r, f.id, f.name)) {
@@ -838,7 +861,7 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
           }
         `}</style>
         <div className="resources-section">
-          {FIELDS.map((f) => {
+          {fields.map((f) => {
             const showField = activeField === 'all' || activeField === f.id;
 
             // Filter resources of this category
@@ -1034,7 +1057,14 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
           <h2 className="newsletter__h2">New Resources,<br />Every Week</h2>
           <p className="newsletter__sub">Get notified the moment we drop a new PDF, guide, or template — straight to your inbox.</p>
           <form className="newsletter__form" onSubmit={handleSubscribe}>
-            <input type="email" className="newsletter__input" placeholder="your@email.com" required />
+            <input
+              type="email"
+              className="newsletter__input"
+              placeholder="your@email.com"
+              value={newsletterEmail}
+              onChange={(e) => setNewsletterEmail(e.target.value)}
+              required
+            />
             <button type="submit" className="newsletter__btn">Subscribe Free</button>
           </form>
           <div className="newsletter__perks">

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useApp } from '../context/AppContext';
 
 const CHIPS = [
   { label: 'STEM', emoji: '🔬' },
@@ -10,6 +11,7 @@ const CHIPS = [
 ];
 
 export default function Ask({ onShowToast }) {
+  const { submitForm } = useApp();
   const [mode, setMode] = useState('Q'); // 'Q' (Ask) or 'G' (Suggest)
   const [isSubscribed, setIsSubscribed] = useState(false);
 
@@ -31,13 +33,23 @@ export default function Ask({ onShowToast }) {
     onShowToast('📺', 'Subscribed!', 'Now suggest a guest!');
   };
 
-  const handleAskSubmit = () => {
+  const handleAskSubmit = async () => {
     if (!askQ.trim()) {
       onShowToast('❌', 'Error', 'Please enter your question.');
       return;
     }
-    setAskSuccess(true);
-    onShowToast('✨', 'Question Sent!', 'Thank you!');
+    try {
+      await submitForm('ask_guest', {
+        name: askName,
+        email: askEmail,
+        question: askQ
+      });
+      setAskSuccess(true);
+      onShowToast('✨', 'Question Sent!', 'Thank you!');
+    } catch (err) {
+      console.error(err);
+      onShowToast('❌', 'Error', err.message || 'Failed to submit question.');
+    }
   };
 
   const handleAskReset = () => {
@@ -47,13 +59,24 @@ export default function Ask({ onShowToast }) {
     setAskSuccess(false);
   };
 
-  const handleSuggestSubmit = () => {
+  const handleSuggestSubmit = async () => {
     if (!suggestQ.trim()) {
       onShowToast('❌', 'Error', 'Please describe the guest you want.');
       return;
     }
-    setSuggestSuccess(true);
-    onShowToast('⭐', 'Suggestion Sent!', 'We love your pick!');
+    try {
+      await submitForm('suggest_guest', {
+        name: suggestName,
+        email: suggestEmail,
+        suggestion: suggestQ,
+        field: selectedChip
+      });
+      setSuggestSuccess(true);
+      onShowToast('⭐', 'Suggestion Sent!', 'We love your pick!');
+    } catch (err) {
+      console.error(err);
+      onShowToast('❌', 'Error', err.message || 'Failed to submit suggestion.');
+    }
   };
 
   const handleSuggestReset = () => {

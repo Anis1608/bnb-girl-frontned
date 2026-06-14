@@ -1,4 +1,5 @@
 import React from 'react';
+import { useApp } from '../context/AppContext';
 
 export const EP = [
   { id: 1, n: '01', title: "Relearning the ABCs of Girls' Education", guest: 'Dr. Sheen Gurrib', role: 'Podcaster & Entrepreneur', cat: 'Education', dur: '18 min', isNew: true, thumb: 'https://img.youtube.com/vi/yl-mqB1_1co/mqdefault.jpg', photo: 'https://placehold.co/64x64/9333EA/fff?text=SG', prog: 35, yt: 'yl-mqB1_1co', tags: ['education', 'girls', 'women', 'stem', 'oxford'] },
@@ -9,6 +10,18 @@ export const EP = [
 ];
 
 export default function Episodes({ onOpenGuestModal, onOpenAudioPlayer, onShowToast }) {
+  const { featuredEpisodes, loading } = useApp();
+
+  if (loading) {
+    return (
+      <section className="episodes-section" id="episodes">
+        <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--grey-muted)' }}>
+          Loading episodes...
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="episodes-section" id="episodes">
       <div className="episodes-section__top reveal visible">
@@ -23,9 +36,9 @@ export default function Episodes({ onOpenGuestModal, onOpenAudioPlayer, onShowTo
         <a href="#episodes">Browse All →</a>
       </div>
       <div className="episodes-grid" id="episodesGrid">
-        {EP.slice(0, 4).map((e, idx) => (
+        {featuredEpisodes.slice(0, 4).map((e) => (
           <div key={e.id} className="episode-card reveal visible">
-            <div className="episode-card__thumb" onClick={() => onOpenGuestModal(idx)}>
+            <div className="episode-card__thumb" onClick={() => onOpenGuestModal(e)}>
               <img src={e.thumb} alt={e.title} loading="lazy" />
               <div className="episode-card__play-overlay">
                 <div className="episode-card__play-btn">
@@ -57,13 +70,13 @@ export default function Episodes({ onOpenGuestModal, onOpenAudioPlayer, onShowTo
               <div className="episode-card__actions">
                 <button
                   className="ep-btn ep-btn--watch"
-                  onClick={() => onOpenGuestModal(idx)}
+                  onClick={() => onOpenGuestModal(e)}
                 >
                   ▶ Watch
                 </button>
                 <button
                   className="ep-btn ep-btn--audio"
-                  onClick={() => onOpenAudioPlayer(idx)}
+                  onClick={() => onOpenAudioPlayer(e)}
                 >
                   🎧
                 </button>

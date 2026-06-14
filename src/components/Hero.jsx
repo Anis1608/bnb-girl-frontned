@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useApp } from '../context/AppContext';
 
 const TOPICS = [
   { e: '💻', l: 'Technology' },
@@ -16,6 +17,7 @@ const TOPICS = [
 ];
 
 export default function Hero({ onWatchNow }) {
+  const { stats } = useApp();
   // Sparkle configuration
   const sparkles = [
     { top: '12%', left: '16%', delay: '0s' },
@@ -31,16 +33,22 @@ export default function Hero({ onWatchNow }) {
   const [communityCount, setCommunityCount] = useState(0);
 
   useEffect(() => {
-    // Animate counters on load
+    // Animate counters on load / stats fetch
+    const targets = {
+      episodes: stats.episodes || 8,
+      mentors: stats.mentors || 10,
+      community: stats.community || 100
+    };
+    
     const duration = 1600;
     const start = performance.now();
 
     const animate = (now) => {
       const p = Math.min((now - start) / duration, 1);
       const easeVal = 1 - Math.pow(1 - p, 3); // cubic ease out
-      setEpisodesCount(Math.floor(8 * easeVal));
-      setMentorsCount(Math.floor(10 * easeVal));
-      setCommunityCount(Math.floor(100 * easeVal));
+      setEpisodesCount(Math.floor(targets.episodes * easeVal));
+      setMentorsCount(Math.floor(targets.mentors * easeVal));
+      setCommunityCount(Math.floor(targets.community * easeVal));
 
       if (p < 1) {
         requestAnimationFrame(animate);
@@ -48,7 +56,7 @@ export default function Hero({ onWatchNow }) {
     };
 
     requestAnimationFrame(animate);
-  }, []);
+  }, [stats]);
 
   // Calculate coordinates for Desktop Circular Orbit
   const R = 200; // Radius

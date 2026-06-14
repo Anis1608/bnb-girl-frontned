@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useApp } from '../context/AppContext';
 
 // Unified episodes dataset from episode.html
 export const EPS = {
@@ -405,6 +406,7 @@ const SUBTOPIC_MAP = {
 };
 
 export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onShowToast }) {
+  const { episodes: dbEpisodes, categories: dbCategories, loading } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSubtopic, setSelectedSubtopic] = useState('All');
@@ -482,28 +484,42 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
     setSearchQuery('');
   };
 
+  // Derive subtopics dynamically from the episodes database matching the active category
+  const getSubtopics = () => {
+    if (selectedCategory === 'all') return [];
+    if (dbEpisodes.length > 0) {
+      const catEps = dbEpisodes.filter(ep => ep.category_slug === selectedCategory);
+      const subs = [...new Set(catEps.map(ep => ep.subcategory_name).filter(Boolean))];
+      return ['All', ...subs];
+    }
+    return SUBTOPICS[selectedCategory] || [];
+  };
+
+  const activeSubtopics = getSubtopics();
+
   // Filter & sort database items
   const getFilteredEpisodes = () => {
-    let list = Object.values(EPS);
+    let list = dbEpisodes.length > 0 ? dbEpisodes : Object.values(EPS);
 
     // Filter by Category
     if (selectedCategory !== 'all') {
-      list = list.filter(ep => ep.cat === selectedCategory);
+      list = list.filter(ep => ep.category_slug === selectedCategory || ep.catSlug === selectedCategory || ep.cat === selectedCategory);
     }
 
     // Filter by Subtopic
     if (selectedSubtopic !== 'All') {
-      list = list.filter(ep => ep.subtopic === selectedSubtopic);
+      list = list.filter(ep => ep.subcategory_name === selectedSubtopic || ep.subtopic === selectedSubtopic);
     }
 
     // Filter by Search Query
     if (searchQuery.trim().length > 0) {
       const q = searchQuery.toLowerCase();
       list = list.filter(ep => 
-        ep.title.toLowerCase().includes(q) || 
-        ep.name.toLowerCase().includes(q) || 
-        ep.role.toLowerCase().includes(q) || 
-        ep.tags.some(t => t.toLowerCase().includes(q))
+        (ep.title && ep.title.toLowerCase().includes(q)) || 
+        (ep.guest && ep.guest.toLowerCase().includes(q)) || 
+        (ep.name && ep.name.toLowerCase().includes(q)) || 
+        (ep.role && ep.role.toLowerCase().includes(q)) || 
+        (ep.tags && ep.tags.some(t => t.toLowerCase().includes(q)))
       );
     }
 
@@ -511,9 +527,13 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
     if (sortOrder === 'newest') {
       // Keep defined order (which is newest first)
     } else if (sortOrder === 'popular') {
-      list = [...list].sort((a, b) => b.popularity - a.popularity);
+      list = [...list].sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
     } else if (sortOrder === 'az') {
-      list = [...list].sort((a, b) => a.name.localeCompare(b.name));
+      list = [...list].sort((a, b) => {
+        const nameA = a.name || a.guest || '';
+        const nameB = b.name || b.guest || '';
+        return nameA.localeCompare(nameB);
+      });
     }
 
     return list;
@@ -521,6 +541,14 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
 
   const filteredList = getFilteredEpisodes();
   const displayedList = filteredList.slice(0, visibleCount);
+
+  const latestEpisode = dbEpisodes.length > 0 ? dbEpisodes[0] : EPS.maha;
+  const featuredEpisode = dbEpisodes.length > 0 ? (dbEpisodes.find(ep => ep.is_featured) || dbEpisodes[0]) : EPS.maha;
+
+  const getInitials = (name) => {
+    if (!name) return 'B';
+    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  };
 
   // Matchmaker Quiz logic
   const quizQuestions = [
@@ -646,7 +674,12 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
       icon: il[f] || '🎯',
       title: `Perfect for ${ll[f] || 'You'}`,
       desc: "Based on your answers, these episodes are made for exactly where you are right now.",
-      picks: picks.map(k => EPS[k]).filter(Boolean)
+      picks: picks.map(k => {
+        if (dbEpisodes.length > 0) {
+          return dbEpisodes.find(ep => ep.id === k || ep.category_slug === k || ep.n === k || (ep.guest && ep.guest.toLowerCase().includes(k.toLowerCase())) || ep.title.toLowerCase().includes(k.toLowerCase()));
+        }
+        return EPS[k];
+      }).filter(Boolean)
     });
   };
 
@@ -791,9 +824,9 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
         {/* Latest episode strip */}
         <div className="hero-latest">
           <div className="hero-latest-badge">▶ Latest Episode</div>
-          <div className="hero-latest-title">{EPS.maha.title}</div>
-          <div className="hero-latest-guest">{EPS.maha.name} · EP.52</div>
-          <div className="hero-latest-play" onClick={() => onOpenGuestModal(EPS.maha)}>
+          <div className="hero-latest-title">{latestEpisode.title}</div>
+          <div className="hero-latest-guest">{(latestEpisode.name || latestEpisode.guest)} · EP.{latestEpisode.epNum || latestEpisode.n}</div>
+          <div className="hero-latest-play" onClick={() => onOpenGuestModal(latestEpisode)}>
             <div className="hero-latest-play-tri"></div>
           </div>
         </div>
@@ -830,19 +863,33 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
           <div className="pill-wrap">
             <div className="pill-row" id="pillRow">
               <button className={`pill ${selectedCategory === 'all' ? 'active' : ''}`} onClick={() => handleCategorySelect('all')}>All Episodes</button>
-              <button className={`pill ${selectedCategory === 'tech' ? 'active' : ''}`} onClick={() => handleCategorySelect('tech')}>⚡ Tech &amp; STEM</button>
-              <button className={`pill ${selectedCategory === 'business' ? 'active' : ''}`} onClick={() => handleCategorySelect('business')}>💼 Business</button>
-              <button className={`pill ${selectedCategory === 'health' ? 'active' : ''}`} onClick={() => handleCategorySelect('health')}>❤️ Health</button>
-              <button className={`pill ${selectedCategory === 'arts' ? 'active' : ''}`} onClick={() => handleCategorySelect('arts')}>🎨 Arts &amp; Media</button>
-              <button className={`pill ${selectedCategory === 'leadership' ? 'active' : ''}`} onClick={() => handleCategorySelect('leadership')}>🌟 Leadership</button>
-              <button className={`pill ${selectedCategory === 'finance' ? 'active' : ''}`} onClick={() => handleCategorySelect('finance')}>💰 Finance</button>
-              <button className={`pill ${selectedCategory === 'law' ? 'active' : ''}`} onClick={() => handleCategorySelect('law')}>⚖️ Law</button>
-              <button className={`pill ${selectedCategory === 'social' ? 'active' : ''}`} onClick={() => handleCategorySelect('social')}>🌍 Social</button>
+              {dbCategories.length > 0 ? (
+                dbCategories.map(cat => (
+                  <button 
+                    key={cat._id}
+                    className={`pill ${selectedCategory === cat.slug ? 'active' : ''}`}
+                    onClick={() => handleCategorySelect(cat.slug)}
+                  >
+                    {cat.icon} {cat.name}
+                  </button>
+                ))
+              ) : (
+                <>
+                  <button className={`pill ${selectedCategory === 'tech' ? 'active' : ''}`} onClick={() => handleCategorySelect('tech')}>⚡ Tech &amp; STEM</button>
+                  <button className={`pill ${selectedCategory === 'business' ? 'active' : ''}`} onClick={() => handleCategorySelect('business')}>💼 Business</button>
+                  <button className={`pill ${selectedCategory === 'health' ? 'active' : ''}`} onClick={() => handleCategorySelect('health')}>❤️ Health</button>
+                  <button className={`pill ${selectedCategory === 'arts' ? 'active' : ''}`} onClick={() => handleCategorySelect('arts')}>🎨 Arts &amp; Media</button>
+                  <button className={`pill ${selectedCategory === 'leadership' ? 'active' : ''}`} onClick={() => handleCategorySelect('leadership')}>🌟 Leadership</button>
+                  <button className={`pill ${selectedCategory === 'finance' ? 'active' : ''}`} onClick={() => handleCategorySelect('finance')}>💰 Finance</button>
+                  <button className={`pill ${selectedCategory === 'law' ? 'active' : ''}`} onClick={() => handleCategorySelect('law')}>⚖️ Law</button>
+                  <button className={`pill ${selectedCategory === 'social' ? 'active' : ''}`} onClick={() => handleCategorySelect('social')}>🌍 Social</button>
+                </>
+              )}
             </div>
             
             {/* Subtopic pills */}
             <div className={`sub-pill-row ${selectedCategory !== 'all' ? 'visible' : ''}`}>
-              {selectedCategory !== 'all' && SUBTOPICS[selectedCategory] && SUBTOPICS[selectedCategory].map((sub, i) => (
+              {selectedCategory !== 'all' && activeSubtopics.map((sub, i) => (
                 <button 
                   key={i}
                   className={`sub-pill ${selectedSubtopic === sub ? 'active' : ''}`}
@@ -862,39 +909,39 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
         <div className="featured-inner">
           <div className="sec-label">⭐ Featured This Week</div>
           <div className="featured-grid fade-up visible">
-            <div className="vid-frame" onClick={() => onOpenGuestModal(EPS.maha)}>
-              <img className="vid-thumb" src="https://i.ytimg.com/vi/wFqMkA-BYIU/hqdefault.jpg" alt="Maha Abouelenein" />
+            <div className="vid-frame" onClick={() => onOpenGuestModal(featuredEpisode)}>
+              <img className="vid-thumb" src={featuredEpisode.thumb || `https://i.ytimg.com/vi/${featuredEpisode.yt || featuredEpisode.ytId}/hqdefault.jpg`} alt={featuredEpisode.guest || featuredEpisode.name} />
               <div className="vid-overlay"></div>
               <div className="play-btn">
                 <div className="play-tri"></div>
               </div>
-              <div className="ep-tag">▶ EP.52 · 48 MIN</div>
-              <div className="new-badge">NEW</div>
+              <div className="ep-tag">▶ EP.{featuredEpisode.epNum || featuredEpisode.n} · {featuredEpisode.dur}</div>
+              {featuredEpisode.isNew && <div className="new-badge">NEW</div>}
             </div>
             <div className="feat-details">
-              <div className="feat-ep-num">EP. 52 · March 2026 · Leadership &amp; Business</div>
-              <h2 className="feat-title">{EPS.maha.title}</h2>
+              <div className="feat-ep-num">EP. {featuredEpisode.epNum || featuredEpisode.n} · {featuredEpisode.category_name || featuredEpisode.cat}</div>
+              <h2 className="feat-title">{featuredEpisode.title}</h2>
               <div className="guest-row" style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '14px 0' }}>
-                <div className="g-avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', background: EPS.maha.grad, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-d)', fontWeight: 800, fontSize: '.9rem' }}>{EPS.maha.av}</div>
+                <div className="g-avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', background: featuredEpisode.grad || 'linear-gradient(135deg,#6B21A8,#EC4899)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-d)', fontWeight: 800, fontSize: '.9rem' }}>{featuredEpisode.av || getInitials(featuredEpisode.name || featuredEpisode.guest)}</div>
                 <div>
-                  <div className="g-name" style={{ fontWeight: 700, fontSize: '.95rem' }}>{EPS.maha.name}</div>
-                  <div className="g-role" style={{ fontSize: '.76rem', color: 'var(--grey-text)' }}>{EPS.maha.role}</div>
+                  <div className="g-name" style={{ fontWeight: 700, fontSize: '.95rem' }}>{featuredEpisode.name || featuredEpisode.guest}</div>
+                  <div className="g-role" style={{ fontSize: '.76rem', color: 'var(--grey-text)' }}>{featuredEpisode.role}</div>
                 </div>
               </div>
               <div style={{ marginBottom: '14px' }}>
-                <span className="ind-pill" style={{ display: 'inline-block', background: 'rgba(147,51,234,.08)', color: 'var(--purple-deep)', padding: '4px 10px', borderRadius: '20px', fontSize: '.7rem', fontWeight: 600, marginRight: '6px' }}>Leadership</span>
-                <span className="ind-pill" style={{ display: 'inline-block', background: 'rgba(147,51,234,.08)', color: 'var(--purple-deep)', padding: '4px 10px', borderRadius: '20px', fontSize: '.7rem', fontWeight: 600, marginRight: '6px' }}>Business</span>
-                <span className="ind-pill" style={{ display: 'inline-block', background: 'rgba(147,51,234,.08)', color: 'var(--purple-deep)', padding: '4px 10px', borderRadius: '20px', fontSize: '.7rem', fontWeight: 600 }}>Personal Growth</span>
+                {featuredEpisode.tags && featuredEpisode.tags.slice(0, 3).map((tag, i) => (
+                  <span key={i} className="ind-pill" style={{ display: 'inline-block', background: 'rgba(147,51,234,.08)', color: 'var(--purple-deep)', padding: '4px 10px', borderRadius: '20px', fontSize: '.7rem', fontWeight: 600, marginRight: '6px', textTransform: 'capitalize' }}>{tag}</span>
+                ))}
               </div>
-              <p className="feat-desc" style={{ fontSize: '.88rem', color: 'var(--grey-text)', lineHeight: 1.6, marginBottom: '20px' }}>{EPS.maha.highlights}</p>
+              <p className="feat-desc" style={{ fontSize: '.88rem', color: 'var(--grey-text)', lineHeight: 1.6, marginBottom: '20px' }}>{featuredEpisode.highlights || featuredEpisode.bio}</p>
               <div className="feat-actions" style={{ display: 'flex', gap: '10px' }}>
-                <button className="btn-p" onClick={() => onOpenGuestModal(EPS.maha)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--bk)', color: '#fff', padding: '12px 24px', borderRadius: '12px', fontSize: '.78rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', textTransform: 'uppercase', cursor: 'pointer' }}>
+                <button className="btn-p" onClick={() => onOpenGuestModal(featuredEpisode)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--bk)', color: '#fff', padding: '12px 24px', borderRadius: '12px', fontSize: '.78rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', textTransform: 'uppercase', cursor: 'pointer' }}>
                   <svg width="12" height="12" fill="white" viewBox="0 0 24 24">
                     <polygon points="5 3 19 12 5 21" />
                   </svg>
                   Watch &amp; Listen
                 </button>
-                <button className="btn-audio" onClick={() => onOpenAudioPlayer(EPS.maha)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', border: '1.5px solid rgba(0,0,0,.15)', background: '#fff', color: 'var(--bk)', padding: '12px 24px', borderRadius: '12px', fontSize: '.78rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', textTransform: 'uppercase', cursor: 'pointer' }}>
+                <button className="btn-audio" onClick={() => onOpenAudioPlayer(featuredEpisode)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', border: '1.5px solid rgba(0,0,0,.15)', background: '#fff', color: 'var(--bk)', padding: '12px 24px', borderRadius: '12px', fontSize: '.78rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', textTransform: 'uppercase', cursor: 'pointer' }}>
                   <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                     <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
                     <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>

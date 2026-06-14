@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useApp } from '../context/AppContext';
 
 // Questions array definitions
 const QS = [
@@ -232,6 +233,7 @@ const CAREERS = {
 };
 
 export default function FindYourPath({ onShowToast, onNavChange }) {
+  const { submitForm } = useApp();
   const containerRef = useRef(null);
 
   // Layout View State: 'landing' | 'quiz' | 'gate' | 'results'
@@ -324,7 +326,7 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
   };
 
   // Scoring algorithm
-  const handleComputeResults = () => {
+  const handleComputeResults = async () => {
     const sc = {};
     const ckeys = Object.keys(CAREERS);
     ckeys.forEach(k => { sc[k] = 0; });
@@ -435,6 +437,22 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
     // Rank paths
     const sorted = ckeys.sort((x, y) => sc[y] - sc[x]);
     setRankedResults(sorted);
+
+    // Submit results to backend
+    const payload = {
+      firstName,
+      lastName,
+      email,
+      mobile,
+      stage,
+      answers,
+      results: sorted
+    };
+    try {
+      await submitForm('quiz', payload);
+    } catch (err) {
+      console.error('Quiz submission error:', err);
+    }
 
     // Navigate to subscribe lock gate
     setView('gate');
