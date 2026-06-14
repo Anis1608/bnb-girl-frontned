@@ -50,22 +50,36 @@ export default function App() {
 
   // URL routing transitions
   const handleNavChange = (nav) => {
-    switch (nav) {
-      case 'about': navigate('/about-us'); break;
-      case 'episodes': navigate('/episodes'); break;
-      case 'resources': navigate('/resources'); break;
-      case 'joinus': navigate('/join-us'); break;
-      case 'quiz': navigate('/find-your-path'); break;
-      case 'home': navigate('/'); break;
-      case 'mentorship':
+    const targetPathMap = {
+      about: '/about-us',
+      episodes: '/episodes',
+      resources: '/resources',
+      joinus: '/join-us',
+      quiz: '/find-your-path',
+      home: '/'
+    };
+    
+    if (nav === 'mentorship') {
+      if (location.pathname === '/' && !location.hash) {
+        const element = document.getElementById('mentorship');
+        if (element) element.scrollIntoView({ behavior: 'smooth' });
+      } else {
         navigate('/#mentorship');
-        break;
-      default:
-        navigate('/');
+      }
+      return;
+    }
+    
+    const targetPath = targetPathMap[nav];
+    if (targetPath) {
+      if (location.pathname === targetPath) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        navigate(targetPath);
+      }
     }
   };
 
-  // Handle hash scrolls (e.g. #mentorship) when route/hash changes
+  // Handle scroll reset and hash scrolls when route/hash changes
   useEffect(() => {
     if (location.hash) {
       const timer = setTimeout(() => {
@@ -76,10 +90,10 @@ export default function App() {
         }
       }, 150);
       return () => clearTimeout(timer);
-    } else if (activeNav === 'home') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo(0, 0);
     }
-  }, [location.pathname, location.hash, activeNav]);
+  }, [location.pathname, location.hash]);
 
   const [activeGuestModal, setActiveGuestModal] = useState(null); // EP index
   const [activeVideoModal, setActiveVideoModal] = useState(null); // YT videoId
