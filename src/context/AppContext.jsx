@@ -29,6 +29,9 @@ export default function AppContextProvider({ children }) {
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cms, setCms] = useState(() => {
+    if (window.__CMS_DATA__) {
+      return window.__CMS_DATA__;
+    }
     try {
       const cached = localStorage.getItem('bbg_cms');
       return cached ? JSON.parse(cached) : {};
@@ -99,9 +102,15 @@ export default function AppContextProvider({ children }) {
     setLoading(true);
     try {
       // 0. Fetch CMS
-      const cmsRes = await fetch(`${API_BASE}/api/cms`);
-      if (cmsRes.ok) {
-        const cmsData = await cmsRes.json();
+      let cmsData = window.__CMS_DATA__;
+      if (!cmsData) {
+        const cmsRes = await fetch(`${API_BASE}/api/cms`);
+        if (cmsRes.ok) {
+          cmsData = await cmsRes.json();
+          window.__CMS_DATA__ = cmsData;
+        }
+      }
+      if (cmsData) {
         setCms(cmsData);
         try {
           localStorage.setItem('bbg_cms', JSON.stringify(cmsData));
@@ -209,6 +218,14 @@ export default function AppContextProvider({ children }) {
     }
     return data;
   };
+
+  useEffect(() => {
+    const handleCmsLoaded = (e) => {
+      setCms(e.detail);
+    };
+    window.addEventListener('cms-loaded', handleCmsLoaded);
+    return () => window.removeEventListener('cms-loaded', handleCmsLoaded);
+  }, []);
 
   useEffect(() => {
     loadData();

@@ -3,6 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Prefetch CMS content to eliminate flicker -->
+    <script>
+      (function() {
+        window.__CMS_DATA__ = null;
+        fetch('https://bnb-girl-backend.onrender.com/api/cms')
+          .then(function(r) { return r.json(); })
+          .then(function(d) {
+            window.__CMS_DATA__ = d;
+            try {
+              localStorage.setItem('bbg_cms', JSON.stringify(d));
+            } catch (e) {}
+            window.dispatchEvent(new CustomEvent('cms-loaded', { detail: d }));
+          })
+          .catch(function(e) { console.error('CMS prefetch error:', e); });
+      })();
+    </script>
     <meta name="robots" content="max-image-preview:large" />
     <title>bnbgirl.com</title>
 
