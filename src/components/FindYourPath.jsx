@@ -442,11 +442,14 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
     const payload = {
       firstName,
       lastName,
+      name: `${firstName} ${lastName}`.trim(),
       email,
       mobile,
       stage,
       answers,
-      results: sorted
+      results: sorted,
+      result: CAREERS[sorted[0]]?.name || '',
+      match_pct: CAREERS[sorted[0]] ? `${CAREERS[sorted[0]].match}%` : ''
     };
     try {
       await submitForm('quiz', payload);
@@ -661,7 +664,7 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
           min-height: 100vh;
           display: flex;
           align-items: center;
-          padding: 120px 20px 80px;
+          padding: 200px 20px 80px;
           position: relative;
           overflow: hidden;
         }
@@ -945,7 +948,7 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
         /* ──────────── QUIZ ──────────── */
         .findpath-page-container .quiz-page {
           min-height: 100vh;
-          padding: 110px 0 160px;
+          padding: 85px 0 160px;
         }
 
         .findpath-page-container .quiz-wrap {
@@ -1011,7 +1014,7 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
           background: rgba(255, 255, 255, .045);
           border: 1px solid rgba(255, 255, 255, .1);
           border-radius: 18px;
-          padding: 26px 24px;
+          padding: 16px 24px 26px;
           position: relative;
           margin-bottom: 14px;
           animation: fadeUp .4s ease both;
@@ -1306,7 +1309,7 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 120px 20px 80px;
+          padding: 195px 20px 80px;
         }
 
         .findpath-page-container .gate-card {
@@ -1491,7 +1494,7 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
         /* ──────────── RESULTS ──────────── */
         .findpath-page-container .res-page {
           min-height: 100vh;
-          padding: 120px 20px 80px;
+          padding: 195px 20px 80px;
         }
 
         .findpath-page-container .res-wrap {
@@ -1973,7 +1976,7 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
         /* ──────────── RESPONSIVE ──────────── */
         @media (max-width: 860px) {
           .findpath-page-container .landing {
-            padding: 100px 16px 60px;
+            padding: 170px 16px 60px;
           }
           .findpath-page-container .landing-inner {
             grid-template-columns: 1fr;
@@ -1992,23 +1995,27 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
           .findpath-page-container .hero-chips {
             justify-content: center;
           }
+          .findpath-page-container .quiz-nav-sticky {
+            bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+            padding-bottom: 12px;
+          }
         }
 
         @media (max-width: 600px) {
           .findpath-page-container .landing {
-            padding: 90px 14px 48px;
+            padding: 150px 14px 48px;
           }
           .findpath-page-container .hero-h1 {
             font-size: 2rem;
           }
           .findpath-page-container .quiz-page {
-            padding: 90px 0 140px;
+            padding: 85px 0 140px;
           }
           .findpath-page-container .quiz-wrap {
             padding: 0px 14px 20px;
           }
           .findpath-page-container .q-card {
-            padding: 20px 16px 18px;
+            padding: 12px 16px 18px;
             border-radius: 14px;
           }
           .findpath-page-container .q-text {
@@ -2039,7 +2046,7 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
           /* Nav mobile tweaks */
           .findpath-page-container .quiz-nav-sticky {
             padding: 10px 14px;
-            padding-bottom: max(14px, env(safe-area-inset-bottom));
+            padding-bottom: 10px;
           }
           .findpath-page-container #navBack {
             padding: 13px 18px;
@@ -2055,7 +2062,7 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
             height: 2px;
           }
           .findpath-page-container .res-page {
-            padding: 90px 14px 60px;
+            padding: 150px 14px 60px;
           }
           .findpath-page-container .str-grid {
             grid-template-columns: repeat(3, 1fr);
@@ -2084,7 +2091,7 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
             grid-template-columns: 1fr 1fr;
           }
           .findpath-page-container .gate-page {
-            padding: 90px 14px 60px;
+            padding: 150px 14px 60px;
           }
           .findpath-page-container .gate-card {
             padding: 32px 20px;
@@ -2231,7 +2238,7 @@ export default function FindYourPath({ onShowToast, onNavChange }) {
 
             <div className="q-card">
               <div className="q-cat">{currentQuestionObj.cat}</div>
-              <div className="q-num">Question {currentQuestionObj.n} of 18</div>
+              {/* <div className="q-num">Question {currentQuestionObj.n} of 18</div> */}
               <div className="q-text">{currentQuestionObj.q}</div>
               {currentQuestionObj.hint ? (
                 <div className="q-hint">{currentQuestionObj.hint}</div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 export default function Footer() {
@@ -50,19 +51,19 @@ export default function Footer() {
           <div>
             <div className="bbgf-legal-title">Legal</div>
              <div className="bbgf-legal-links">
-              <a href={cms.cms_footer_privacy_link || "https://bnbgirl.com/privacy-policy/"} target="_blank" rel="noopener noreferrer">
+              <Link to="/privacy-policy">
                 <svg viewBox="0 0 24 24">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
                 Privacy Policy
-              </a>
-              <a href={cms.cms_footer_terms_link || "https://bnbgirl.com/terms-of-service/"} target="_blank" rel="noopener noreferrer">
+              </Link>
+              <Link to="/terms-of-service">
                 <svg viewBox="0 0 24 24">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                   <polyline points="14 2 14 8 20 8" />
                 </svg>
                 Terms of Service
-              </a>
+              </Link>
             </div>
           </div>
         </div>

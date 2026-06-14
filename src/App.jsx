@@ -22,6 +22,8 @@ import EpisodesPage from './components/EpisodesPage';
 import ResourcesPage from './components/ResourcesPage';
 import JoinUs from './components/JoinUs';
 import FindYourPath from './components/FindYourPath';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfService from './components/TermsOfService';
 import './App.css';
 
 
@@ -39,6 +41,8 @@ export default function App() {
       case '/resources': return 'resources';
       case '/join-us': return 'joinus';
       case '/find-your-path': return 'quiz';
+      case '/privacy-policy': return 'privacy';
+      case '/terms-of-service': return 'terms';
       case '/home':
       case '/':
       default:
@@ -56,6 +60,8 @@ export default function App() {
       resources: '/resources',
       joinus: '/join-us',
       quiz: '/find-your-path',
+      privacy: '/privacy-policy',
+      terms: '/terms-of-service',
       home: '/'
     };
     
@@ -176,6 +182,10 @@ export default function App() {
             onShowToast={showToast}
             onNavChange={handleNavChange}
           />
+        ) : activeNav === 'privacy' ? (
+          <PrivacyPolicy />
+        ) : activeNav === 'terms' ? (
+          <TermsOfService />
         ) : (
           <>
             {/* 2. Hero Presentation */}
