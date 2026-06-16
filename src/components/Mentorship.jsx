@@ -5,7 +5,7 @@ import './Mentorship.css';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const STRIPE_PK = 'pk_test_YOUR_KEY';
+const STRIPE_PK = (import.meta.env && import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY) || 'pk_test_YOUR_KEY';
 
 // Hardcoded mentors matching the ones from final mentorship.txt
 const STATIC_MENTORS = [
