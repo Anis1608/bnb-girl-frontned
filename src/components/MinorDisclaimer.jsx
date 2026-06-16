@@ -351,22 +351,6 @@ export default function MinorDisclaimer() {
                 </div>
               </div>
             </div>
-
-            {/* SECTION FOOTER BLOCK */}
-            <div className="pgfoot">
-              <div className="pgfoot-left">
-                <div className="pgfoot-hed">BB <em>Girls</em> Mentorship Program</div>
-                <p>These policies apply to all mentors, mentees, and participants. By participating, you acknowledge and agree to the terms described above.</p>
-              </div>
-              <div>
-                <div className="pgfoot-links">
-                  <a href="/privacy-policy" onClick={(e) => { e.preventDefault(); window.location.href = '/privacy-policy'; }}>Privacy Policy</a>
-                  <a href="/terms-of-service" onClick={(e) => { e.preventDefault(); window.location.href = '/terms-of-service'; }}>Terms of Service</a>
-                  <a href="/" onClick={(e) => { e.preventDefault(); window.location.href = '/'; }}>bnbgirl.com</a>
-                </div>
-                <p className="pgfoot-meta">© 2025 BB Girls Inc. · All rights reserved</p>
-              </div>
-            </div>
           </main>
         </div>
       </div>
