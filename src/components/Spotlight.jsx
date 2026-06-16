@@ -20,7 +20,17 @@ export default function Spotlight({ onOpenGuestModal, onOpenAudioPlayer, onOpenG
 
   if (spotlightId && spotlightId.trim() !== '') {
     // Try finding in mentors list first (since admin now selects a Mentor)
-    const mentor = mentors.find(m => String(m.id) === String(spotlightId));
+    let mentor = mentors.find(m => String(m.id) === String(spotlightId));
+    
+    // Robust fallback if spotlightId is a text string (e.g. name or option label saved previously)
+    if (!mentor) {
+      mentor = mentors.find(m => 
+        (m.name && spotlightId.toLowerCase().includes(m.name.toLowerCase())) ||
+        (m.episode_number && spotlightId.includes(`EP.${m.episode_number}`)) ||
+        (m.episode_number && spotlightId.includes(`EP. ${m.episode_number}`))
+      );
+    }
+
     if (mentor) {
       // Format the mentor object into the expected "episode" format for Spotlight & Modals
       episode = {
@@ -57,7 +67,12 @@ export default function Spotlight({ onOpenGuestModal, onOpenAudioPlayer, onOpenG
       };
     } else {
       // Fallback: check episodes
-      episode = episodes.find(ep => String(ep.id) === String(spotlightId));
+      episode = episodes.find(ep => 
+        String(ep.id) === String(spotlightId) ||
+        (ep.guest && spotlightId.toLowerCase().includes(ep.guest.toLowerCase())) ||
+        (ep.n && spotlightId.includes(`EP.${ep.n}`)) ||
+        (ep.n && spotlightId.includes(`EP. ${ep.n}`))
+      );
     }
   }
 
