@@ -1,10 +1,10 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 
-export default function Spotlight({ onOpenGuestModal, onOpenAudioPlayer }) {
-  const { featuredEpisodes, loading } = useApp();
+export default function Spotlight({ onOpenGuestModal, onOpenAudioPlayer, onOpenGuestInfo }) {
+  const { featuredEpisodes, episodes, mentors, loading, cms } = useApp();
 
-  if (loading || featuredEpisodes.length === 0) {
+  if (loading) {
     return (
       <section className="spotlight reveal visible">
         <div className="spotlight__inner" style={{ display: 'flex', justifyContent: 'center', padding: '40px 0', color: 'rgba(255,255,255,0.4)' }}>
@@ -14,7 +14,29 @@ export default function Spotlight({ onOpenGuestModal, onOpenAudioPlayer }) {
     );
   }
 
-  const episode = featuredEpisodes[0];
+  // Resolve the featured episode/guest from CMS or fallback to featuredEpisodes[0]
+  let episode = null;
+  const spotlightId = cms.cms_spotlight_mentor_id;
+
+  if (spotlightId && spotlightId.trim() !== '') {
+    // Admin has pinned a specific episode guest by ID
+    episode = episodes.find(ep => String(ep.id) === String(spotlightId));
+  }
+
+  // Fallback: first featured episode
+  if (!episode && featuredEpisodes.length > 0) {
+    episode = featuredEpisodes[0];
+  }
+
+  if (!episode) {
+    return (
+      <section className="spotlight reveal visible">
+        <div className="spotlight__inner" style={{ display: 'flex', justifyContent: 'center', padding: '40px 0', color: 'rgba(255,255,255,0.4)' }}>
+          No spotlight guest configured yet.
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="spotlight reveal visible">
@@ -45,7 +67,7 @@ export default function Spotlight({ onOpenGuestModal, onOpenAudioPlayer }) {
             <button className="btn btn--secondary" onClick={() => onOpenAudioPlayer(episode)}>
               🎧 Audio
             </button>
-            <button className="btn btn--gold" onClick={() => onOpenGuestModal(episode)}>
+            <button className="btn btn--gold" onClick={() => onOpenGuestInfo(episode)}>
               Guest Info
             </button>
           </div>

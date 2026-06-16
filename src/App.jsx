@@ -17,7 +17,7 @@ import Resources from './components/Resources';
 import Community from './components/Community';
 import Footer from './components/Footer';
 import Toast from './components/Toast';
-import { VideoModal, AudioModal, GuestModal, SearchOverlay } from './components/Modals';
+import { VideoModal, AudioModal, GuestModal, SearchOverlay, GuestInfoModal } from './components/Modals';
 import EpisodesPage from './components/EpisodesPage';
 import ResourcesPage from './components/ResourcesPage';
 import JoinUs from './components/JoinUs';
@@ -100,6 +100,7 @@ export default function App() {
     }
   }, [location.pathname, location.hash]);
 
+  const [activeGuestInfoModal, setActiveGuestInfoModal] = useState(null);
   const [activeGuestModal, setActiveGuestModal] = useState(null); // EP index
   const [activeVideoModal, setActiveVideoModal] = useState(null); // YT videoId
   const [activeAudioModal, setActiveAudioModal] = useState(null); // EP index
@@ -137,6 +138,7 @@ export default function App() {
   useEffect(() => {
     const isModalOpen =
       activeGuestModal !== null ||
+      activeGuestInfoModal !== null ||
       activeVideoModal !== null ||
       activeAudioModal !== null ||
       isSearchOpen;
@@ -146,7 +148,7 @@ export default function App() {
     } else {
       document.body.style.overflow = '';
     }
-  }, [activeGuestModal, activeVideoModal, activeAudioModal, isSearchOpen]);
+  }, [activeGuestModal, activeGuestInfoModal, activeVideoModal, activeAudioModal, isSearchOpen]);
 
   return (
     <>
@@ -228,6 +230,7 @@ export default function App() {
             <Spotlight
               onOpenGuestModal={setActiveGuestModal}
               onOpenAudioPlayer={setActiveAudioModal}
+              onOpenGuestInfo={setActiveGuestInfoModal}
             />
 
             {/* 10. Scroll Statistics & Testimonial Carousel */}
@@ -288,6 +291,14 @@ export default function App() {
         onOpenVideo={setActiveVideoModal}
         onOpenAudio={setActiveAudioModal}
         onShowToast={showToast}
+      />
+
+      {/* Guest Info Full Profile Overlay (from Spotlight 'Guest Info' button) */}
+      <GuestInfoModal
+        episode={activeGuestInfoModal}
+        onClose={() => setActiveGuestInfoModal(null)}
+        onOpenVideo={setActiveVideoModal}
+        onOpenAudio={setActiveAudioModal}
       />
 
       {/* Search Input Filter Overlay */}

@@ -706,3 +706,391 @@ export function SearchOverlay({ isOpen, onClose, onOpenVideo }) {
     </div>
   );
 }
+
+// 5. GUEST INFO MODAL — Full guest/mentor profile, opened from "Guest Info" button
+export function GuestInfoModal({ episode, onClose, onOpenVideo, onOpenAudio }) {
+  useEffect(() => {
+    const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
+  if (!episode) return null;
+
+  const initials = (episode.guest || '??')
+    .split(' ')
+    .map(w => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
+  const hasPhoto = episode.photo && !episode.photo.includes('placehold');
+  const hasLinkedin = episode.linkedin || (episode.facts && episode.facts.find(f => f.l === 'LinkedIn'));
+  const hasAvail = episode.availability || episode.mentor_avail;
+  const hasRate = episode.rate || episode.mentor_rate;
+  const hasExpertise = episode.expertise_areas || episode.mentor_fields;
+
+  return (
+    <div
+      className="guest-info-modal-overlay"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 9100,
+        background: 'rgba(5, 2, 20, 0.82)',
+        backdropFilter: 'blur(14px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '20px'
+      }}
+    >
+      <div
+        className="guest-info-modal-card"
+        style={{
+          background: 'linear-gradient(145deg, #0f0a24 0%, #140a2e 100%)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: '24px',
+          maxWidth: '680px',
+          width: '100%',
+          maxHeight: '90vh',
+          overflowY: 'auto',
+          boxShadow: '0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
+          position: 'relative',
+          animation: 'scaleIn 0.25s cubic-bezier(0.34,1.56,0.64,1)'
+        }}
+      >
+        {/* Close */}
+        <button
+          onClick={onClose}
+          style={{
+            position: 'absolute', top: '16px', right: '16px',
+            width: '36px', height: '36px', borderRadius: '50%',
+            background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+            color: 'rgba(255,255,255,0.7)', cursor: 'pointer', fontSize: '16px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'all 0.2s', zIndex: 10
+          }}
+          aria-label="Close"
+        >
+          ✕
+        </button>
+
+        {/* Hero Header */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(147,51,234,0.25) 0%, rgba(236,72,153,0.15) 100%)',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          padding: '32px 32px 24px',
+          display: 'flex', gap: '20px', alignItems: 'center'
+        }}>
+          {/* Avatar */}
+          <div style={{
+            width: '88px', height: '88px', borderRadius: '50%', flexShrink: 0,
+            border: '3px solid rgba(147,51,234,0.6)',
+            boxShadow: '0 0 0 6px rgba(147,51,234,0.12), 0 8px 24px rgba(0,0,0,0.4)',
+            overflow: 'hidden', position: 'relative'
+          }}>
+            {hasPhoto ? (
+              <img src={episode.photo} alt={episode.guest} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{
+                width: '100%', height: '100%',
+                background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '28px', fontWeight: '800', color: '#fff', letterSpacing: '-1px'
+              }}>
+                {initials}
+              </div>
+            )}
+          </div>
+
+          {/* Name & Role */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{
+              fontSize: '11px', fontWeight: '700', letterSpacing: '2px',
+              color: 'rgba(216,180,254,0.7)', textTransform: 'uppercase', marginBottom: '6px'
+            }}>
+              🎙️ EP.{episode.n} · This Week's Guest
+            </div>
+            <h2 style={{
+              fontSize: 'clamp(20px, 4vw, 26px)', fontWeight: '800', color: '#fff',
+              margin: '0 0 6px', lineHeight: 1.2
+            }}>
+              {episode.guest}
+            </h2>
+            <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.55)', marginBottom: '10px' }}>
+              {episode.role}
+            </div>
+            {episode.cat && (
+              <span style={{
+                display: 'inline-block', padding: '4px 12px', borderRadius: '20px',
+                background: 'rgba(147,51,234,0.18)', border: '1px solid rgba(147,51,234,0.35)',
+                fontSize: '11px', fontWeight: '700', letterSpacing: '0.5px',
+                color: '#C084FC', textTransform: 'uppercase'
+              }}>
+                {episode.cat}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Body Content */}
+        <div style={{ padding: '24px 32px 32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+          {/* Bio */}
+          {episode.bio && (
+            <div>
+              <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', color: 'rgba(255,255,255,0.35)', marginBottom: '8px' }}>
+                About
+              </div>
+              <p style={{ fontSize: '14px', lineHeight: '1.7', color: 'rgba(255,255,255,0.75)', margin: 0 }}>
+                {episode.bio}
+              </p>
+            </div>
+          )}
+
+          {/* Quote */}
+          {episode.quote && (
+            <blockquote style={{
+              margin: 0, padding: '16px 20px',
+              borderLeft: '3px solid #9333EA',
+              background: 'rgba(147,51,234,0.08)',
+              borderRadius: '0 12px 12px 0'
+            }}>
+              <p style={{ margin: 0, fontStyle: 'italic', fontSize: '14px', color: 'rgba(216,180,254,0.9)', lineHeight: '1.6' }}>
+                "{episode.quote}"
+              </p>
+            </blockquote>
+          )}
+
+          {/* Tags */}
+          {episode.tags && episode.tags.length > 0 && (
+            <div>
+              <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', color: 'rgba(255,255,255,0.35)', marginBottom: '8px' }}>
+                Topics
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {episode.tags.filter(Boolean).map((tag, i) => (
+                  <span key={i} style={{
+                    padding: '4px 12px', borderRadius: '20px', fontSize: '12px',
+                    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+                    color: 'rgba(255,255,255,0.6)'
+                  }}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Facts / Quick Info Grid */}
+          {episode.facts && episode.facts.filter(f => f.v).length > 0 && (
+            <div>
+              <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', color: 'rgba(255,255,255,0.35)', marginBottom: '10px' }}>
+                Quick Info
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '10px' }}>
+                {episode.facts.filter(f => f.v).map((fact, i) => (
+                  <div key={i} style={{
+                    background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)',
+                    borderRadius: '12px', padding: '12px 14px'
+                  }}>
+                    <div style={{ fontSize: '13px', fontWeight: '700', color: '#fff', marginBottom: '2px' }}>{fact.v}</div>
+                    <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{fact.l}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Extra Mentor Details */}
+          {(hasExpertise || hasAvail || hasRate) && (
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '14px', padding: '16px' }}>
+              <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', color: 'rgba(255,255,255,0.35)', marginBottom: '12px' }}>
+                Mentorship Details
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px' }}>
+                {hasExpertise && (
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <span style={{ color: 'rgba(255,255,255,0.4)', width: '90px', flexShrink: 0 }}>Expertise</span>
+                    <span style={{ color: 'rgba(255,255,255,0.75)' }}>{hasExpertise}</span>
+                  </div>
+                )}
+                {hasAvail && (
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <span style={{ color: 'rgba(255,255,255,0.4)', width: '90px', flexShrink: 0 }}>Availability</span>
+                    <span style={{ color: 'rgba(255,255,255,0.75)' }}>{hasAvail}</span>
+                  </div>
+                )}
+                {hasRate && (
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <span style={{ color: 'rgba(255,255,255,0.4)', width: '90px', flexShrink: 0 }}>Rate</span>
+                    <span style={{ color: '#34D399', fontWeight: '700' }}>{hasRate} / 30 min</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+            {episode.yt && (
+              <button
+                onClick={() => { onClose(); onOpenVideo(episode.yt); }}
+                style={{
+                  flex: 1, minWidth: '120px', padding: '12px 20px', borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #9333EA, #EC4899)',
+                  border: 'none', color: '#fff', fontWeight: '700', fontSize: '13px',
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+                }}
+              >
+                <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21" /></svg>
+                Watch Episode
+              </button>
+            )}
+            {(episode.audio || episode.spotify) && (
+              <button
+                onClick={() => { onClose(); onOpenAudio(episode); }}
+                style={{
+                  flex: 1, minWidth: '120px', padding: '12px 20px', borderRadius: '12px',
+                  background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+                  color: '#fff', fontWeight: '700', fontSize: '13px',
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+                }}
+              >
+                🎧 Listen
+              </button>
+            )}
+            {hasLinkedin && (
+              <a
+                href={typeof hasLinkedin === 'string' ? hasLinkedin : '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  flex: 1, minWidth: '120px', padding: '12px 20px', borderRadius: '12px',
+                  background: 'rgba(10,102,194,0.15)', border: '1px solid rgba(10,102,194,0.3)',
+                  color: '#60B8FF', fontWeight: '700', fontSize: '13px',
+                  textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+                }}
+              >
+                in LinkedIn
+              </a>
+            )}
+            <a
+              href="/mentorship"
+              onClick={onClose}
+              style={{
+                flex: 1, minWidth: '120px', padding: '12px 20px', borderRadius: '12px',
+                background: 'rgba(234,179,8,0.12)', border: '1px solid rgba(234,179,8,0.3)',
+                color: '#FDE047', fontWeight: '700', fontSize: '13px',
+                textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+              }}
+            >
+              📅 Book Session
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export function SearchOverlay({ isOpen, onClose, onOpenVideo }) {
+  const [query, setQuery] = useState('');
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => {
+        if (inputRef.current) inputRef.current.focus();
+      }, 200);
+    } else {
+      setQuery('');
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleSearchClick = (yt) => {
+    onClose();
+    onOpenVideo(yt);
+  };
+
+  const handleTagClick = (tag) => {
+    setQuery(tag);
+  };
+
+  const handleClear = () => {
+    setQuery('');
+    if (inputRef.current) inputRef.current.focus();
+  };
+
+  const filteredMatches = query.trim().length >= 2
+    ? searchData.filter((d) => d.tags.includes(query.toLowerCase()) || d.title.toLowerCase().includes(query.toLowerCase()))
+    : [];
+
+  return (
+    <div className="search-overlay active" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <button className="search-overlay__close" onClick={onClose} aria-label="Close search">✕</button>
+      <div className="search-overlay__box">
+        <div className="search-overlay__header">
+          <span className="search-overlay__title">Search BBG</span>
+        </div>
+        <div className="search-overlay__input-wrap">
+          <svg className="search-overlay__search-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+          <input
+            type="text"
+            className="search-overlay__input"
+            placeholder="Search episodes, guests, topics…"
+            autoComplete="off"
+            ref={inputRef}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          {query.trim().length > 0 && (
+            <button className="search-overlay__clear" onClick={handleClear}>✕</button>
+          )}
+        </div>
+
+        {query.trim().length >= 2 ? (
+          <div className="search-overlay__results" style={{ display: 'block' }}>
+            {filteredMatches.length > 0 ? (
+              filteredMatches.map((m, idx) => (
+                <div key={idx} className="search-result" onClick={() => handleSearchClick(m.yt)}>
+                  <div className="search-result__thumb">
+                    <img src={m.thumb} alt="" />
+                  </div>
+                  <div className="search-result__info">
+                    <div className="search-result__title">{m.title}</div>
+                    <div className="search-result__meta">{m.meta}</div>
+                  </div>
+                  <span className="search-result__type">Episode</span>
+                </div>
+              ))
+            ) : (
+              <div style={{ textAlign: 'center', padding: '28px', color: 'var(--grey-muted)', fontSize: '13px' }}>
+                No results for "<strong>{query}</strong>"
+              </div>
+            )}
+          </div>
+        ) : (
+          <div id="searchPopular">
+            <div className="search-overlay__popular-title">Trending Topics</div>
+            <div className="search-overlay__tags-row">
+              <span className="search-overlay__tag" onClick={() => handleTagClick('Women in Tech')}>💻 Women in Tech</span>
+              <span className="search-overlay__tag" onClick={() => handleTagClick('Imposter Syndrome')}>🧠 Imposter Syndrome</span>
+              <span className="search-overlay__tag" onClick={() => handleTagClick('Career Change')}>🔄 Career Change</span>
+              <span className="search-overlay__tag" onClick={() => handleTagClick('Money')}>💰 Money Mindsets</span>
+            </div>
+          </div>
+        )}
+
+        <div className="search-overlay__footer">
+          <span className="search-overlay__footer-hint"><kbd>ESC</kbd> Close</span>
+          <span style={{ fontSize: '10px', color: 'var(--grey-muted)' }}>50+ episodes indexed</span>
+        </div>
+      </div>
+    </div>
+  );
+}
