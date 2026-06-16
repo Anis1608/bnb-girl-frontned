@@ -23,19 +23,81 @@ export function VideoModal({ videoId, onClose }) {
   );
 }
 
-// 2. AUDIO MODAL (Simulated audio player with frequency wave, speed controls, scrubber)
+// 2. AUDIO MODAL (Plays YouTube video audio, Spotify embeds, HTML5 audio, or fallback simulated player)
 export function AudioModal({ episodeIndex, onClose }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(2534); // 42 min 14 sec default fallback
   const [speedIdx, setSpeedIdx] = useState(0);
   const [bars, setBars] = useState([]);
   const timerRef = useRef(null);
+  const audioRef = useRef(null);
 
-  const duration = 2534; // 42 min 14 sec
   const speeds = [1, 1.25, 1.5, 2];
   const isObject = typeof episodeIndex === 'object' && episodeIndex !== null;
   const episode = isObject ? episodeIndex : EP[episodeIndex];
 
+  // Helper to extract YouTube ID from url
+  const getYouTubeId = (url) => {
+    if (!url) return null;
+    const trimmed = url.trim();
+    if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
+      return trimmed;
+    }
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = trimmed.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  // Helper to check if a URL is a direct audio file
+  const isDirectAudio = (url) => {
+    if (!url) return false;
+    const cleanUrl = url.split('?')[0].toLowerCase();
+    return cleanUrl.endsWith('.mp3') || cleanUrl.endsWith('.wav') || cleanUrl.endsWith('.m4a') || cleanUrl.endsWith('.ogg');
+  };
+
+  // Helper to check if a URL is a Spotify URL
+  const isSpotifyUrl = (url) => {
+    if (!url) return false;
+    return url.toLowerCase().includes('spotify.com');
+  };
+
+  // Helper to format Spotify embed URL
+  const getSpotifyEmbedUrl = (url) => {
+    if (!url) return '';
+    if (url.includes('/embed/')) return url;
+    return url.replace('open.spotify.com/', 'open.spotify.com/embed/');
+  };
+
+  // Determine the playback type and details
+  let playerType = 'simulated'; // 'audio' | 'youtube' | 'spotify' | 'simulated'
+  let audioUrl = '';
+  let ytId = null;
+  let spotifyEmbedUrl = '';
+
+  if (episode) {
+    if (episode.audio && isDirectAudio(episode.audio)) {
+      playerType = 'audio';
+      audioUrl = episode.audio;
+    } else if (episode.audio && getYouTubeId(episode.audio)) {
+      playerType = 'youtube';
+      ytId = getYouTubeId(episode.audio);
+    } else if (episode.spotify && getYouTubeId(episode.spotify)) {
+      playerType = 'youtube';
+      ytId = getYouTubeId(episode.spotify);
+    } else if (episode.spotify && isSpotifyUrl(episode.spotify)) {
+      playerType = 'spotify';
+      spotifyEmbedUrl = getSpotifyEmbedUrl(episode.spotify);
+    } else if (episode.spotify && isDirectAudio(episode.spotify)) {
+      playerType = 'audio';
+      audioUrl = episode.spotify;
+    } else if (episode.yt) {
+      playerType = 'youtube';
+      ytId = getYouTubeId(episode.yt);
+    }
+  }
+
+  // Handle resets and setup on episodeIndex change
   useEffect(() => {
     if (episodeIndex === null || !episode) return;
     
@@ -44,6 +106,11 @@ export function AudioModal({ episodeIndex, onClose }) {
     setCurrentTime(0);
     setSpeedIdx(0);
     clearInterval(timerRef.current);
+
+    if (audioRef.current) {
+      audioRef.current.load();
+      audioRef.current.playbackRate = 1;
+    }
 
     // Generate random frequency bars
     const generatedBars = [];
@@ -55,7 +122,10 @@ export function AudioModal({ episodeIndex, onClose }) {
     return () => clearInterval(timerRef.current);
   }, [episodeIndex]);
 
+  // Sync simulated progress loop
   useEffect(() => {
+    if (playerType !== 'simulated') return;
+
     if (isPlaying) {
       timerRef.current = setInterval(() => {
         setCurrentTime((prev) => {
@@ -72,31 +142,84 @@ export function AudioModal({ episodeIndex, onClose }) {
       clearInterval(timerRef.current);
     }
     return () => clearInterval(timerRef.current);
-  }, [isPlaying, speedIdx]);
+  }, [isPlaying, speedIdx, playerType]);
+
+  // Sync real HTML5 audio events
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const onTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+    };
+
+    const onLoadedMetadata = () => {
+      setDuration(audio.duration || 2534);
+    };
+
+    const onEnded = () => {
+      setIsPlaying(false);
+    };
+
+    audio.addEventListener('timeupdate', onTimeUpdate);
+    audio.addEventListener('loadedmetadata', onLoadedMetadata);
+    audio.addEventListener('ended', onEnded);
+
+    return () => {
+      audio.removeEventListener('timeupdate', onTimeUpdate);
+      audio.removeEventListener('loadedmetadata', onLoadedMetadata);
+      audio.removeEventListener('ended', onEnded);
+    };
+  }, [episodeIndex, playerType]);
 
   if (episodeIndex === null || !episode) return null;
 
   const togglePlay = () => {
+    if (playerType === 'audio') {
+      if (audioRef.current) {
+        if (isPlaying) {
+          audioRef.current.pause();
+        } else {
+          audioRef.current.play();
+        }
+      }
+    }
     setIsPlaying(!isPlaying);
   };
 
   const handleSeekBack = () => {
-    setCurrentTime((prev) => Math.max(0, prev - 15));
+    const newTime = Math.max(0, currentTime - 15);
+    setCurrentTime(newTime);
+    if (playerType === 'audio' && audioRef.current) {
+      audioRef.current.currentTime = newTime;
+    }
   };
 
   const handleSeekForward = () => {
-    setCurrentTime((prev) => Math.min(duration, prev + 30));
+    const newTime = Math.min(duration, currentTime + 30);
+    setCurrentTime(newTime);
+    if (playerType === 'audio' && audioRef.current) {
+      audioRef.current.currentTime = newTime;
+    }
   };
 
   const handleScrubberClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const progress = clickX / rect.width;
-    setCurrentTime(Math.floor(progress * duration));
+    const newTime = Math.floor(progress * duration);
+    setCurrentTime(newTime);
+    if (playerType === 'audio' && audioRef.current) {
+      audioRef.current.currentTime = newTime;
+    }
   };
 
   const cycleSpeed = () => {
-    setSpeedIdx((prev) => (prev + 1) % speeds.length);
+    const nextIdx = (speedIdx + 1) % speeds.length;
+    setSpeedIdx(nextIdx);
+    if (playerType === 'audio' && audioRef.current) {
+      audioRef.current.playbackRate = speeds[nextIdx];
+    }
   };
 
   const formatTime = (secs) => {
@@ -113,57 +236,117 @@ export function AudioModal({ episodeIndex, onClose }) {
         <div className="audio-player__title">{episode.title}</div>
         <div className="audio-player__guest">{`EP. ${episode.n} · ${episode.guest}`}</div>
         
-        <div className="audio-player__waveform">
-          {bars.map((h, i) => (
-            <div
-              key={i}
-              className="audio-player__bar"
-              style={{
-                height: `${h}px`,
-                animationDelay: `${i * 0.06}s`
-              }}
-            ></div>
-          ))}
-        </div>
+        {/* Render YouTube Player Embed */}
+        {playerType === 'youtube' && (
+          <>
+            <div className="audio-player__youtube-wrap" style={{ marginTop: '20px', borderRadius: '14px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <iframe
+                width="100%"
+                height="210"
+                src={`https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`}
+                title="YouTube audio player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                style={{ display: 'block' }}
+              ></iframe>
+            </div>
+            <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textAlign: 'center', marginTop: '12px', marginBottom: 0 }}>
+              📺 Playing episode stream via YouTube Embed
+            </p>
+          </>
+        )}
 
-        <div className="audio-player__scrubber" onClick={handleScrubberClick}>
-          <div className="audio-player__scrubber-fill" style={{ width: `${(currentTime / duration) * 100}%` }}></div>
-        </div>
+        {/* Render Spotify Embed */}
+        {playerType === 'spotify' && (
+          <>
+            <div className="audio-player__spotify-wrap" style={{ marginTop: '20px', borderRadius: '14px', overflow: 'hidden' }}>
+              <iframe
+                src={spotifyEmbedUrl}
+                width="100%"
+                height="152"
+                frameBorder="0"
+                allowFullScreen=""
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+                style={{ display: 'block', borderRadius: '12px' }}
+              ></iframe>
+            </div>
+            <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', textAlign: 'center', marginTop: '12px', marginBottom: 0 }}>
+              🟢 Playing episode stream via Spotify Embed
+            </p>
+          </>
+        )}
 
-        <div className="audio-player__time">
-          <span>{formatTime(currentTime)}</span>
-          <span>{formatTime(duration)}</span>
-        </div>
-
-        <div className="audio-player__controls">
-          <button className="audio-ctrl" onClick={handleSeekBack} aria-label="Rewind 15 seconds">
-            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <polyline points="11 17 6 12 11 7" />
-              <polyline points="18 17 13 12 18 7" />
-            </svg>
-          </button>
-          <button className="audio-ctrl audio-ctrl--main" onClick={togglePlay} aria-label={isPlaying ? 'Pause' : 'Play'}>
-            {isPlaying ? (
-              <svg fill="currentColor" viewBox="0 0 24 24">
-                <rect x="6" y="4" width="4" height="16" />
-                <rect x="14" y="4" width="4" height="16" />
-              </svg>
-            ) : (
-              <svg fill="currentColor" viewBox="0 0 24 24">
-                <polygon points="5 3 19 12 5 21" />
-              </svg>
+        {/* Render HTML5 audio controls for direct audio or simulated player */}
+        {(playerType === 'audio' || playerType === 'simulated') && (
+          <>
+            {playerType === 'audio' && (
+              <audio
+                ref={audioRef}
+                src={audioUrl}
+                preload="metadata"
+              />
             )}
-          </button>
-          <button className="audio-ctrl" onClick={handleSeekForward} aria-label="Forward 30 seconds">
-            <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <polyline points="13 17 18 12 13 7" />
-              <polyline points="6 17 11 12 6 7" />
-            </svg>
-          </button>
-          <button className="audio-player__speed" onClick={cycleSpeed}>
-            {speeds[speedIdx]}×
-          </button>
-        </div>
+
+            <div className="audio-player__waveform">
+              {bars.map((h, i) => (
+                <div
+                  key={i}
+                  className="audio-player__bar"
+                  style={{
+                    height: `${h}px`,
+                    animationDelay: `${i * 0.06}s`
+                  }}
+                ></div>
+              ))}
+            </div>
+
+            <div className="audio-player__scrubber" onClick={handleScrubberClick}>
+              <div className="audio-player__scrubber-fill" style={{ width: `${(currentTime / duration) * 100}%` }}></div>
+            </div>
+
+            <div className="audio-player__time">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+
+            <div className="audio-player__controls">
+              <button className="audio-ctrl" onClick={handleSeekBack} aria-label="Rewind 15 seconds">
+                <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <polyline points="11 17 6 12 11 7" />
+                  <polyline points="18 17 13 12 18 7" />
+                </svg>
+              </button>
+              <button className="audio-ctrl audio-ctrl--main" onClick={togglePlay} aria-label={isPlaying ? 'Pause' : 'Play'}>
+                {isPlaying ? (
+                  <svg fill="currentColor" viewBox="0 0 24 24">
+                    <rect x="6" y="4" width="4" height="16" />
+                    <rect x="14" y="4" width="4" height="16" />
+                  </svg>
+                ) : (
+                  <svg fill="currentColor" viewBox="0 0 24 24">
+                    <polygon points="5 3 19 12 5 21" />
+                  </svg>
+                )}
+              </button>
+              <button className="audio-ctrl" onClick={handleSeekForward} aria-label="Forward 30 seconds">
+                <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <polyline points="13 17 18 12 13 7" />
+                  <polyline points="6 17 11 12 6 7" />
+                </svg>
+              </button>
+              <button className="audio-player__speed" onClick={cycleSpeed}>
+                {speeds[speedIdx]}×
+              </button>
+            </div>
+            {playerType === 'audio' && (
+              <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', textAlign: 'center', marginTop: '14px', marginBottom: 0 }}>
+                🔊 Playing high-quality direct audio stream
+              </p>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

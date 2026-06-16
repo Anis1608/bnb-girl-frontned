@@ -56,6 +56,8 @@ export default function AppContextProvider({ children }) {
     photo: ep.guest_photo || 'https://placehold.co/64x64/9333EA/fff?text=Guest',
     prog: 0,
     yt: ep.youtube_id || '',
+    spotify: ep.spotify_url || '',
+    audio: ep.audio_url || '',
     tags: typeof ep.tags === 'string' ? ep.tags.split(',').map(t => t.trim()) : (ep.tags || []),
     bio: ep.guest_bio || '',
     quote: ep.guest_quote || '',
