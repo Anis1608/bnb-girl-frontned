@@ -446,6 +446,28 @@ export default function Mentorship({ onShowToast, onNavChange }) {
     })();
   };
 
+  const handleDirectFreeBooking = async (cleanEmail) => {
+    setIsProcessing(true);
+    const amount = priceOf(selectedDuration);
+    const payload = {
+      mentor: selectedMentor.name,
+      mentor_id: selectedMentor.id,
+      duration: selectedDuration,
+      date: selectedDate,
+      time: selectedTime,
+      email: cleanEmail,
+      amount: amount,
+      submitted_at: new Date().toISOString()
+    };
+    try {
+      await submitForm('mentorship', payload);
+      handleSuccess();
+    } catch (err) {
+      console.error('Error saving free booking:', err);
+      handleSuccess();
+    }
+  };
+
   // Submit email handler
   const handleEmailSubmit = () => {
     const cleanEmail = email.trim();
@@ -454,7 +476,14 @@ export default function Mentorship({ onShowToast, onNavChange }) {
       return;
     }
     setEmailError(false);
-    setBookingStep('pay');
+
+    // If session is Free, directly complete the booking without Stripe pay screen
+    const price = priceOf(selectedDuration);
+    if (!price || price.toLowerCase().includes('free') || price.replace(/[^0-9]/g, '') === '0') {
+      handleDirectFreeBooking(cleanEmail);
+    } else {
+      setBookingStep('pay');
+    }
   };
 
   // Checkout payment handler
@@ -483,23 +512,35 @@ export default function Mentorship({ onShowToast, onNavChange }) {
 
     // 2. Stripe integration flow
     try {
-      if (stripeLoaded && window._st && window._cd) {
-        const r = await fetch('/api/create-payment-intent', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            mentor: selectedMentor.name,
-            dur: selectedDuration,
-            date: selectedDate,
-            time: selectedTime,
-            email: email,
-            amount: amount
-          })
-        });
-        
-        if (!r.ok) throw new Error('Create payment intent failed');
-        const { clientSecret } = await r.json();
-        
+      const r = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mentorId: selectedMentor.id,
+          mentor: selectedMentor.name,
+          dur: selectedDuration,
+          date: selectedDate,
+          time: selectedTime,
+          email: email
+        })
+      });
+      
+      if (!r.ok) throw new Error('Create payment intent failed');
+      const { clientSecret } = await r.json();
+
+      if (clientSecret === 'free_session_no_payment_intent_needed') {
+        handleSuccess();
+        return;
+      }
+
+      if (clientSecret === 'mock_client_secret_for_demo_mode_purposes_only') {
+        setTimeout(() => {
+          handleSuccess();
+        }, 1200);
+        return;
+      }
+      
+      if (stripeLoaded && window._st && window._cd && clientSecret) {
         const { error, paymentIntent } = await window._st.confirmCardPayment(clientSecret, {
           payment_method: { card: window._cd }
         });
@@ -514,7 +555,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
           handleSuccess();
         }
       } else {
-        // Stripe failed or not initialized (demo mode fallback)
+        // Fallback for demo mock mode
         setTimeout(() => {
           handleSuccess();
         }, 1200);

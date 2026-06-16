@@ -23,3 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 admin_side
+.env
+.env.production
+.env.development
+.env.local
+
