@@ -282,61 +282,63 @@ export default function Mentorship({ onShowToast, onNavChange }) {
     };
   }, [isSheetOpen]);
 
-  // Load Stripe script dynamically
-  const loadStripeScript = () => {
-    return new Promise((resolve) => {
-      if (window.Stripe) {
-        resolve(window.Stripe);
-        return;
-      }
-      const script = document.createElement('script');
-      script.src = 'https://js.stripe.com/v3/';
-      script.async = true;
-      script.onload = () => resolve(window.Stripe);
-      script.onerror = () => resolve(null);
-      document.head.appendChild(script);
-    });
-  };
-
-  // Stripe mounting logic
+  // Verify Stripe Checkout Session on mount if redirecting back
   useEffect(() => {
-    if (bookingStep === 'pay' && !stripeLoaded) {
-      const initStripe = async () => {
-        const stripe = await loadStripeScript();
-        if (stripe) {
-          try {
-            const stripeInstance = stripe(STRIPE_PK);
-            window._st = stripeInstance;
-            const elements = stripeInstance.elements();
-            const card = elements.create('card', {
-              style: {
-                base: {
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '15px',
-                  color: '#1C1118',
-                  '::placeholder': { color: '#9C7070' }
-                }
-              },
-              hidePostalCode: true
-            });
-            window._cd = card;
-            if (cardElementRef.current) {
-              cardElementRef.current.innerHTML = ''; // Clear prior mounts
-              card.mount(cardElementRef.current);
-              setStripeLoaded(true);
-              setStripeError('');
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+    if (sessionId) {
+      const verifySession = async () => {
+        setIsProcessing(true);
+        setBookingStep('verifying');
+        setIsSheetOpen(true);
+        try {
+          const res = await fetch(`/api/verify-checkout-session/${sessionId}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.booking) {
+              const b = data.booking;
+              // Mock mentor object matching structure
+              setSelectedMentor({
+                name: b.mentor,
+                role: 'Professional Mentor',
+                durs: [b.duration],
+                init: b.mentor.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase(),
+                bio: 'Mentorship booking verified.',
+                resp: 'Confirmed',
+                lang: 'English'
+              });
+              setSelectedDuration(b.duration);
+              setSelectedDate(b.date);
+              setSelectedTime(b.time);
+              setEmail(b.email);
+              setBookingStep('success');
+              triggerConfetti();
+              if (onShowToast) {
+                onShowToast('🎉', 'Payment Verified!', 'Your mentorship session has been booked.');
+              }
+            } else {
+              setStripeError('Verification failed. Please contact support.');
+              setBookingStep('picker');
             }
-          } catch (e) {
-            console.error('Stripe initialization failed:', e);
-            setStripeError('Demo mode — booking will still complete.');
+          } else {
+            setStripeError('Verification failed. Please contact support.');
+            setBookingStep('picker');
           }
-        } else {
-          setStripeError('Demo mode — booking will still complete.');
+        } catch (e) {
+          console.error('Session verification error:', e);
+          setStripeError('Verification failed. Please contact support.');
+          setBookingStep('picker');
+        } finally {
+          setIsProcessing(false);
         }
       };
-      initStripe();
+      verifySession();
+      
+      // Clean query params so reload doesn't re-verify
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
     }
-  }, [bookingStep, stripeLoaded]);
+  }, [mentorsList]);
 
   // Modal Open Handler
   const openSheet = (mentor) => {
@@ -467,9 +469,8 @@ export default function Mentorship({ onShowToast, onNavChange }) {
       handleSuccess();
     }
   };
-
-  // Submit email handler
-  const handleEmailSubmit = () => {
+  // Submit email handler (Redirects directly to Stripe Hosted Checkout for paid sessions)
+  const handleEmailSubmit = async () => {
     const cleanEmail = email.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
       setEmailError(true);
@@ -477,42 +478,18 @@ export default function Mentorship({ onShowToast, onNavChange }) {
     }
     setEmailError(false);
 
-    // If session is Free, directly complete the booking without Stripe pay screen
+    // If session is Free, directly complete the booking without Stripe redirect
     const price = priceOf(selectedDuration);
     if (!price || price.toLowerCase().includes('free') || price.replace(/[^0-9]/g, '') === '0') {
-      handleDirectFreeBooking(cleanEmail);
-    } else {
-      setBookingStep('pay');
+      await handleDirectFreeBooking(cleanEmail);
+      return;
     }
-  };
 
-  // Checkout payment handler
-  const handlePaymentSubmit = async () => {
     setIsProcessing(true);
-    const amount = priceOf(selectedDuration);
-    
-    // 1. Submit form data to backend Submission model
-    const payload = {
-      mentor: selectedMentor.name,
-      mentor_id: selectedMentor.id,
-      duration: selectedDuration,
-      date: selectedDate,
-      time: selectedTime,
-      email: email,
-      amount: amount,
-      submitted_at: new Date().toISOString()
-    };
+    setStripeError('');
 
     try {
-      // Save booking in the DB
-      await submitForm('mentorship', payload);
-    } catch (err) {
-      console.error('Error saving mentorship booking:', err);
-    }
-
-    // 2. Stripe integration flow
-    try {
-      const r = await fetch('/api/create-payment-intent', {
+      const r = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -521,50 +498,29 @@ export default function Mentorship({ onShowToast, onNavChange }) {
           dur: selectedDuration,
           date: selectedDate,
           time: selectedTime,
-          email: email
+          email: cleanEmail
         })
       });
-      
-      if (!r.ok) throw new Error('Create payment intent failed');
-      const { clientSecret } = await r.json();
 
-      if (clientSecret === 'free_session_no_payment_intent_needed') {
-        handleSuccess();
+      if (!r.ok) throw new Error('Create checkout session failed');
+      const { id, url } = await r.json();
+
+      if (id === 'free_session') {
+        await handleDirectFreeBooking(cleanEmail);
         return;
       }
 
-      if (clientSecret === 'mock_client_secret_for_demo_mode_purposes_only') {
-        setTimeout(() => {
-          handleSuccess();
-        }, 1200);
-        return;
-      }
-      
-      if (stripeLoaded && window._st && window._cd && clientSecret) {
-        const { error, paymentIntent } = await window._st.confirmCardPayment(clientSecret, {
-          payment_method: { card: window._cd }
-        });
-        
-        if (error) {
-          setStripeError(error.message);
-          setIsProcessing(false);
-          return;
-        }
-        
-        if (paymentIntent.status === 'succeeded') {
-          handleSuccess();
-        }
+      if (url) {
+        // Redirect directly to Stripe Secure Hosted Checkout
+        window.location.href = url;
       } else {
-        // Fallback for demo mock mode
-        setTimeout(() => {
-          handleSuccess();
-        }, 1200);
+        setStripeError('Failed to create secure checkout session. Please try again.');
+        setIsProcessing(false);
       }
     } catch (e) {
-      // Fallback for demo mock mode
-      setTimeout(() => {
-        handleSuccess();
-      }, 1200);
+      console.error('Error creating checkout session:', e);
+      setStripeError('Failed to connect to payment gateway. Please try again.');
+      setIsProcessing(false);
     }
   };
 
@@ -1170,26 +1126,12 @@ export default function Mentorship({ onShowToast, onNavChange }) {
                 </>
               )}
 
-              {bookingStep === 'pay' && (
-                <>
-                  <div className="sum-card">
-                    <div className="sum-r"><span className="k">Mentor</span><span className="v">{selectedMentor.name}</span></div>
-                    <div className="sum-r"><span className="k">When</span><span className="v">{fmtDate(selectedDate)} · {selectedTime}</span></div>
-                    {priceOf(selectedDuration) && (
-                      <div className="sum-r"><span className="k">Total</span><span className="v" style={{ color: 'var(--rose)' }}>{priceOf(selectedDuration)}</span></div>
-                    )}
-                  </div>
-
-                  <div className="fld">
-                    <div className="fl">Card details</div>
-                    <div id="stripe-mt" ref={cardElementRef}></div>
-                    {stripeError && <div className="f-err" style={{ display: 'block' }}>{stripeError}</div>}
-                    <div className="f-note">
-                      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" /></svg>
-                      Secured by Stripe · 256-bit SSL encryption.
-                    </div>
-                  </div>
-                </>
+              {bookingStep === 'verifying' && (
+                <div className="success" style={{ padding: '36px 10px' }}>
+                  <svg className="spin" viewBox="0 0 24 24" style={{ width: '48px', height: '48px', fill: 'none', stroke: 'var(--rose)', strokeWidth: 2.5, margin: '0 auto 18px', display: 'block' }}><path d="M21 12a9 9 0 11-6.2-8.6" /></svg>
+                  <h3 className="sc-h" style={{ fontSize: '20px' }}>Verifying your payment…</h3>
+                  <p className="sc-sub">Please wait while we confirm your booking with Stripe.</p>
+                </div>
               )}
 
               {bookingStep === 'success' && (
@@ -1253,27 +1195,29 @@ export default function Mentorship({ onShowToast, onNavChange }) {
               )}
 
               {bookingStep === 'email' && (
-                <button className="s-go" onClick={handleEmailSubmit}>
-                  <span>Continue to payment</span>
-                  <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-                </button>
-              )}
-
-              {bookingStep === 'pay' && (
-                <button className="s-go" disabled={isProcessing} onClick={handlePaymentSubmit}>
+                <button className="s-go" disabled={isProcessing} onClick={handleEmailSubmit}>
                   <span>
                     {isProcessing ? (
                       <>
                         <svg className="spin" viewBox="0 0 24 24" style={{ width: '17px', height: '17px', fill: 'none', stroke: '#fff', strokeWidth: 2.4, display: 'inline', marginRight: '6px' }}><path d="M21 12a9 9 0 11-6.2-8.6" /></svg>
-                        Processing…
+                        Redirecting to Stripe…
                       </>
                     ) : (
                       <>
-                        Pay {priceOf(selectedDuration)} securely
+                        Pay {priceOf(selectedDuration)} Securely
                       </>
                     )}
                   </span>
-                  {!isProcessing && <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>}
+                  {!isProcessing && <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg>}
+                </button>
+              )}
+
+              {bookingStep === 'verifying' && (
+                <button className="s-go" disabled={true}>
+                  <span>
+                    <svg className="spin" viewBox="0 0 24 24" style={{ width: '17px', height: '17px', fill: 'none', stroke: '#fff', strokeWidth: 2.4, display: 'inline', marginRight: '6px' }}><path d="M21 12a9 9 0 11-6.2-8.6" /></svg>
+                    Verifying Payment…
+                  </span>
                 </button>
               )}
 
