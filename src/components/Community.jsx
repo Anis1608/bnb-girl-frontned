@@ -3,22 +3,8 @@ import { useApp } from '../context/AppContext';
 
 export default function Community({ onShowToast }) {
   const { submitForm } = useApp();
-  const [emailMain, setEmailMain] = useState('');
   const [emailNL, setEmailNL] = useState('');
   const [nlSubscribed, setNlSubscribed] = useState(false);
-
-  const handleMainJoin = async (e) => {
-    e.preventDefault();
-    if (!emailMain.trim()) return;
-    try {
-      await submitForm('community', { email: emailMain });
-      onShowToast('🎉', 'Welcome!', 'You joined BBG!');
-      setEmailMain('');
-    } catch (err) {
-      console.error(err);
-      onShowToast('❌', 'Error', err.message || 'Failed to join community.');
-    }
-  };
 
   const handleNLSubmit = async (e) => {
     e.preventDefault();
@@ -35,53 +21,8 @@ export default function Community({ onShowToast }) {
 
   return (
     <>
-      {/* ══ COMMUNITY SECTION ══ */}
-      <section className="community-section" id="community">
-        <div className="community__content">
-          <h2 className="community__counter reveal visible">
-            Join <span className="gold">50+</span> Bold &amp; Brilliant Women
-          </h2>
-          <p className="community__sub reveal visible">A community that celebrates ambition and lifts each other up.</p>
-          <div className="community__avatars reveal visible">
-            <div className="community__avatar" style={{ background: 'linear-gradient(135deg,#6B21A8,#EC4899)' }}>A</div>
-            <div className="community__avatar" style={{ background: 'linear-gradient(135deg,#9333EA,#F97316)' }}>J</div>
-            <div className="community__avatar" style={{ background: 'linear-gradient(135deg,#EC4899,#EAB308)' }}>M</div>
-            <div className="community__avatar" style={{ background: 'linear-gradient(135deg,#F97316,#6B21A8)' }}>S</div>
-            <div className="community__avatar" style={{ background: 'linear-gradient(135deg,#EAB308,#EC4899)' }}>P</div>
-          </div>
-          <form className="community__form reveal visible" onSubmit={handleMainJoin}>
-            <input
-              type="email"
-              className="community__input"
-              placeholder="Your email address…"
-              value={emailMain}
-              onChange={(e) => setEmailMain(e.target.value)}
-              required
-            />
-            <button type="submit" className="community__submit">
-              Join
-            </button>
-          </form>
-          <div className="community__socials reveal visible">
-            <a href="https://instagram.com/bnbgirls.podcast" target="_blank" rel="noopener noreferrer" className="community__social" aria-label="Instagram">
-              <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <rect x="2" y="2" width="20" height="20" rx="5" />
-                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-              </svg>
-            </a>
-            <a href="https://www.youtube.com/@BoldandBrilliantgirl" target="_blank" rel="noopener noreferrer" className="community__social" aria-label="YouTube">
-              <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 12a29 29 0 00.46 5.58 2.78 2.78 0 001.94 2C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 001.94-2A29 29 0 0023 12a29 29 0 00-.46-5.58z" />
-                <polygon points="9.75 15.02 15.5 12 9.75 8.98" />
-              </svg>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* ══ NEWSLETTER SECTION ══ */}
-      <section style={{ background: 'linear-gradient(135deg,#0F0A1E,#1E1035)', padding: '64px 24px', position: 'relative', overflow: 'hidden' }}>
+      {/* ══ NEWSLETTER / COMMUNITY SECTION ══ */}
+      <section id="community" style={{ background: 'linear-gradient(135deg,#0F0A1E,#1E1035)', padding: '64px 24px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', backgroundImage: 'radial-gradient(rgba(147,51,234,.08) 1px,transparent 1px)', backgroundSize: '24px 24px' }}></div>
         <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '8px' }}>
