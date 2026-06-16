@@ -6,6 +6,7 @@ import './Mentorship.css';
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const STRIPE_PK = (import.meta.env && import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY) || 'pk_test_YOUR_KEY';
+const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE) || 'https://bnb-girl-backend.onrender.com';
 
 // Hardcoded mentors matching the ones from final mentorship.txt
 const STATIC_MENTORS = [
@@ -294,7 +295,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
         setBookingStep('verifying');
         setIsSheetOpen(true);
         try {
-          const res = await fetch(`/api/verify-checkout-session/${sessionId}`);
+          const res = await fetch(`${API_BASE}/api/verify-checkout-session/${sessionId}`);
           if (res.ok) {
             const data = await res.json();
             if (data.success && data.booking) {
@@ -494,7 +495,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
     setStripeError('');
 
     try {
-      const r = await fetch('/api/create-checkout-session', {
+      const r = await fetch(`${API_BASE}/api/create-checkout-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
