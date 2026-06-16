@@ -254,6 +254,23 @@ export default function AppContextProvider({ children }) {
     return data;
   };
 
+  const loginWithFirebase = async (idToken, name, email) => {
+    const res = await fetch(`${API_BASE}/api/auth/firebase`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken, name, email })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Firebase sync failed');
+    }
+    setUserToken(data.token);
+    setUserProfile({ name: data.name, email: data.email });
+    localStorage.setItem('bbg_user_token', data.token);
+    localStorage.setItem('bbg_user_profile', JSON.stringify({ name: data.name, email: data.email }));
+    return data;
+  };
+
   const registerUser = async (name, email, password) => {
     const res = await fetch(`${API_BASE}/api/auth/register`, {
       method: 'POST',
@@ -312,6 +329,7 @@ export default function AppContextProvider({ children }) {
       userProfile,
       loginUser,
       registerUser,
+      loginWithFirebase,
       logoutUser,
       fetchUserBookings
     }}>
