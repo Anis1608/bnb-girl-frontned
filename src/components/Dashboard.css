@@ -12,6 +12,7 @@
 
 .portal-layout {
   display: flex;
+  margin-top: 80px;
   min-height: calc(100vh - 80px);
   background-color: var(--portal-bg);
   font-family: 'DM Sans', sans-serif;
