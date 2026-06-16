@@ -88,7 +88,7 @@ export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
             </span>
             Find Your Path
           </a>
-          <a href="/#mentorship" className={`pill-gold ${activeNav === 'mentorship' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'mentorship')}>
+          <a href="/mentorship" className={`pill-gold ${activeNav === 'mentorship' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'mentorship')}>
             <svg className="nav-icon" viewBox="0 0 24 24">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
@@ -178,7 +178,7 @@ export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
             <span className="bbg-drw-arr">→</span>
           </a>
           <div className="drw-cta-wrap">
-            <a href="/#mentorship" className="bbg-drw-cta-gold" onClick={(e) => handleLinkClick(e, 'mentorship')}>
+            <a href="/mentorship" className="bbg-drw-cta-gold" onClick={(e) => handleLinkClick(e, 'mentorship')}>
               <svg style={{ width: '16px', height: '16px', fill: 'none', stroke: '#92600a', strokeWidth: 1.8, flexShrink: 0 }} viewBox="0 0 24 24">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
               </svg>
@@ -229,7 +229,7 @@ export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
             </svg>
             <span className="bbg-bot-lbl">Join Us</span>
           </a>
-          <a href="/#mentorship" className={`bbg-bot-item ${activeNav === 'mentorship' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'mentorship')}>
+          <a href="/mentorship" className={`bbg-bot-item ${activeNav === 'mentorship' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'mentorship')}>
             <svg className="bot-icon" viewBox="0 0 24 24">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>

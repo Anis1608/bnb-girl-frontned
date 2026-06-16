@@ -24,6 +24,7 @@ import JoinUs from './components/JoinUs';
 import FindYourPath from './components/FindYourPath';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
+import Mentorship from './components/Mentorship';
 import './App.css';
 
 
@@ -43,6 +44,7 @@ export default function App() {
       case '/find-your-path': return 'quiz';
       case '/privacy-policy': return 'privacy';
       case '/terms-of-service': return 'terms';
+      case '/mentorship': return 'mentorship';
       case '/home':
       case '/':
       default:
@@ -62,18 +64,9 @@ export default function App() {
       quiz: '/find-your-path',
       privacy: '/privacy-policy',
       terms: '/terms-of-service',
+      mentorship: '/mentorship',
       home: '/'
     };
-    
-    if (nav === 'mentorship') {
-      if (location.pathname === '/' && !location.hash) {
-        const element = document.getElementById('mentorship');
-        if (element) element.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        navigate('/#mentorship');
-      }
-      return;
-    }
     
     const targetPath = targetPathMap[nav];
     if (targetPath) {
@@ -186,6 +179,11 @@ export default function App() {
           <PrivacyPolicy />
         ) : activeNav === 'terms' ? (
           <TermsOfService />
+        ) : activeNav === 'mentorship' ? (
+          <Mentorship
+            onShowToast={showToast}
+            onNavChange={handleNavChange}
+          />
         ) : (
           <>
             {/* 2. Hero Presentation */}
@@ -227,7 +225,15 @@ export default function App() {
               <div className="container">
                 <h2 className="mentorship-cta__h2">Find Your Mentor. Find Your Path.</h2>
                 <p className="mentorship-cta__sub">Connect 1-on-1 with professionals who'll guide your journey.</p>
-                <a href="https://bnbgirl.com/mentorship/" target="_blank" rel="noopener noreferrer" className="btn btn--primary" style={{ margin: '0 auto', fontSize: '15px' }}>
+                <a
+                  href="/mentorship"
+                  className="btn btn--primary"
+                  style={{ margin: '0 auto', fontSize: '15px' }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavChange('mentorship');
+                  }}
+                >
                   Apply for Mentorship →
                 </a>
               </div>
