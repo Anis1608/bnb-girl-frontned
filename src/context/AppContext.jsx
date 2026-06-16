@@ -103,22 +103,21 @@ export default function AppContextProvider({ children }) {
   const loadData = async () => {
     setLoading(true);
     try {
-      // 0. Fetch CMS
-      let cmsData = window.__CMS_DATA__;
-      if (!cmsData) {
-        const cmsRes = await fetch(`${API_BASE}/api/cms`);
+      // 0. Fetch CMS — always fetch fresh so admin changes reflect immediately
+      try {
+        const cmsRes = await fetch(`${API_BASE}/api/cms?_t=${Date.now()}`);
         if (cmsRes.ok) {
-          cmsData = await cmsRes.json();
+          const cmsData = await cmsRes.json();
           window.__CMS_DATA__ = cmsData;
+          setCms(cmsData);
+          try {
+            localStorage.setItem('bbg_cms', JSON.stringify(cmsData));
+          } catch (e) {
+            console.error('Error saving CMS cache:', e);
+          }
         }
-      }
-      if (cmsData) {
-        setCms(cmsData);
-        try {
-          localStorage.setItem('bbg_cms', JSON.stringify(cmsData));
-        } catch (e) {
-          console.error('Error saving CMS cache:', e);
-        }
+      } catch (cmsErr) {
+        console.warn('CMS fetch failed, using cached data:', cmsErr);
       }
 
       // 1. Fetch Stats
