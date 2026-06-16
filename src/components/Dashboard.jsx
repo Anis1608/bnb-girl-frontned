@@ -28,10 +28,13 @@ export default function Dashboard({ onShowToast, onNavChange }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Dashboard Navigation State
+  const [activeSection, setActiveSection] = useState('overview'); // 'overview', 'sessions', 'billing', 'profile'
+  const [sessionFilter, setSessionFilter] = useState('all'); // 'all', 'upcoming', 'completed'
+
   // Dashboard Data State
   const [bookings, setBookings] = useState([]);
   const [loadingBookings, setLoadingBookings] = useState(false);
-  const [activeTab, setActiveTab] = useState('upcoming'); // 'upcoming' or 'history'
 
   useEffect(() => {
     if (userToken) {
@@ -47,7 +50,7 @@ export default function Dashboard({ onShowToast, onNavChange }) {
       setBookings(data);
     } catch (err) {
       console.error(err);
-      setError('Failed to load your booking history.');
+      setError('Failed to load portal data.');
     } finally {
       setLoadingBookings(false);
     }
@@ -139,6 +142,7 @@ export default function Dashboard({ onShowToast, onNavChange }) {
   const handleLogout = () => {
     logoutUser();
     setBookings([]);
+    setActiveSection('overview');
     if (onShowToast) {
       onShowToast('🚪', 'Logged out', 'Successfully logged out.');
     }
@@ -169,6 +173,37 @@ export default function Dashboard({ onShowToast, onNavChange }) {
     }
     return sum;
   }, 0);
+
+  // Extract earliest upcoming session
+  const getNextSession = () => {
+    if (upcomingSessions.length === 0) return null;
+    // Sort upcoming by date ascending
+    const sorted = [...upcomingSessions].sort((a, b) => {
+      return new Date(a.data.date + 'T' + a.data.time) - new Date(b.data.date + 'T' + b.data.time);
+    });
+    return sorted[0];
+  };
+  const nextSession = getNextSession();
+
+  // Date styling formats
+  const getDayNum = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+      return new Date(dateStr + 'T00:00:00').getDate();
+    } catch (e) {
+      return '';
+    }
+  };
+
+  const getMonthAbbr = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+      const MONS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+      return MONS[new Date(dateStr + 'T00:00:00').getMonth()];
+    } catch (e) {
+      return '';
+    }
+  };
 
   const fmtDate = (iso) => {
     if (!iso) return '';
@@ -309,143 +344,347 @@ export default function Dashboard({ onShowToast, onNavChange }) {
     );
   }
 
-  // Render Dashboard View
+  // Render Premium Management Portal View
   return (
-    <div className="dash-page-wrap">
-      <div className="dash-glow"></div>
-      
-      <div className="dash-container">
-        {/* Header */}
-        <header className="dash-header">
-          <div className="dh-info">
-            <h1 className="dh-title">Welcome Back, <em>{userProfile?.name || 'Explorer'}!</em></h1>
-            <p className="dh-sub">Monitor your mentorship session bookings, schedules, and Stripe transaction history.</p>
-          </div>
-          <button onClick={handleLogout} className="dash-logout-btn">
-            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
-            Log Out
-          </button>
-        </header>
+    <div className="portal-layout">
+      {/* Background Neon Blobs */}
+      <div className="portal-glow-top"></div>
+      <div className="portal-glow-bottom"></div>
 
-        {/* Stats Matrix */}
-        <div className="dash-stats">
-          <div className="dstat">
-            <span className="dstat-lbl">Total Bookings</span>
-            <span className="dstat-val">{totalBookings}</span>
-          </div>
-          <div className="dstat">
-            <span className="dstat-lbl">Upcoming Sessions</span>
-            <span className="dstat-val" style={{ color: '#EC4899' }}>{upcomingCount}</span>
-          </div>
-          <div className="dstat">
-            <span className="dstat-lbl">Total Invested</span>
-            <span className="dstat-val">${totalSpent}</span>
+      {/* Left Navigation Sidebar */}
+      <aside className="portal-sidebar">
+        <div className="sidebar-brand">
+          <div className="sb-logo">B</div>
+          <div className="sb-meta">
+            <h3>BBG Portal</h3>
+            <span>Client Desk</span>
           </div>
         </div>
 
-        {/* Content Tabs */}
-        <div className="dash-content-box">
-          <div className="dash-tabs">
-            <button 
-              className={`dtab-btn${activeTab === 'upcoming' ? ' on' : ''}`}
-              onClick={() => setActiveTab('upcoming')}
-            >
-              Upcoming Sessions ({upcomingCount})
-            </button>
-            <button 
-              className={`dtab-btn${activeTab === 'history' ? ' on' : ''}`}
-              onClick={() => setActiveTab('history')}
-            >
-              Booking & Payment History
-            </button>
+        <div className="sidebar-user">
+          <div className="su-avatar">
+            {userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : 'U'}
+            <div className="su-status-dot"></div>
           </div>
+          <div className="su-info">
+            <h4 title={userProfile?.name}>{userProfile?.name || 'Client User'}</h4>
+            <span title={userProfile?.email}>{userProfile?.email || 'customer@example.com'}</span>
+          </div>
+        </div>
 
-          <div className="dash-panel">
-            {loadingBookings ? (
-              <div className="dash-loading">
-                <svg className="spin" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-6.2-8.6" /></svg>
-                <span>Loading your sessions...</span>
-              </div>
-            ) : activeTab === 'upcoming' ? (
-              <div className="bookings-list">
-                {upcomingSessions.length === 0 ? (
-                  <div className="dash-empty">
-                    <span className="de-icon">🗓️</span>
-                    <h3>No upcoming sessions scheduled</h3>
-                    <p>Connect with our expert mentors to jumpstart your operational skillsets.</p>
-                    <button 
-                      onClick={() => onNavChange('mentorship')} 
-                      className="btn-p"
-                      style={{ marginTop: '16px', display: 'inline-flex' }}
-                    >
-                      Book a Session
-                    </button>
+        <nav className="sidebar-menu">
+          <button 
+            className={`menu-item${activeSection === 'overview' ? ' active' : ''}`}
+            onClick={() => setActiveSection('overview')}
+          >
+            <svg viewBox="0 0 24 24" className="menu-icon"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+            Overview
+          </button>
+          <button 
+            className={`menu-item${activeSection === 'sessions' ? ' active' : ''}`}
+            onClick={() => setActiveSection('sessions')}
+          >
+            <svg viewBox="0 0 24 24" className="menu-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            My Sessions
+            {upcomingCount > 0 && <span className="menu-badge">{upcomingCount}</span>}
+          </button>
+          <button 
+            className={`menu-item${activeSection === 'billing' ? ' active' : ''}`}
+            onClick={() => setActiveSection('billing')}
+          >
+            <svg viewBox="0 0 24 24" className="menu-icon"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Billing Ledger
+          </button>
+          <button 
+            className={`menu-item${activeSection === 'profile' ? ' active' : ''}`}
+            onClick={() => setActiveSection('profile')}
+          >
+            <svg viewBox="0 0 24 24" className="menu-icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Profile Desk
+          </button>
+        </nav>
+
+        <button onClick={handleLogout} className="sidebar-logout">
+          <svg viewBox="0 0 24 24" className="menu-icon"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign Out
+        </button>
+      </aside>
+
+      {/* Main Content Workspace */}
+      <main className="portal-main">
+        {loadingBookings ? (
+          <div className="portal-workspace-loading">
+            <svg className="spin" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-6.2-8.6" fill="none" stroke="currentColor" strokeWidth="3.5"/></svg>
+            <h3>Synchronizing portal details...</h3>
+            <p>Gathering session rosters and ledger records securely.</p>
+          </div>
+        ) : (
+          <div className="workspace-inner fade-in-workspace">
+            {/* OVERVIEW PANEL */}
+            {activeSection === 'overview' && (
+              <div className="overview-workspace">
+                {/* Greeting banner */}
+                <div className="overview-banner">
+                  <div className="banner-g"></div>
+                  <div className="banner-txt">
+                    <h2>Hello, {userProfile?.name ? userProfile.name.split(' ')[0] : 'Explorer'}!</h2>
+                    <p>Welcome to your operational headquarters. You have {upcomingCount} upcoming sessions scheduled.</p>
                   </div>
-                ) : (
-                  upcomingSessions.map(b => (
-                    <div key={b._id} className="booking-card">
-                      <div className="bc-header">
-                        <div className="bc-mentor">
-                          <div className="bc-ava">{(b.data.mentor || 'M').charAt(0)}</div>
-                          <div>
-                            <h4>{b.data.mentor}</h4>
-                            <span>Mentor Profile</span>
+                </div>
+
+                {/* Metrics Cards grid */}
+                <div className="metrics-grid">
+                  <div className="metric-c bookings">
+                    <div className="mc-head">
+                      <span>Total Booked</span>
+                      <div className="mc-icon">🏆</div>
+                    </div>
+                    <h3>{totalBookings}</h3>
+                    <div className="mc-bar"><div className="mc-bar-progress" style={{ width: `${Math.min(totalBookings * 10, 100)}%` }}></div></div>
+                  </div>
+
+                  <div className="metric-c active-sessions">
+                    <div className="mc-head">
+                      <span>Upcoming Sessions</span>
+                      <div className="mc-icon">🗓️</div>
+                    </div>
+                    <h3 style={{ color: 'var(--rose)' }}>{upcomingCount}</h3>
+                    <div className="mc-bar"><div className="mc-bar-progress" style={{ width: `${Math.min(upcomingCount * 25, 100)}%`, background: 'var(--rose)' }}></div></div>
+                  </div>
+
+                  <div className="metric-c billing">
+                    <div className="mc-head">
+                      <span>Total Invested</span>
+                      <div className="mc-icon">💎</div>
+                    </div>
+                    <h3>${totalSpent}</h3>
+                    <div className="mc-bar"><div className="mc-bar-progress" style={{ width: `${Math.min(totalSpent / 5, 100)}%`, background: '#EAB308' }}></div></div>
+                  </div>
+                </div>
+
+                {/* Split Widgets */}
+                <div className="overview-split-grid">
+                  {/* Next session widget */}
+                  <div className="next-session-widget">
+                    <div className="widget-header">
+                      <h4>Next Scheduled Session</h4>
+                      <span className="live-pulse">Ready</span>
+                    </div>
+                    {nextSession ? (
+                      <div className="ns-content">
+                        <div className="ns-mentor-row">
+                          <div className="ns-ava">{nextSession.data.mentor.charAt(0)}</div>
+                          <div className="ns-mentor-info">
+                            <h5>{nextSession.data.mentor}</h5>
+                            <span>Professional Mentor</span>
                           </div>
                         </div>
-                        <span className="bc-badge">Upcoming</span>
+                        <div className="ns-details-list">
+                          <div className="nsd-item">
+                            <span className="l">Schedule Date</span>
+                            <span className="v">{fmtDate(nextSession.data.date)}</span>
+                          </div>
+                          <div className="nsd-item">
+                            <span className="l">Session Time</span>
+                            <span className="v">{nextSession.data.time}</span>
+                          </div>
+                          <div className="nsd-item">
+                            <span className="l">Duration Slot</span>
+                            <span className="v">{nextSession.data.duration} Mins</span>
+                          </div>
+                        </div>
+                        <div className="ns-actions">
+                          <a 
+                            href="https://meet.google.com" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="ns-join-btn"
+                          >
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                            Launch Meeting
+                          </a>
+                        </div>
                       </div>
-                      
-                      <div className="bc-details">
-                        <div className="bcd-i">
-                          <span className="k">Date & Time</span>
-                          <span className="v">{fmtDate(b.data.date)} at {b.data.time}</span>
-                        </div>
-                        <div className="bcd-i">
-                          <span className="k">Duration</span>
-                          <span className="v">{b.data.duration} minutes</span>
-                        </div>
-                        <div className="bcd-i">
-                          <span className="k">Amount Paid</span>
-                          <span className="v" style={{ color: '#EC4899' }}>{b.data.amount}</span>
-                        </div>
+                    ) : (
+                      <div className="ns-empty">
+                        <span className="ne-emoji">☕</span>
+                        <p>No upcoming sessions scheduled. Need advice?</p>
+                        <button onClick={() => onNavChange('mentorship')} className="ns-book-shortcut">
+                          Book Mentor
+                        </button>
                       </div>
+                    )}
+                  </div>
+
+                  {/* Recent Activity Mini Ledger */}
+                  <div className="recent-activity-widget">
+                    <div className="widget-header">
+                      <h4>Recent Purchases</h4>
+                      <button className="widget-view-all" onClick={() => setActiveSection('billing')}>View All</button>
                     </div>
-                  ))
-                )}
+                    {bookings.length === 0 ? (
+                      <div className="ra-empty">
+                        <p>No transaction history logged yet.</p>
+                      </div>
+                    ) : (
+                      <div className="ra-list">
+                        {bookings.slice(0, 3).map(b => (
+                          <div key={b._id} className="ra-item">
+                            <div className="ra-meta">
+                              <strong>Mentorship with {b.data.mentor}</strong>
+                              <span>{new Date(b.created_at || b.data.submitted_at || Date.now()).toLocaleDateString()}</span>
+                            </div>
+                            <div className="ra-value">
+                              <span className="ra-amount">{b.data.amount}</span>
+                              <span className="ra-status">Paid</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-            ) : (
-              <div className="history-list">
-                {pastSessions.length === 0 && upcomingSessions.length === 0 ? (
+            )}
+
+            {/* SESSIONS PANEL */}
+            {activeSection === 'sessions' && (
+              <div className="sessions-workspace">
+                <div className="ws-title-row">
+                  <div>
+                    <h2>Mentorship Sessions</h2>
+                    <p>Track your scheduled video calls and professional operations.</p>
+                  </div>
+                  <button onClick={() => onNavChange('mentorship')} className="btn-p">
+                    + Book New Session
+                  </button>
+                </div>
+
+                {/* Filters Row */}
+                <div className="sessions-filters">
+                  <button className={`filter-tab${sessionFilter === 'all' ? ' on' : ''}`} onClick={() => setSessionFilter('all')}>
+                    All Sessions ({bookings.length})
+                  </button>
+                  <button className={`filter-tab${sessionFilter === 'upcoming' ? ' on' : ''}`} onClick={() => setSessionFilter('upcoming')}>
+                    Upcoming ({upcomingSessions.length})
+                  </button>
+                  <button className={`filter-tab${sessionFilter === 'completed' ? ' on' : ''}`} onClick={() => setSessionFilter('completed')}>
+                    Completed ({pastSessions.length})
+                  </button>
+                </div>
+
+                {/* Session roster list */}
+                <div className="sessions-grid-wrapper">
+                  {(sessionFilter === 'all' ? bookings : sessionFilter === 'upcoming' ? upcomingSessions : pastSessions).length === 0 ? (
+                    <div className="dash-empty">
+                      <span className="de-icon">📅</span>
+                      <h3>No records match the filter</h3>
+                      <p>Your scheduled consultations will be logged in this section.</p>
+                    </div>
+                  ) : (
+                    <div className="sessions-grid">
+                      {(sessionFilter === 'all' ? bookings : sessionFilter === 'upcoming' ? upcomingSessions : pastSessions).map(b => {
+                        const upcoming = isUpcoming(b.data.date);
+                        return (
+                          <div key={b._id} className={`session-card-p${upcoming ? ' upcoming' : ' completed'}`}>
+                            <div className="sc-date-block">
+                              <span className="sc-month">{getMonthAbbr(b.data.date)}</span>
+                              <span className="sc-day">{getDayNum(b.data.date)}</span>
+                            </div>
+
+                            <div className="sc-info-block">
+                              <div className="sc-mentor-meta">
+                                <h4>{b.data.mentor}</h4>
+                                <span className="sc-title">Mentor Profile</span>
+                              </div>
+
+                              <div className="sc-params">
+                                <div className="scp-i">
+                                  <span>Time Slot</span>
+                                  <strong>{b.data.time}</strong>
+                                </div>
+                                <div className="scp-i">
+                                  <span>Duration</span>
+                                  <strong>{b.data.duration} mins</strong>
+                                </div>
+                                <div className="scp-i">
+                                  <span>Invested</span>
+                                  <strong>{b.data.amount}</strong>
+                                </div>
+                              </div>
+
+                              <div className="sc-footer-actions">
+                                <span className={`sc-status-badge ${upcoming ? 'scheduled' : 'completed'}`}>
+                                  {upcoming ? 'Scheduled' : 'Completed'}
+                                </span>
+                                {upcoming && (
+                                  <a 
+                                    href="https://meet.google.com" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                    className="sc-meet-btn"
+                                  >
+                                    Join Call
+                                  </a>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* BILLING LEDGER PANEL */}
+            {activeSection === 'billing' && (
+              <div className="billing-workspace">
+                <div className="ws-title-row">
+                  <div>
+                    <h2>Billing & Invoices</h2>
+                    <p>Access receipts and checkout history logs managed by Stripe.</p>
+                  </div>
+                </div>
+
+                {bookings.length === 0 ? (
                   <div className="dash-empty">
                     <span className="de-icon">💳</span>
-                    <h3>No transaction history found</h3>
-                    <p>Your Stripe payments and session history will be logged here.</p>
+                    <h3>No invoice records loaded</h3>
+                    <p>All completed Stripe transactions will show up here.</p>
                   </div>
                 ) : (
-                  <div className="history-table-wrapper">
-                    <table className="history-table">
+                  <div className="ledger-table-wrapper">
+                    <table className="ledger-table">
                       <thead>
                         <tr>
                           <th>Payment Date</th>
                           <th>Description</th>
-                          <th>Session Time</th>
-                          <th>Stripe Transaction ID</th>
-                          <th>Amount</th>
+                          <th>Session Details</th>
+                          <th>Invoice Ref</th>
+                          <th>Status</th>
+                          <th>Total Amount</th>
                         </tr>
                       </thead>
                       <tbody>
                         {bookings.map(b => (
                           <tr key={b._id}>
-                            <td style={{ fontWeight: '500' }}>{new Date(b.created_at || b.data.submitted_at || Date.now()).toLocaleDateString()}</td>
+                            <td>{new Date(b.created_at || b.data.submitted_at || Date.now()).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
                             <td>
-                              <div style={{ fontWeight: '600' }}>Mentorship with {b.data.mentor}</div>
-                              <span style={{ fontSize: '11px', color: '#9CA3AF' }}>{b.data.duration} mins session</span>
+                              <div className="invoice-desc-col">
+                                <strong>Mentorship with {b.data.mentor}</strong>
+                                <span>Session Invoice</span>
+                              </div>
                             </td>
-                            <td>{fmtDate(b.data.date)} · {b.data.time}</td>
-                            <td style={{ fontFamily: 'monospace', fontSize: '12px', color: '#9CA3AF' }}>
-                              {b.data.stripe_session_id || 'mock_checkout_session_id'}
+                            <td>{fmtDate(b.data.date)} at {b.data.time}</td>
+                            <td className="monospace-ref" title={b.data.stripe_session_id || 'mock_checkout_session_id'}>
+                              {b.data.stripe_session_id ? b.data.stripe_session_id.substring(0, 16) + '...' : 'mock_invoice_id'}
                             </td>
-                            <td style={{ fontWeight: '600', color: '#EC4899' }}>{b.data.amount}</td>
+                            <td>
+                              <span className="status-pill paid">Paid</span>
+                            </td>
+                            <td className="amount-col">{b.data.amount}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -454,9 +693,55 @@ export default function Dashboard({ onShowToast, onNavChange }) {
                 )}
               </div>
             )}
+
+            {/* PROFILE SETTINGS PANEL */}
+            {activeSection === 'profile' && (
+              <div className="profile-workspace">
+                <div className="ws-title-row">
+                  <div>
+                    <h2>Profile Settings</h2>
+                    <p>View your platform credentials and verification status details.</p>
+                  </div>
+                </div>
+
+                <div className="profile-settings-card">
+                  <div className="psc-glow"></div>
+                  <div className="profile-header-group">
+                    <div className="psc-avatar">
+                      {userProfile?.name ? userProfile.name.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                    <div>
+                      <h3>{userProfile?.name || 'Client User'}</h3>
+                      <span>Platform Member</span>
+                    </div>
+                  </div>
+
+                  <div className="profile-details-grid">
+                    <div className="pd-row">
+                      <span className="lbl">Email Account</span>
+                      <strong className="val">{userProfile?.email}</strong>
+                    </div>
+                    <div className="pd-row">
+                      <span className="lbl">Account Type</span>
+                      <strong className="val">Platform Customer</strong>
+                    </div>
+                    <div className="pd-row">
+                      <span className="lbl">Verified Status</span>
+                      <strong className="val" style={{ color: '#4ade80', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span className="status-dot-green"></span> Approved
+                      </strong>
+                    </div>
+                    <div className="pd-row">
+                      <span className="lbl">Linked Provider</span>
+                      <strong className="val">Social Sign-In (Firebase)</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
-      </div>
+        )}
+      </main>
     </div>
   );
 }
