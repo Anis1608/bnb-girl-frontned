@@ -339,6 +339,15 @@
 /* ===== HERO ===== */
 .mentorship-page-wrap .hero {
   position: relative;
+  display: block;
+  align-items: stretch;
+  background: none;
+  min-height: auto;
+  animation: none;
+  overflow: visible;
+}
+.mentorship-page-wrap .hero::before {
+  display: none;
 }
 
 .mentorship-page-wrap .hero-bgwrap {
