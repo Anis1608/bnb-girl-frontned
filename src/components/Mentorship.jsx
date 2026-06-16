@@ -225,6 +225,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
         p30: m.p30 || p30Val,
         p60: m.p60 || p60Val,
         p120: m.p120 || '',
+        pricing: m.pricing || {},
         rating: ratingVal,
         sessions: sessionsVal,
         resp: "Usually replies in ~2h",
@@ -380,11 +381,14 @@ export default function Mentorship({ onShowToast, onNavChange }) {
   };
 
   const durDesc = (d) => {
-    return d === '30' ? 'Quick focused session' : d === '60' ? 'Deep-dive conversation' : 'Extended strategy';
+    return d === '30' ? 'Quick focused session' : d === '60' ? 'Deep-dive conversation' : d === '120' ? 'Extended strategy' : 'Custom mentorship session';
   };
 
   const priceOf = (d) => {
     if (!selectedMentor) return '';
+    if (selectedMentor.pricing && selectedMentor.pricing[d]) {
+      return selectedMentor.pricing[d];
+    }
     return d === '30' ? selectedMentor.p30 : d === '60' ? selectedMentor.p60 : selectedMentor.p120 || '';
   };
 
