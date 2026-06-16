@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 // Unified episodes dataset from episode.html
@@ -407,7 +408,27 @@ const SUBTOPIC_MAP = {
 
 export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onShowToast }) {
   const { episodes: dbEpisodes, categories: dbCategories, loading } = useApp();
+  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Parse category query parameter from URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const cat = params.get('category');
+    if (cat) {
+      setSelectedCategory(cat);
+      setSelectedSubtopic('All');
+      
+      // Scroll to categories filter / episodes list header
+      setTimeout(() => {
+        const target = document.getElementById('episodes');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }, [location.search]);
+
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSubtopic, setSelectedSubtopic] = useState('All');
   const [sortOrder, setSortOrder] = useState('newest');
