@@ -463,9 +463,21 @@ export function GuestModal({ episodeIndex, onClose, onOpenVideo, onOpenAudio, on
               <button className="gv-btn gv-btn--audio" onClick={handleListenAudio}>
                 🎧 Audio
               </button>
-              <button className="gv-btn gv-btn--pdf" onClick={() => onShowToast('📥', 'Downloaded!', 'Career Notes')}>
-                📄 PDF
-              </button>
+              {episode.pdf ? (
+                <a
+                  className="gv-btn gv-btn--pdf"
+                  href={episode.pdf}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  📄 PDF
+                </a>
+              ) : (
+                <button className="gv-btn gv-btn--pdf" onClick={() => onShowToast('📥', 'No Guide', 'No career notes PDF available')}>
+                  📄 PDF
+                </button>
+              )}
             </div>
           </div>
         </div>
