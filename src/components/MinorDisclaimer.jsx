@@ -7,18 +7,16 @@ export default function MinorDisclaimer() {
   useEffect(() => {
     const handleScroll = () => {
       const sections = document.querySelectorAll('.policy-section');
-      let currentSection = '';
+      let currentSection = 'disclaimer';
       
       sections.forEach((section) => {
         const rect = section.getBoundingClientRect();
-        if (rect.top <= 180) {
+        if (rect.top <= 200) {
           currentSection = section.id;
         }
       });
       
-      if (currentSection) {
-        setActiveSection(currentSection);
-      }
+      setActiveSection(currentSection);
     };
 
     window.addEventListener('scroll', handleScroll);
