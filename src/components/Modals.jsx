@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { EP } from './Episodes';
 
 // 1. VIDEO MODAL (Pure YouTube player)
@@ -387,6 +388,7 @@ const GUEST_INFO = [
 ];
 
 export function GuestModal({ episodeIndex, onClose, onOpenVideo, onOpenAudio, onShowToast }) {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('about'); // 'about' | 'ask'
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -542,9 +544,15 @@ export function GuestModal({ episodeIndex, onClose, onOpenVideo, onOpenAudio, on
                 <button className="guest-modal__connect-btn" onClick={() => onShowToast('👋', 'Connecting', 'Instagram link clicked')}>Instagram</button>
                 <button className="guest-modal__connect-btn" onClick={() => onShowToast('👋', 'Connecting', 'LinkedIn link clicked')}>LinkedIn</button>
                 {episode.is_mentor && (
-                  <a href={`/mentorship?mentor_name=${encodeURIComponent(episode.guest)}`} className="guest-modal__book-mentor-btn" onClick={onClose}>
+                  <button
+                    className="guest-modal__book-mentor-btn"
+                    onClick={() => {
+                      onClose();
+                      navigate(`/mentorship?mentor_name=${encodeURIComponent(episode.guest)}`);
+                    }}
+                  >
                     📅 Book Mentorship Session
-                  </a>
+                  </button>
                 )}
               </div>
             </div>
@@ -723,6 +731,7 @@ export function SearchOverlay({ isOpen, onClose, onOpenVideo }) {
 
 // 5. GUEST INFO MODAL — Full guest/mentor profile, opened from "Guest Info" button
 export function GuestInfoModal({ episode, onClose, onOpenVideo, onOpenAudio }) {
+  const navigate = useNavigate();
   useEffect(() => {
     const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', handleKey);
@@ -987,18 +996,20 @@ export function GuestInfoModal({ episode, onClose, onOpenVideo, onOpenAudio }) {
                 in LinkedIn
               </a>
             )}
-            <a
-              href={`/mentorship?mentor_name=${encodeURIComponent(episode.guest)}`}
-              onClick={onClose}
+            <button
+              onClick={() => {
+                onClose();
+                navigate(`/mentorship?mentor_name=${encodeURIComponent(episode.guest)}`);
+              }}
               style={{
                 flex: 1, minWidth: '120px', padding: '12px 20px', borderRadius: '12px',
                 background: 'rgba(234,179,8,0.12)', border: '1px solid rgba(234,179,8,0.3)',
                 color: '#FDE047', fontWeight: '700', fontSize: '13px',
-                textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
               }}
             >
               📅 Book Session
-            </a>
+            </button>
           </div>
         </div>
       </div>

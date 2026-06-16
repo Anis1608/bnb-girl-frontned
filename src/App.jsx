@@ -159,6 +159,8 @@ export default function App() {
     isSearchOpen
   );
   const prevModalOpenRef = useRef(false);
+  // Flag: modal was closed via browser back button (popstate), so don't call history.back() again
+  const closedByPopStateRef = useRef(false);
 
   useEffect(() => {
     if (anyModalOpen && !prevModalOpenRef.current) {
@@ -167,16 +169,19 @@ export default function App() {
         window.history.pushState({ modalOpen: true }, '');
       }
     } else if (!anyModalOpen && prevModalOpenRef.current) {
-      // All modals closed -> pop modal state if we pushed it
-      if (window.history.state && window.history.state.modalOpen) {
+      // All modals closed -> only call history.back() if NOT already triggered by back button
+      if (!closedByPopStateRef.current && window.history.state && window.history.state.modalOpen) {
         window.history.back();
       }
+      closedByPopStateRef.current = false;
     }
     prevModalOpenRef.current = anyModalOpen;
   }, [anyModalOpen]);
 
   useEffect(() => {
     const handlePopState = (e) => {
+      // Mark that closure was triggered by browser back, so anyModalOpen effect won't back() again
+      closedByPopStateRef.current = true;
       // Close all modals when browser Back button is pressed
       setActiveVideoModal(null);
       setActiveAudioModal(null);
