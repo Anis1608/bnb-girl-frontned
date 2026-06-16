@@ -1,8 +1,9 @@
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useApp } from '../context/AppContext';
 
-// local configuration data for the series cards
-const SERIES_DATA = [
+// Static fallbacks if CMS hasn't seeded these values yet
+const SERIES_STATIC = [
   {
     id: 'stem',
     title: 'Women in STEM',
@@ -10,7 +11,7 @@ const SERIES_DATA = [
     icon: '🔬',
     bgClass: 'series-card--stem',
     category: 'tech',
-    youtubeUrl: '', // Add a direct YouTube link here to redirect externally, or leave blank to redirect locally to categories
+    youtubeUrl: '',
     percentage: '25%',
     artSvg: (
       <svg className="series-card__art" viewBox="0 0 256 360" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -38,7 +39,7 @@ const SERIES_DATA = [
     icon: '🚀',
     bgClass: 'series-card--entrepreneurship',
     category: 'business',
-    youtubeUrl: '', // Add a direct YouTube link here to redirect externally, or leave blank to redirect locally to categories
+    youtubeUrl: '',
     percentage: '0%',
     artSvg: (
       <svg className="series-card__art" viewBox="0 0 256 360" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -59,7 +60,7 @@ const SERIES_DATA = [
     icon: '🌸',
     bgClass: 'series-card--mental-health',
     category: 'health',
-    youtubeUrl: '', // Add a direct YouTube link here to redirect externally, or leave blank to redirect locally to categories
+    youtubeUrl: '',
     percentage: '50%',
     artSvg: (
       <svg className="series-card__art" viewBox="0 0 256 360" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -80,7 +81,7 @@ const SERIES_DATA = [
     icon: '⚖️',
     bgClass: 'series-card--law',
     category: 'law',
-    youtubeUrl: '', // Add a direct YouTube link here to redirect externally, or leave blank to redirect locally to categories
+    youtubeUrl: '',
     percentage: '0%',
     artSvg: (
       <svg className="series-card__art" viewBox="0 0 256 360" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -102,7 +103,7 @@ const SERIES_DATA = [
     icon: '🎨',
     bgClass: 'series-card--creative',
     category: 'arts',
-    youtubeUrl: '', // Add a direct YouTube link here to redirect externally, or leave blank to redirect locally to categories
+    youtubeUrl: '',
     percentage: '14%',
     artSvg: (
       <svg className="series-card__art" viewBox="0 0 256 360" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -124,7 +125,7 @@ const SERIES_DATA = [
     icon: '💼',
     bgClass: 'series-card--finance',
     category: 'finance',
-    youtubeUrl: '', // Add a direct YouTube link here to redirect externally, or leave blank to redirect locally to categories
+    youtubeUrl: '',
     percentage: '0%',
     artSvg: (
       <svg className="series-card__art" viewBox="0 0 256 360" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -134,7 +135,7 @@ const SERIES_DATA = [
         <rect x="156" y="150" width="28" height="170" rx="4" fill="white" fillOpacity=".1" />
         <rect x="196" y="110" width="28" height="210" rx="4" fill="white" fillOpacity=".12" />
         <path d="M50 260 L90 220 L130 190 L170 150 L210 110" stroke="#38BDF8" strokeOpacity=".45" strokeWidth="2" fill="none" strokeLinecap="round" />
-        <circle cx="210" cy="110" r="5" fill="#38BDF8" fill-opacity=".7" />
+        <circle cx="210" cy="110" r="5" fill="#38BDF8" fillOpacity=".7" />
         <circle cx="50" cy="88" r="24" stroke="#38BDF8" strokeOpacity=".2" strokeWidth="1.5" fill="none" />
         <text x="50" y="94" textAnchor="middle" fontSize="16" fill="white" fillOpacity=".4">$</text>
       </svg>
@@ -145,6 +146,17 @@ const SERIES_DATA = [
 export default function Series() {
   const scrollRef = useRef(null);
   const navigate = useNavigate();
+  const { cms } = useApp();
+
+  // Merge CMS dynamic data onto the static fallbacks
+  const SERIES_DATA = SERIES_STATIC.map(card => ({
+    ...card,
+    title:      cms[`cms_series_${card.id}_title`]      || card.title,
+    epCount:    cms[`cms_series_${card.id}_epcount`]    || card.epCount,
+    category:   cms[`cms_series_${card.id}_category`]   || card.category,
+    youtubeUrl: cms[`cms_series_${card.id}_youtube`]    ?? card.youtubeUrl,
+    percentage: cms[`cms_series_${card.id}_percentage`] || card.percentage,
+  }));
 
   const scrollSeries = (direction) => {
     if (scrollRef.current) {
@@ -155,11 +167,10 @@ export default function Series() {
   const handleCardClick = (e, card) => {
     const hasRealLink = card.youtubeUrl && card.youtubeUrl.trim() !== '';
     if (hasRealLink) {
-      // If we put a YouTube link, let the normal behavior open it in a new tab
+      // Let the normal anchor behavior open it in a new tab
       return;
     }
-    
-    // Otherwise, redirect locally to the category on the episodes page
+    // Otherwise redirect locally to the category on the episodes page
     e.preventDefault();
     navigate(`/episodes?category=${card.category}`);
   };
@@ -209,7 +220,9 @@ export default function Series() {
                   <div className="series-card__bar-wrap">
                     <div className="series-card__bar-fill" style={{ width: card.percentage }}></div>
                   </div>
-                  <button className="series-card__btn">Watch on YouTube →</button>
+                  <button className="series-card__btn">
+                    {hasRealLink ? 'Watch on YouTube →' : 'Browse Episodes →'}
+                  </button>
                 </div>
               </a>
             );
