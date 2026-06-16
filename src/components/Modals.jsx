@@ -541,9 +541,11 @@ export function GuestModal({ episodeIndex, onClose, onOpenVideo, onOpenAudio, on
               <div className="guest-modal__connect">
                 <button className="guest-modal__connect-btn" onClick={() => onShowToast('👋', 'Connecting', 'Instagram link clicked')}>Instagram</button>
                 <button className="guest-modal__connect-btn" onClick={() => onShowToast('👋', 'Connecting', 'LinkedIn link clicked')}>LinkedIn</button>
-                <a href="#mentorship" className="guest-modal__book-mentor-btn" onClick={onClose}>
-                  📅 Book Mentorship Session
-                </a>
+                {episode.is_mentor && (
+                  <a href={`/mentorship?mentor_name=${encodeURIComponent(episode.guest)}`} className="guest-modal__book-mentor-btn" onClick={onClose}>
+                    📅 Book Mentorship Session
+                  </a>
+                )}
               </div>
             </div>
           ) : (
@@ -986,7 +988,7 @@ export function GuestInfoModal({ episode, onClose, onOpenVideo, onOpenAudio }) {
               </a>
             )}
             <a
-              href="/mentorship"
+              href={`/mentorship?mentor_name=${encodeURIComponent(episode.guest)}`}
               onClick={onClose}
               style={{
                 flex: 1, minWidth: '120px', padding: '12px 20px', borderRadius: '12px',

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // Import all custom components
 import Navbar from './components/Navbar';
@@ -149,6 +149,45 @@ export default function App() {
       document.body.style.overflow = '';
     }
   }, [activeGuestModal, activeGuestInfoModal, activeVideoModal, activeAudioModal, isSearchOpen]);
+
+  // Synchronize modal state with browser history stack (Back button closes modal)
+  const anyModalOpen = !!(
+    activeVideoModal ||
+    activeAudioModal ||
+    activeGuestModal !== null ||
+    activeGuestInfoModal ||
+    isSearchOpen
+  );
+  const prevModalOpenRef = useRef(false);
+
+  useEffect(() => {
+    if (anyModalOpen && !prevModalOpenRef.current) {
+      // First modal opening -> push state to history stack
+      if (!window.history.state || !window.history.state.modalOpen) {
+        window.history.pushState({ modalOpen: true }, '');
+      }
+    } else if (!anyModalOpen && prevModalOpenRef.current) {
+      // All modals closed -> pop modal state if we pushed it
+      if (window.history.state && window.history.state.modalOpen) {
+        window.history.back();
+      }
+    }
+    prevModalOpenRef.current = anyModalOpen;
+  }, [anyModalOpen]);
+
+  useEffect(() => {
+    const handlePopState = (e) => {
+      // Close all modals when browser Back button is pressed
+      setActiveVideoModal(null);
+      setActiveAudioModal(null);
+      setActiveGuestModal(null);
+      setActiveGuestInfoModal(null);
+      setIsSearchOpen(false);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   return (
     <>

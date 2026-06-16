@@ -52,6 +52,7 @@ export default function AppContextProvider({ children }) {
     subcategory_name: ep.subcategory_name || (ep.subcategory_id && ep.subcategory_id.name) || '',
     dur: ep.duration || '',
     isNew: ep.is_new === 1 || ep.is_new === true,
+    is_mentor: ep.is_mentor === true || ep.is_mentor === 1 || ep.is_mentor === 'true',
     thumb: ep.youtube_id ? `https://img.youtube.com/vi/${ep.youtube_id}/mqdefault.jpg` : 'https://placehold.co/640x360/0F0A1E/fff?text=Podcast',
     photo: ep.guest_photo || 'https://placehold.co/64x64/9333EA/fff?text=Guest',
     prog: 0,

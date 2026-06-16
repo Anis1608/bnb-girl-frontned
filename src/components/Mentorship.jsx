@@ -343,6 +343,32 @@ export default function Mentorship({ onShowToast, onNavChange }) {
     }
   }, [mentorsList]);
 
+  // Auto-open booking sheet if mentor query param is present in URL
+  useEffect(() => {
+    if (mentorsList.length === 0) return;
+    
+    const params = new URLSearchParams(window.location.search);
+    const mentorIdParam = params.get('mentor_id');
+    const mentorNameParam = params.get('mentor_name');
+    
+    if (mentorIdParam || mentorNameParam) {
+      const foundMentor = mentorsList.find(m => 
+        (mentorIdParam && String(m.id) === String(mentorIdParam)) ||
+        (mentorNameParam && m.name.toLowerCase() === mentorNameParam.toLowerCase())
+      );
+      
+      if (foundMentor) {
+        const timer = setTimeout(() => {
+          openSheet(foundMentor);
+          // Clean the query parameters so reload doesn't keep opening it
+          const newUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, newUrl);
+        }, 300);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [mentorsList]);
+
   // Modal Open Handler
   const openSheet = (mentor) => {
     setSelectedMentor(mentor);
