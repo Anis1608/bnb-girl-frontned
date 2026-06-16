@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useApp } from '../context/AppContext';
 import './Mentorship.css';
 
@@ -354,7 +355,9 @@ export default function Mentorship({ onShowToast, onNavChange }) {
 
   const closeSheet = () => {
     setIsSheetOpen(false);
-    setSelectedMentor(null);
+    setTimeout(() => {
+      setSelectedMentor(null);
+    }, 300);
   };
 
   // Helper date methods
@@ -967,281 +970,289 @@ export default function Mentorship({ onShowToast, onNavChange }) {
       </section>
 
       {/* ===== BOOKING MODAL (SHEET) ===== */}
-      <div
-        className={`scrim${isSheetOpen ? ' open' : ''}`}
-        id="scrim"
-        onClick={handleScrimClick}
-      ></div>
-      
-      {isSheetOpen && selectedMentor && (
-        <div className={`sheet${isSheetOpen ? ' open' : ''}`} id="sheet">
-          {bookingStep !== 'success' && (
-            <div className="s-head">
-              <div className="s-mentor">
-                <div
-                  className="s-ava"
-                  style={selectedMentor.photo ? { backgroundImage: `url(${selectedMentor.photo})` } : null}
-                >
-                  {selectedMentor.photo ? '' : selectedMentor.init}
-                </div>
-                <div>
-                  <div className="s-nm">{selectedMentor.name}</div>
-                  <div className="s-rl">{selectedMentor.role}</div>
-                </div>
-                <button className="s-x" onClick={closeSheet}>
-                  <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" /></svg>
-                </button>
-              </div>
-              <div className="s-steps">
-                <span className={`sstep${getStepNumber() >= 1 ? ' on' : ''}`}></span>
-                <span className={`sstep${getStepNumber() >= 2 ? ' on' : ''}`}></span>
-                <span className={`sstep${getStepNumber() >= 3 ? ' on' : ''}`}></span>
-              </div>
-            </div>
-          )}
-
-          <div className="s-body">
-            {bookingStep === 'picker' && (
-              <>
-                <div className="s-intro">
+      {selectedMentor && createPortal(
+        <div className="mentorship-page-wrap" style={{ padding: 0, minHeight: 'auto', background: 'none', position: 'relative', zIndex: 99999 }}>
+          <div
+            className={`scrim${isSheetOpen ? ' open' : ''}`}
+            id="scrim"
+            onClick={handleScrimClick}
+            style={{ zIndex: 99999 }}
+          ></div>
+          
+          <div
+            className={`sheet${isSheetOpen ? ' open' : ''}`}
+            id="sheet"
+            style={{ zIndex: 100000 }}
+          >
+            {bookingStep !== 'success' && (
+              <div className="s-head">
+                <div className="s-mentor">
                   <div
-                    className="s-intro-ph"
+                    className="s-ava"
                     style={selectedMentor.photo ? { backgroundImage: `url(${selectedMentor.photo})` } : null}
                   >
                     {selectedMentor.photo ? '' : selectedMentor.init}
                   </div>
-                  <div className="s-intro-d">
-                    <div className="s-intro-bio">{selectedMentor.bio}</div>
-                    <div className="s-intro-meta">
-                      <span><svg viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2" /></svg>{selectedMentor.rating}</span>
-                      <span>{selectedMentor.sessions} sessions</span>
-                      <span>{selectedMentor.resp}</span>
-                      <span>{selectedMentor.lang}</span>
-                    </div>
+                  <div>
+                    <div className="s-nm">{selectedMentor.name}</div>
+                    <div className="s-rl">{selectedMentor.role}</div>
                   </div>
+                  <button className="s-x" onClick={closeSheet}>
+                    <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                  </button>
                 </div>
-
-                <div className="fld">
-                  <div className="fl">Session length</div>
-                  <div className="durs">
-                    {selectedMentor.durs.map((d) => (
-                      <button
-                        key={d}
-                        className={`dur${selectedDuration === d ? ' on' : ''}`}
-                        onClick={() => setSelectedDuration(d)}
-                      >
-                        <div className="dur-lbl">
-                          <span className="dur-t">{durLabel(d)}</span>
-                          <span className="dur-d">{durDesc(d)}</span>
-                        </div>
-                        {priceOf(d) && <span className="dur-p">{priceOf(d)}</span>}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="fld">
-                  <div className="fl">Pick a date</div>
-                  <div className="dates">
-                    {getDates().map((dt) => {
-                      const iso = dt.toISOString().slice(0, 10);
-                      const openCount = selectedMentor.slots.filter(t => !selectedMentor.busy.includes(t)).length;
-                      return (
-                        <button
-                          key={iso}
-                          className={`date${selectedDate === iso ? ' on' : ''}`}
-                          onClick={() => setSelectedDate(iso)}
-                        >
-                          <span className="date-w">{DAYS[dt.getDay()]}</span>
-                          <span className="date-d">{dt.getDate()}</span>
-                          <span className="date-m">{MONS[dt.getMonth()]}</span>
-                          <span className="date-s">{openCount} open</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="fld">
-                  <div className="fl">Available times</div>
-                  <div className="times">
-                    {selectedMentor.slots.map((t) => {
-                      const isBusy = selectedMentor.busy.includes(t);
-                      return (
-                        <button
-                          key={t}
-                          className={`tm${isBusy ? ' busy' : ''}${selectedTime === t ? ' on' : ''}`}
-                          disabled={isBusy}
-                          onClick={() => !isBusy && setSelectedTime(t)}
-                        >
-                          {t}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <div className="tz-note">
-                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                    Times shown in your timezone · {userTimezone}
-                  </div>
-                </div>
-              </>
-            )}
-
-            {bookingStep === 'email' && (
-              <>
-                <div className="sum-card">
-                  <div className="sum-r"><span className="k">Mentor</span><span className="v">{selectedMentor.name}</span></div>
-                  <div className="sum-r"><span className="k">Date</span><span class="v">{fmtDate(selectedDate)}</span></div>
-                  <div className="sum-r"><span className="k">Time</span><span class="v">{selectedTime}</span></div>
-                  <div className="sum-r"><span className="k">Session</span><span class="v">{durLabel(selectedDuration)}</span></div>
-                  {priceOf(selectedDuration) && (
-                    <div className="sum-r"><span className="k">Total</span><span className="v" style={{ color: 'var(--rose)' }}>{priceOf(selectedDuration)}</span></div>
-                  )}
-                </div>
-
-                <div className="fld">
-                  <div className="fl">Your email — for confirmation</div>
-                  <input
-                    type="email"
-                    className="f-in"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (emailError) setEmailError(false);
-                    }}
-                  />
-                  {emailError && <div className="f-err" style={{ display: 'block' }}>Please enter a valid email address.</div>}
-                  <div className="f-note">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" /></svg>
-                    We'll send your booking confirmation and calendar invite here.
-                  </div>
-                </div>
-              </>
-            )}
-
-            {bookingStep === 'pay' && (
-              <>
-                <div className="sum-card">
-                  <div className="sum-r"><span className="k">Mentor</span><span className="v">{selectedMentor.name}</span></div>
-                  <div className="sum-r"><span className="k">When</span><span className="v">{fmtDate(selectedDate)} · {selectedTime}</span></div>
-                  {priceOf(selectedDuration) && (
-                    <div className="sum-r"><span className="k">Total</span><span className="v" style={{ color: 'var(--rose)' }}>{priceOf(selectedDuration)}</span></div>
-                  )}
-                </div>
-
-                <div className="fld">
-                  <div className="fl">Card details</div>
-                  <div id="stripe-mt" ref={cardElementRef}></div>
-                  {stripeError && <div className="f-err" style={{ display: 'block' }}>{stripeError}</div>}
-                  <div className="f-note">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" /></svg>
-                    Secured by Stripe · 256-bit SSL encryption.
-                  </div>
-                </div>
-              </>
-            )}
-
-            {bookingStep === 'success' && (
-              <div className="success">
-                <div className="sc-ring"><i></i><i></i><i></i><div className="sc-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg></div></div>
-                <h3 className="sc-h">You're <em>booked!</em></h3>
-                <p className="sc-sub">A confirmation and calendar invite are on the way to<br /><b>{email}</b></p>
-                
-                <div className="sum-card">
-                  <div className="sum-r"><span className="k">Mentor</span><span className="v">{selectedMentor.name}</span></div>
-                  <div className="sum-r"><span className="k">Date</span><span className="v">{fmtDate(selectedDate)}</span></div>
-                  <div className="sum-r"><span className="k">Time</span><span className="v">{selectedTime}</span></div>
-                  <div className="sum-r"><span className="k">Duration</span><span className="v">{durLabel(selectedDuration)}</span></div>
-                  {priceOf(selectedDuration) && (
-                    <div className="sum-r"><span className="k">Paid</span><span className="v">{priceOf(selectedDuration)}</span></div>
-                  )}
-                </div>
-
-                <div className="sc-cal">
-                  <button className="cb"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>Google</button>
-                  <button className="cb"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>Outlook</button>
-                </div>
-
-                <div className="sc-next">
-                  <h4><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" /></svg>What happens next</h4>
-                  <ul>
-                    <li>{selectedMentor.name.split(' ')[0]} will confirm and may send a short prep note within 24 hours.</li>
-                    <li>Your video link arrives by email one hour before the session.</li>
-                    <li>Bring one or two questions — focused sessions work best.</li>
-                  </ul>
+                <div className="s-steps">
+                  <span className={`sstep${getStepNumber() >= 1 ? ' on' : ''}`}></span>
+                  <span className={`sstep${getStepNumber() >= 2 ? ' on' : ''}`}></span>
+                  <span className={`sstep${getStepNumber() >= 3 ? ' on' : ''}`}></span>
                 </div>
               </div>
             )}
-          </div>
 
-          <div className="s-foot">
-            {bookingStep === 'picker' && (
-              <>
-                <div className={`s-sum${!isBookingReady ? ' empty' : ''}`}>
-                  <div className="s-sum-ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg></div>
-                  <div className="s-sum-d">
-                    <div className="s-sum-m">
-                      {isBookingReady
-                        ? `${durLabel(selectedDuration)} with ${selectedMentor.name.split(' ')[0]}`
-                        : `Pick ${[!selectedDuration && 'duration', !selectedDate && 'date', !selectedTime && 'time'].filter(Boolean).join(', ')}`
-                      }
+            <div className="s-body">
+              {bookingStep === 'picker' && (
+                <>
+                  <div className="s-intro">
+                    <div
+                      className="s-intro-ph"
+                      style={selectedMentor.photo ? { backgroundImage: `url(${selectedMentor.photo})` } : null}
+                    >
+                      {selectedMentor.photo ? '' : selectedMentor.init}
                     </div>
-                    {isBookingReady && <div className="s-sum-s">{fmtDate(selectedDate)} · {selectedTime}</div>}
+                    <div className="s-intro-d">
+                      <div className="s-intro-bio">{selectedMentor.bio}</div>
+                      <div className="s-intro-meta">
+                        <span><svg viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2" /></svg>{selectedMentor.rating}</span>
+                        <span>{selectedMentor.sessions} sessions</span>
+                        <span>{selectedMentor.resp}</span>
+                        <span>{selectedMentor.lang}</span>
+                      </div>
+                    </div>
                   </div>
-                  {isBookingReady && <div className="s-sum-p">{priceOf(selectedDuration)}</div>}
+
+                  <div className="fld">
+                    <div className="fl">Session length</div>
+                    <div className="durs">
+                      {selectedMentor.durs.map((d) => (
+                        <button
+                          key={d}
+                          className={`dur${selectedDuration === d ? ' on' : ''}`}
+                          onClick={() => setSelectedDuration(d)}
+                        >
+                          <div className="dur-lbl">
+                            <span className="dur-t">{durLabel(d)}</span>
+                            <span className="dur-d">{durDesc(d)}</span>
+                          </div>
+                          {priceOf(d) && <span className="dur-p">{priceOf(d)}</span>}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="fld">
+                    <div className="fl">Pick a date</div>
+                    <div className="dates">
+                      {getDates().map((dt) => {
+                        const iso = dt.toISOString().slice(0, 10);
+                        const openCount = selectedMentor.slots.filter(t => !selectedMentor.busy.includes(t)).length;
+                        return (
+                          <button
+                            key={iso}
+                            className={`date${selectedDate === iso ? ' on' : ''}`}
+                            onClick={() => setSelectedDate(iso)}
+                          >
+                            <span className="date-w">{DAYS[dt.getDay()]}</span>
+                            <span className="date-d">{dt.getDate()}</span>
+                            <span className="date-m">{MONS[dt.getMonth()]}</span>
+                            <span className="date-s">{openCount} open</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="fld">
+                    <div className="fl">Available times</div>
+                    <div className="times">
+                      {selectedMentor.slots.map((t) => {
+                        const isBusy = selectedMentor.busy.includes(t);
+                        return (
+                          <button
+                            key={t}
+                            className={`tm${isBusy ? ' busy' : ''}${selectedTime === t ? ' on' : ''}`}
+                            disabled={isBusy}
+                            onClick={() => !isBusy && setSelectedTime(t)}
+                          >
+                            {t}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <div className="tz-note">
+                      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+                      Times shown in your timezone · {userTimezone}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {bookingStep === 'email' && (
+                <>
+                  <div className="sum-card">
+                    <div className="sum-r"><span className="k">Mentor</span><span className="v">{selectedMentor.name}</span></div>
+                    <div className="sum-r"><span className="k">Date</span><span className="v">{fmtDate(selectedDate)}</span></div>
+                    <div className="sum-r"><span className="k">Time</span><span class="v">{selectedTime}</span></div>
+                    <div className="sum-r"><span className="k">Session</span><span class="v">{durLabel(selectedDuration)}</span></div>
+                    {priceOf(selectedDuration) && (
+                      <div className="sum-r"><span className="k">Total</span><span className="v" style={{ color: 'var(--rose)' }}>{priceOf(selectedDuration)}</span></div>
+                    )}
+                  </div>
+
+                  <div className="fld">
+                    <div className="fl">Your email — for confirmation</div>
+                    <input
+                      type="email"
+                      className="f-in"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (emailError) setEmailError(false);
+                      }}
+                    />
+                    {emailError && <div className="f-err" style={{ display: 'block' }}>Please enter a valid email address.</div>}
+                    <div className="f-note">
+                      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" /></svg>
+                      We'll send your booking confirmation and calendar invite here.
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {bookingStep === 'pay' && (
+                <>
+                  <div className="sum-card">
+                    <div className="sum-r"><span className="k">Mentor</span><span className="v">{selectedMentor.name}</span></div>
+                    <div className="sum-r"><span className="k">When</span><span className="v">{fmtDate(selectedDate)} · {selectedTime}</span></div>
+                    {priceOf(selectedDuration) && (
+                      <div className="sum-r"><span className="k">Total</span><span className="v" style={{ color: 'var(--rose)' }}>{priceOf(selectedDuration)}</span></div>
+                    )}
+                  </div>
+
+                  <div className="fld">
+                    <div className="fl">Card details</div>
+                    <div id="stripe-mt" ref={cardElementRef}></div>
+                    {stripeError && <div className="f-err" style={{ display: 'block' }}>{stripeError}</div>}
+                    <div className="f-note">
+                      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" /></svg>
+                      Secured by Stripe · 256-bit SSL encryption.
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {bookingStep === 'success' && (
+                <div className="success">
+                  <div className="sc-ring"><i></i><i></i><i></i><div className="sc-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg></div></div>
+                  <h3 className="sc-h">You're <em>booked!</em></h3>
+                  <p className="sc-sub">A confirmation and calendar invite are on the way to<br /><b>{email}</b></p>
+                  
+                  <div className="sum-card">
+                    <div className="sum-r"><span className="k">Mentor</span><span className="v">{selectedMentor.name}</span></div>
+                    <div className="sum-r"><span className="k">Date</span><span className="v">{fmtDate(selectedDate)}</span></div>
+                    <div className="sum-r"><span className="k">Time</span><span className="v">{selectedTime}</span></div>
+                    <div className="sum-r"><span className="k">Duration</span><span className="v">{durLabel(selectedDuration)}</span></div>
+                    {priceOf(selectedDuration) && (
+                      <div className="sum-r"><span className="k">Paid</span><span className="v">{priceOf(selectedDuration)}</span></div>
+                    )}
+                  </div>
+
+                  <div className="sc-cal">
+                    <button className="cb"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>Google</button>
+                    <button className="cb"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>Outlook</button>
+                  </div>
+
+                  <div className="sc-next">
+                    <h4><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" /></svg>What happens next</h4>
+                    <ul>
+                      <li>{selectedMentor.name.split(' ')[0]} will confirm and may send a short prep note within 24 hours.</li>
+                      <li>Your video link arrives by email one hour before the session.</li>
+                      <li>Bring one or two questions — focused sessions work best.</li>
+                    </ul>
+                  </div>
                 </div>
-                <button
-                  className="s-go"
-                  disabled={!isBookingReady}
-                  onClick={() => setBookingStep('email')}
-                >
-                  <span>Continue</span>
+              )}
+            </div>
+
+            <div className="s-foot">
+              {bookingStep === 'picker' && (
+                <>
+                  <div className={`s-sum${!isBookingReady ? ' empty' : ''}`}>
+                    <div className="s-sum-ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg></div>
+                    <div className="s-sum-d">
+                      <div className="s-sum-m">
+                        {isBookingReady
+                          ? `${durLabel(selectedDuration)} with ${selectedMentor.name.split(' ')[0]}`
+                          : `Pick ${[!selectedDuration && 'duration', !selectedDate && 'date', !selectedTime && 'time'].filter(Boolean).join(', ')}`
+                        }
+                      </div>
+                      {isBookingReady && <div className="s-sum-s">{fmtDate(selectedDate)} · {selectedTime}</div>}
+                    </div>
+                    {isBookingReady && <div className="s-sum-p">{priceOf(selectedDuration)}</div>}
+                  </div>
+                  <button
+                    className="s-go"
+                    disabled={!isBookingReady}
+                    onClick={() => setBookingStep('email')}
+                  >
+                    <span>Continue</span>
+                    <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                  </button>
+                </>
+              )}
+
+              {bookingStep === 'email' && (
+                <button className="s-go" onClick={handleEmailSubmit}>
+                  <span>Continue to payment</span>
                   <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
                 </button>
-              </>
-            )}
+              )}
 
-            {bookingStep === 'email' && (
-              <button className="s-go" onClick={handleEmailSubmit}>
-                <span>Continue to payment</span>
-                <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-              </button>
-            )}
+              {bookingStep === 'pay' && (
+                <button className="s-go" disabled={isProcessing} onClick={handlePaymentSubmit}>
+                  <span>
+                    {isProcessing ? (
+                      <>
+                        <svg className="spin" viewBox="0 0 24 24" style={{ width: '17px', height: '17px', fill: 'none', stroke: '#fff', strokeWidth: 2.4, display: 'inline', marginRight: '6px' }}><path d="M21 12a9 9 0 11-6.2-8.6" /></svg>
+                        Processing…
+                      </>
+                    ) : (
+                      <>
+                        Pay {priceOf(selectedDuration)} securely
+                      </>
+                    )}
+                  </span>
+                  {!isProcessing && <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>}
+                </button>
+              )}
 
-            {bookingStep === 'pay' && (
-              <button className="s-go" disabled={isProcessing} onClick={handlePaymentSubmit}>
-                <span>
-                  {isProcessing ? (
-                    <>
-                      <svg className="spin" viewBox="0 0 24 24" style={{ width: '17px', height: '17px', fill: 'none', stroke: '#fff', strokeWidth: 2.4, display: 'inline', marginRight: '6px' }}><path d="M21 12a9 9 0 11-6.2-8.6" /></svg>
-                      Processing…
-                    </>
-                  ) : (
-                    <>
-                      Pay {priceOf(selectedDuration)} securely
-                    </>
-                  )}
-                </span>
-                {!isProcessing && <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>}
-              </button>
-            )}
-
-            {bookingStep === 'success' && (
-              <button className="s-go" onClick={closeSheet}>
-                <span>Done</span>
-                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
-              </button>
-            )}
-            
-            {bookingStep !== 'success' && (
-              <div className="s-sec">
-                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" /></svg>
-                Secured by Stripe · cancel free up to 24h · 100% confidential
-              </div>
-            )}
+              {bookingStep === 'success' && (
+                <button className="s-go" onClick={closeSheet}>
+                  <span>Done</span>
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
+                </button>
+              )}
+              
+              {bookingStep !== 'success' && (
+                <div className="s-sec">
+                  <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" /></svg>
+                  Secured by Stripe · cancel free up to 24h · 100% confidential
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
