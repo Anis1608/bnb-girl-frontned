@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const API_BASE = 'https://bnb-girl-backend.onrender.com';
+const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE) || 'https://bnb-girl-backend.onrender.com';
 
 const AppContext = createContext(null);
 
@@ -227,6 +227,71 @@ export default function AppContextProvider({ children }) {
     return () => window.removeEventListener('cms-loaded', handleCmsLoaded);
   }, []);
 
+  const [userToken, setUserToken] = useState(localStorage.getItem('bbg_user_token') || '');
+  const [userProfile, setUserProfile] = useState(() => {
+    try {
+      const cached = localStorage.getItem('bbg_user_profile');
+      return cached ? JSON.parse(cached) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const loginUser = async (email, password) => {
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Login failed');
+    }
+    setUserToken(data.token);
+    setUserProfile({ name: data.name, email: data.email });
+    localStorage.setItem('bbg_user_token', data.token);
+    localStorage.setItem('bbg_user_profile', JSON.stringify({ name: data.name, email: data.email }));
+    return data;
+  };
+
+  const registerUser = async (name, email, password) => {
+    const res = await fetch(`${API_BASE}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Registration failed');
+    }
+    setUserToken(data.token);
+    setUserProfile({ name: data.name, email: data.email });
+    localStorage.setItem('bbg_user_token', data.token);
+    localStorage.setItem('bbg_user_profile', JSON.stringify({ name: data.name, email: data.email }));
+    return data;
+  };
+
+  const logoutUser = () => {
+    setUserToken('');
+    setUserProfile(null);
+    localStorage.removeItem('bbg_user_token');
+    localStorage.removeItem('bbg_user_profile');
+  };
+
+  const fetchUserBookings = async () => {
+    if (!userToken) return [];
+    const res = await fetch(`${API_BASE}/api/user/bookings`, {
+      headers: {
+        'Authorization': `Bearer ${userToken}`
+      }
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Failed to fetch bookings');
+    }
+    return data.bookings || [];
+  };
+
   useEffect(() => {
     loadData();
   }, []);
@@ -242,7 +307,13 @@ export default function AppContextProvider({ children }) {
       loading,
       cms,
       refreshData: loadData,
-      submitForm
+      submitForm,
+      userToken,
+      userProfile,
+      loginUser,
+      registerUser,
+      logoutUser,
+      fetchUserBookings
     }}>
       {children}
     </AppContext.Provider>

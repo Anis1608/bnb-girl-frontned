@@ -25,6 +25,7 @@ import FindYourPath from './components/FindYourPath';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import Mentorship from './components/Mentorship';
+import Dashboard from './components/Dashboard';
 import './App.css';
 
 
@@ -45,6 +46,7 @@ export default function App() {
       case '/privacy-policy': return 'privacy';
       case '/terms-of-service': return 'terms';
       case '/mentorship': return 'mentorship';
+      case '/dashboard': return 'dashboard';
       case '/home':
       case '/':
       default:
@@ -65,6 +67,7 @@ export default function App() {
       privacy: '/privacy-policy',
       terms: '/terms-of-service',
       mentorship: '/mentorship',
+      dashboard: '/dashboard',
       home: '/'
     };
     
@@ -181,6 +184,11 @@ export default function App() {
           <TermsOfService />
         ) : activeNav === 'mentorship' ? (
           <Mentorship
+            onShowToast={showToast}
+            onNavChange={handleNavChange}
+          />
+        ) : activeNav === 'dashboard' ? (
+          <Dashboard
             onShowToast={showToast}
             onNavChange={handleNavChange}
           />

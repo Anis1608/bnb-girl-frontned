@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 
 export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
-  const { cms } = useApp();
+  const { cms, userToken } = useApp();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const toggleDrawer = () => {
@@ -94,6 +94,13 @@ export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
             </svg>
             Apply for Mentorship
           </a>
+          <a href="/dashboard" className={activeNav === 'dashboard' ? 'bbg-on' : ''} onClick={(e) => handleLinkClick(e, 'dashboard')} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <svg className="nav-icon" viewBox="0 0 24 24" style={{ fill: 'none', stroke: 'currentColor', strokeWidth: 2 }}>
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            {userToken ? 'Dashboard' : 'Login'}
+          </a>
         </div>
         <div></div>
       </nav>
@@ -177,6 +184,16 @@ export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
             </div>
             <span className="bbg-drw-arr">→</span>
           </a>
+          <a href="/dashboard" className={`bbg-drw-link ${activeNav === 'dashboard' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'dashboard')}>
+            <div className="bbg-drw-left">
+              <svg className="bbg-drw-icon" viewBox="0 0 24 24" style={{ fill: 'none', stroke: 'currentColor', strokeWidth: 2 }}>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span className="bbg-drw-label">{userToken ? 'My Dashboard' : 'Login / Register'}</span>
+            </div>
+            <span className="bbg-drw-arr">→</span>
+          </a>
           <div className="drw-cta-wrap">
             <a href="/mentorship" className="bbg-drw-cta-gold" onClick={(e) => handleLinkClick(e, 'mentorship')}>
               <svg style={{ width: '16px', height: '16px', fill: 'none', stroke: '#92600a', strokeWidth: 1.8, flexShrink: 0 }} viewBox="0 0 24 24">
@@ -221,13 +238,12 @@ export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
             </div>
             <span className="bbg-bot-lbl">Find Path</span>
           </a>
-          <a href="/join-us" className={`bbg-bot-item ${activeNav === 'joinus' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'joinus')}>
-            <svg className="bot-icon" viewBox="0 0 24 24">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+          <a href="/dashboard" className={`bbg-bot-item ${activeNav === 'dashboard' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'dashboard')}>
+            <svg className="bot-icon" viewBox="0 0 24 24" style={{ fill: 'none', stroke: 'currentColor', strokeWidth: 2 }}>
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
             </svg>
-            <span className="bbg-bot-lbl">Join Us</span>
+            <span className="bbg-bot-lbl">{userToken ? 'Dashboard' : 'Login'}</span>
           </a>
           <a href="/mentorship" className={`bbg-bot-item ${activeNav === 'mentorship' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'mentorship')}>
             <svg className="bot-icon" viewBox="0 0 24 24">
