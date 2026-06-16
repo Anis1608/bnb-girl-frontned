@@ -7,16 +7,18 @@ export default function PrivacyPolicy() {
   useEffect(() => {
     const handleScroll = () => {
       const sections = document.querySelectorAll('.policy-section');
-      let currentSection = 'overview';
-      
+      let currentSection = '';
+
       sections.forEach((section) => {
         const rect = section.getBoundingClientRect();
-        if (rect.top <= 200) {
+        if (rect.top <= 180) {
           currentSection = section.id;
         }
       });
-      
-      setActiveSection(currentSection);
+
+      if (currentSection) {
+        setActiveSection(currentSection);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
