@@ -26,6 +26,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import Mentorship from './components/Mentorship';
 import Dashboard from './components/Dashboard';
+import MinorDisclaimer from './components/MinorDisclaimer';
 import './App.css';
 
 
@@ -45,6 +46,7 @@ export default function App() {
       case '/find-your-path': return 'quiz';
       case '/privacy-policy': return 'privacy';
       case '/terms-of-service': return 'terms';
+      case '/minor-disclaimer': return 'disclaimer';
       case '/mentorship': return 'mentorship';
       case '/dashboard': return 'dashboard';
       case '/home':
@@ -66,6 +68,7 @@ export default function App() {
       quiz: '/find-your-path',
       privacy: '/privacy-policy',
       terms: '/terms-of-service',
+      disclaimer: '/minor-disclaimer',
       mentorship: '/mentorship',
       dashboard: '/dashboard',
       home: '/'
@@ -182,6 +185,8 @@ export default function App() {
           <PrivacyPolicy />
         ) : activeNav === 'terms' ? (
           <TermsOfService />
+        ) : activeNav === 'disclaimer' ? (
+          <MinorDisclaimer />
         ) : activeNav === 'mentorship' ? (
           <Mentorship
             onShowToast={showToast}
