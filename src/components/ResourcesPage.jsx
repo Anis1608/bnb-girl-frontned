@@ -1063,56 +1063,62 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
       <div className="types-section">
         <div className="types-section__inner">
           <div style={{ textAlign: 'center', marginBottom: '8px' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.18em', color: 'var(--purple-mid)', background: 'rgba(147,51,234,0.07)', border: '1px solid rgba(147,51,234,0.14)', padding: '4px 14px', borderRadius: '999px', marginBottom: '14px' }}>What's Inside</div>
-            <h2 style={{ fontFamily: 'var(--font-d)', fontWeight: 900, fontSize: 'clamp(1.6rem,3vw,2.2rem)', color: 'var(--black)', letterSpacing: '-0.02em' }}>8 Types of Resources,<br />All Free to Download</h2>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.18em', color: 'var(--purple-mid)', background: 'rgba(147,51,234,0.07)', border: '1px solid rgba(147,51,234,0.14)', padding: '4px 14px', borderRadius: '999px', marginBottom: '14px' }}>
+              {cms?.cms_resources_types_kicker || "What's Inside"}
+            </div>
+            {cms?.cms_resources_types_title ? (
+              <h2 style={{ fontFamily: 'var(--font-d)', fontWeight: 900, fontSize: 'clamp(1.6rem,3vw,2.2rem)', color: 'var(--black)', letterSpacing: '-0.02em' }} dangerouslySetInnerHTML={{ __html: cms.cms_resources_types_title }} />
+            ) : (
+              <h2 style={{ fontFamily: 'var(--font-d)', fontWeight: 900, fontSize: 'clamp(1.6rem,3vw,2.2rem)', color: 'var(--black)', letterSpacing: '-0.02em' }}>8 Types of Resources,<br />All Free to Download</h2>
+            )}
           </div>
           <div className="types-grid" style={{ marginTop: '36px' }}>
             <div className="type-card">
               <div className="type-card__icon-wrap" style={{ background: 'rgba(147,51,234,0.1)' }}>📄</div>
               <div className="type-card__name">Episode PDFs</div>
-              <div className="type-card__desc">Key takeaways, guest quotes, action items and reflection prompts for every episode.</div>
-              <div className="type-card__count" style={{ background: 'rgba(147,51,234,0.08)', color: 'var(--purple-mid)' }}>28 available</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_pdf_desc || 'Key takeaways, guest quotes, action items and reflection prompts for every episode.'}</div>
+              <div className="type-card__count" style={{ background: 'rgba(147,51,234,0.08)', color: 'var(--purple-mid)' }}>{cms?.cms_resources_stat_pdfs_num || '28'} available</div>
             </div>
             <div className="type-card">
               <div className="type-card__icon-wrap" style={{ background: 'rgba(234,179,8,0.1)' }}>🗺️</div>
               <div className="type-card__name">Career Guides</div>
-              <div className="type-card__desc">Step-by-step roadmaps to break into each field — qualifications, timelines, first steps.</div>
-              <div className="type-card__count" style={{ background: 'rgba(234,179,8,0.08)', color: '#92700A' }}>8 available</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_guide_desc || 'Step-by-step roadmaps to break into each field — qualifications, timelines, first steps.'}</div>
+              <div className="type-card__count" style={{ background: 'rgba(234,179,8,0.08)', color: '#92700A' }}>{cms?.cms_resources_stat_fields_num || '8'} available</div>
             </div>
             <div className="type-card">
               <div className="type-card__icon-wrap" style={{ background: 'rgba(236,72,153,0.1)' }}>📝</div>
               <div className="type-card__name">Templates</div>
-              <div className="type-card__desc">Field-specific CV/resume templates, cover letter frameworks, and LinkedIn bio builders.</div>
-              <div className="type-card__count" style={{ background: 'rgba(236,72,153,0.08)', color: '#BE185D' }}>12 available</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_template_desc || 'Field-specific CV/resume templates, cover letter frameworks, and LinkedIn bio builders.'}</div>
+              <div className="type-card__count" style={{ background: 'rgba(236,72,153,0.08)', color: '#BE185D' }}>{cms?.cms_resources_stat_templates_num || '12'} available</div>
             </div>
             <div className="type-card">
               <div className="type-card__icon-wrap" style={{ background: 'rgba(16,185,129,0.1)' }}>📓</div>
               <div className="type-card__name">Workbooks</div>
-              <div className="type-card__desc">Goal-setting workbooks, self-assessment guides, and quarterly reflection journals.</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_worksheet_desc || 'Goal-setting workbooks, self-assessment guides, and quarterly reflection journals.'}</div>
               <div className="type-card__count" style={{ background: 'rgba(16,185,129,0.08)', color: '#065F46' }}>6 available</div>
             </div>
             <div className="type-card">
               <div className="type-card__icon-wrap" style={{ background: 'rgba(249,115,22,0.1)' }}>📚</div>
               <div className="type-card__name">Reading Lists</div>
-              <div className="type-card__desc">Curated books, podcasts, and courses recommended directly by our guest experts.</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_reading_desc || 'Curated books, podcasts, and courses recommended directly by our guest experts.'}</div>
               <div className="type-card__count" style={{ background: 'rgba(249,115,22,0.08)', color: '#9A3412' }}>8 available</div>
             </div>
             <div className="type-card">
               <div className="type-card__icon-wrap" style={{ background: 'rgba(99,102,241,0.1)' }}>🧰</div>
               <div className="type-card__name">Toolkits</div>
-              <div className="type-card__desc">Interview prep kits, skill checklists, and everything you need to land your first role.</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_toolkit_desc || 'Interview prep kits, skill checklists, and everything you need to land your first role.'}</div>
               <div className="type-card__count" style={{ background: 'rgba(99,102,241,0.08)', color: '#3730A3' }}>6 available</div>
             </div>
             <div className="type-card">
               <div className="type-card__icon-wrap" style={{ background: 'rgba(6,182,212,0.1)' }}>📊</div>
               <div className="type-card__name">Salary Reports</div>
-              <div className="type-card__desc">Real earnings data across industries — so you know your worth before any negotiation.</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_salary_desc || 'Real earnings data across industries — so you know your worth before any negotiation.'}</div>
               <div className="type-card__count" style={{ background: 'rgba(6,182,212,0.08)', color: '#155E75' }}>4 available</div>
             </div>
             <div className="type-card">
               <div className="type-card__icon-wrap" style={{ background: 'rgba(244,114,182,0.1)' }}>✉️</div>
               <div className="type-card__name">Scripts &amp; Emails</div>
-              <div className="type-card__desc">Networking email templates, LinkedIn outreach scripts, and mentorship request messages.</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_script_desc || 'Networking email templates, LinkedIn outreach scripts, and mentorship request messages.'}</div>
               <div className="type-card__count" style={{ background: 'rgba(244,114,182,0.08)', color: '#9D174D' }}>6 available</div>
             </div>
           </div>
@@ -1123,11 +1129,15 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
       <div className="coming-section">
         <div className="coming-section__inner" style={{ textAlign: 'left' }}>
           <div className="section-label">
-            <span className="section-label__text">🔒 Coming Soon</span>
+            <span className="section-label__text">{cms?.cms_resources_coming_kicker || "🔒 Coming Soon"}</span>
             <div className="section-label__line"></div>
           </div>
-          <h2 style={{ fontFamily: 'var(--font-d)', fontSize: 'clamp(1.4rem,2.5vw,2rem)', color: '#fff', fontWeight: 700, marginTop: '4px', marginBottom: '4px' }}>Resources in the Pipeline</h2>
-          <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.35)', marginBottom: '0' }}>Notify me when they drop.</p>
+          <h2 style={{ fontFamily: 'var(--font-d)', fontSize: 'clamp(1.4rem,2.5vw,2rem)', color: '#fff', fontWeight: 700, marginTop: '4px', marginBottom: '4px' }}>
+            {cms?.cms_resources_coming_title || "Resources in the Pipeline"}
+          </h2>
+          <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.35)', marginBottom: '0' }}>
+            {cms?.cms_resources_coming_subtitle || "Notify me when they drop."}
+          </p>
 
           <div className="coming-grid">
             {comingSoonResources.map((r) => (
