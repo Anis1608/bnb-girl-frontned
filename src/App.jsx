@@ -109,6 +109,66 @@ export default function App() {
     }
   }, [location.pathname, location.hash]);
 
+  // Dynamic SEO Page Title & Description Updates
+  useEffect(() => {
+    const seoConfig = {
+      home: {
+        title: "Bold & Brilliant Girls — Empowering Career Conversations & Mentorship",
+        description: "Bold & Brilliant Girls connects ambitious young women and teens with accomplished female leaders through authentic career discussions, 1-on-1 mentorship, and free downloadable resources."
+      },
+      about: {
+        title: "About Sanah — Meet the Founder of Bold & Brilliant Girls",
+        description: "Discover the story behind Bold & Brilliant Girls and why Sanah started a platform to help teens and young women explore career paths with accomplished female mentors."
+      },
+      episodes: {
+        title: "Podcast Episodes — Authentic Career Insight Masterclasses",
+        description: "Listen to real career stories from inspiring women in STEM, finance, law, medicine, creative arts, and entrepreneurship on the Bold & Brilliant Girls Podcast."
+      },
+      resources: {
+        title: "Resource Library — Free Career PDF Guides, Templates, & Salary Reports",
+        description: "Browse free downloadable worksheets, resume templates, and salary reports designed to help young women launch successful careers in competitive industries."
+      },
+      mentorship: {
+        title: "Get 1-on-1 Mentorship — Connect with Professional Female Leaders",
+        description: "Apply to book free 1-on-1 video mentorship sessions with established professionals at Google, Spotify, top law firms, and fintech start-ups."
+      },
+      quiz: {
+        title: "Find Your Path — Career Selection Quiz",
+        description: "Take the BBG career selection assessment to discover which specialized fields align best with your skills, goals, and passions."
+      },
+      joinus: {
+        title: "Join Our Community — Empowering the Next Generation of Women",
+        description: "Be part of a support network of ambitious girls sharing resources, motivation, and professional advice."
+      },
+      dashboard: {
+        title: "Student Dashboard — Manage Your Bookings & Downloads",
+        description: "Log in to your student dashboard to review pending mentorship sessions, bookings, and unlocked resources."
+      },
+      'become-mentor': {
+        title: "Become a Mentor — Empower Young Female Minds",
+        description: "Share your professional expertise and inspire the next generation of ambitious leaders. Join the Bold & Brilliant Girls mentor program."
+      },
+      'mentor-dashboard': {
+        title: "Mentor Portal — Manage Bookings & Availability",
+        description: "Manage your mentorship sessions, set availability schedules, and review student application profiles."
+      }
+    };
+
+    const currentSeo = seoConfig[activeNav] || seoConfig.home;
+    document.title = currentSeo.title;
+    
+    // Update or create meta description tag dynamically
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute("content", currentSeo.description);
+    } else {
+      metaDesc = document.createElement("meta");
+      metaDesc.setAttribute("name", "description");
+      metaDesc.setAttribute("content", currentSeo.description);
+      document.head.appendChild(metaDesc);
+    }
+  }, [activeNav]);
+
   const [activeGuestInfoModal, setActiveGuestInfoModal] = useState(null);
   const [activeGuestModal, setActiveGuestModal] = useState(null); // EP index
   const [activeVideoModal, setActiveVideoModal] = useState(null); // YT videoId
