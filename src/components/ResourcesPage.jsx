@@ -1185,6 +1185,9 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
       <div className="coming-section">
         <div className="coming-section__inner" style={{ textAlign: 'left' }}>
           <div className="section-label">
+            <pre style={{ color: '#fff', fontSize: '10px', background: 'rgba(0,0,0,0.5)', padding: '10px', overflow: 'auto', maxWidth: '100%' }}>
+              {JSON.stringify({ hasCms: !!cms, keys: cms ? Object.keys(cms).filter(k => k.includes('coming')) : [], cardsCount: pipelineCards.length })}
+            </pre>
             <span className="section-label__text">{cms?.cms_resources_coming_kicker || "🔒 Coming Soon"}</span>
             <div className="section-label__line"></div>
           </div>
