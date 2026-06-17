@@ -102,6 +102,7 @@ const TYPE_COLORS = {
 const FIELD_COLORS = {
   stem: '#0D9488', business: '#D97706', law: '#6366F1', mental: '#EC4899',
   creative: '#F97316', finance: '#0284C7', health: '#10B981', education: '#9333EA',
+  technology: '#0D9488', 'creative-and-media': '#F97316', healthcare: '#EC4899', 'education-and-academia': '#9333EA'
 };
 
 const SYNONYMS = {
@@ -224,7 +225,7 @@ const getRelevanceScore = (r, fieldName, queryStr) => {
 };
 
 export default function ResourcesPage({ onNavChange, onShowToast }) {
-  const { resources: dbFields, loading, submitForm } = useApp();
+  const { resources: dbFields, loading, submitForm, cms } = useApp();
   const fields = dbFields.length > 0 ? dbFields : FIELDS;
 
   const [activeType, setActiveType] = useState('all');
@@ -263,6 +264,16 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
     });
     return list;
   }, [fields]);
+
+  // Dynamic featured resources
+  const featuredResources = useMemo(() => {
+    return ALL_RESOURCES.filter(r => r.isFeatured || r.is_featured);
+  }, [ALL_RESOURCES]);
+
+  // Dynamic coming soon resources
+  const comingSoonResources = useMemo(() => {
+    return ALL_RESOURCES.filter(r => r.isComingSoon || r.is_coming_soon);
+  }, [ALL_RESOURCES]);
 
   const searchWrapRef = useRef(null);
 
@@ -455,22 +466,34 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
             padding: '5px 16px',
             borderRadius: '9999px',
             marginBottom: '20px'
-          }}>📚 Resource Library</div>
+          }}>{cms?.cms_resources_hero_eyebrow || '📚 Resource Library'}</div>
 
-          <h1 className="hero__h1" style={{
-            fontFamily: "var(--font-d)",
-            fontWeight: 900,
-            fontSize: 'clamp(2.4rem, 5vw, 4rem)',
-            color: '#fff',
-            marginBottom: '14px',
-            lineHeight: 1.08,
-            letterSpacing: '-0.03em'
-          }}>Everything You Need to<br /><span style={{
-            background: 'linear-gradient(90deg, #FFE100, #F97316, #EC4899)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}>Build Your Career</span></h1>
+          {cms?.cms_resources_hero_title ? (
+            <h1 className="hero__h1" style={{
+              fontFamily: "var(--font-d)",
+              fontWeight: 900,
+              fontSize: 'clamp(2.4rem, 5vw, 4rem)',
+              color: '#fff',
+              marginBottom: '14px',
+              lineHeight: 1.08,
+              letterSpacing: '-0.03em'
+            }} dangerouslySetInnerHTML={{ __html: cms.cms_resources_hero_title }} />
+          ) : (
+            <h1 className="hero__h1" style={{
+              fontFamily: "var(--font-d)",
+              fontWeight: 900,
+              fontSize: 'clamp(2.4rem, 5vw, 4rem)',
+              color: '#fff',
+              marginBottom: '14px',
+              lineHeight: 1.08,
+              letterSpacing: '-0.03em'
+            }}>Everything You Need to<br /><span style={{
+              background: 'linear-gradient(90deg, #FFE100, #F97316, #EC4899)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>Build Your Career</span></h1>
+          )}
 
           <p className="hero__sub" style={{
             fontSize: 'clamp(15px, 2vw, 18px)',
@@ -480,7 +503,7 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
             marginLeft: 'auto',
             marginRight: 'auto',
             lineHeight: 1.7
-          }}>Episode PDFs, career guides, templates, reading lists, salary reports and more — all free, all curated from our guest experts across every field.</p>
+          }}>{cms?.cms_resources_hero_subtitle || 'Episode PDFs, career guides, templates, reading lists, salary reports and more — all free, all curated from our guest experts across every field.'}</p>
 
           {/* Search bar */}
           <div className="search-wrap" ref={searchWrapRef} style={{
@@ -600,20 +623,20 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
             margin: '0 auto'
           }}>
             <div className="hero-stat" style={{ flex: 1, textAlign: 'center', padding: '16px 12px', position: 'relative' }}>
-              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>48</span>
-              <span className="hero-stat__lbl" style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.35)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.1em' }}>Resources</span>
+              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>{cms?.cms_resources_stat_resources_num || '48'}</span>
+              <span className="hero-stat__lbl" style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.35)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.1em' }}>{cms?.cms_resources_stat_resources_lbl || 'Resources'}</span>
             </div>
             <div className="hero-stat" style={{ flex: 1, textAlign: 'center', padding: '16px 12px', position: 'relative', borderLeft: '1px solid rgba(255, 255, 255, 0.07)' }}>
-              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>28</span>
-              <span className="hero-stat__lbl" style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.35)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.1em' }}>Episode PDFs</span>
+              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>{cms?.cms_resources_stat_pdfs_num || '28'}</span>
+              <span className="hero-stat__lbl" style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.35)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.1em' }}>{cms?.cms_resources_stat_pdfs_lbl || 'Episode PDFs'}</span>
             </div>
             <div className="hero-stat" style={{ flex: 1, textAlign: 'center', padding: '16px 12px', position: 'relative', borderLeft: '1px solid rgba(255, 255, 255, 0.07)' }}>
-              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>8</span>
-              <span className="hero-stat__lbl" style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.35)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.1em' }}>Career Fields</span>
+              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>{cms?.cms_resources_stat_fields_num || '8'}</span>
+              <span className="hero-stat__lbl" style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.35)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.1em' }}>{cms?.cms_resources_stat_fields_lbl || 'Career Fields'}</span>
             </div>
             <div className="hero-stat" style={{ flex: 1, textAlign: 'center', padding: '16px 12px', position: 'relative', borderLeft: '1px solid rgba(255, 255, 255, 0.07)' }}>
-              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>12</span>
-              <span className="hero-stat__lbl" style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.35)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.1em' }}>Templates</span>
+              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>{cms?.cms_resources_stat_templates_num || '12'}</span>
+              <span className="hero-stat__lbl" style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.35)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.1em' }}>{cms?.cms_resources_stat_templates_lbl || 'Templates'}</span>
             </div>
           </div>
         </div>
@@ -656,30 +679,11 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
             <button className={`field-chip ${activeField === 'all' ? 'active' : ''}`} data-field="all" onClick={() => setActiveField('all')}>
               All Fields
             </button>
-            <button className={`field-chip ${activeField === 'stem' ? 'active' : ''}`} data-field="stem" onClick={() => setActiveField('stem')}>
-              🔬 STEM
-            </button>
-            <button className={`field-chip ${activeField === 'business' ? 'active' : ''}`} data-field="business" onClick={() => setActiveField('business')}>
-              🚀 Entrepreneurship
-            </button>
-            <button className={`field-chip ${activeField === 'law' ? 'active' : ''}`} data-field="law" onClick={() => setActiveField('law')}>
-              ⚖️ Law &amp; Justice
-            </button>
-            <button className={`field-chip ${activeField === 'mental' ? 'active' : ''}`} data-field="mental" onClick={() => setActiveField('mental')}>
-              🌸 Mental Health
-            </button>
-            <button className={`field-chip ${activeField === 'creative' ? 'active' : ''}`} data-field="creative" onClick={() => setActiveField('creative')}>
-              🎨 Creative Arts
-            </button>
-            <button className={`field-chip ${activeField === 'finance' ? 'active' : ''}`} data-field="finance" onClick={() => setActiveField('finance')}>
-              💰 Finance
-            </button>
-            <button className={`field-chip ${activeField === 'health' ? 'active' : ''}`} data-field="health" onClick={() => setActiveField('health')}>
-              🏥 Healthcare
-            </button>
-            <button className={`field-chip ${activeField === 'education' ? 'active' : ''}`} data-field="education" onClick={() => setActiveField('education')}>
-              📚 Education
-            </button>
+            {fields.map(f => (
+              <button key={f.id} className={`field-chip ${activeField === f.id ? 'active' : ''}`} data-field={f.id} onClick={() => setActiveField(f.id)}>
+                {f.emoji} {f.name}
+              </button>
+            ))}
           </div>
 
           <div className="results-count" id="resultsCount">
@@ -696,95 +700,65 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
             <div className="section-label__line"></div>
           </div>
           <div className="featured-grid">
-
-            {/* BIG CARD */}
-            <div className="feat-card-big" onClick={() => handleDownload("Girls' Education Career Playbook")}>
-              <div className="feat-card-big__cover" style={{ background: 'linear-gradient(155deg,#3B0764,#7C3AED,#EC4899)' }}>
-                <span className="feat-card-big__badge" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff' }}>Episode PDF</span>
-                <span className="feat-card-big__new">NEW</span>
-                <svg viewBox="0 0 200 140" fill="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: .2 }}>
-                  <circle cx="160" cy="30" r="60" fill="white" />
-                  <circle cx="40" cy="110" r="40" fill="white" />
-                  <rect x="70" y="50" width="60" height="80" rx="8" fill="white" opacity=".3" />
-                  <rect x="80" y="30" width="40" height="10" rx="5" fill="white" opacity=".4" />
-                </svg>
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '6px' }}>
-                  <div style={{ fontSize: '52px', filter: 'drop-shadow(0 4px 20px rgba(0,0,0,0.3))' }}>🎓</div>
-                  <div style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.15em', color: 'rgba(255,255,255,0.7)' }}>12-Page Deep Dive</div>
-                </div>
-              </div>
-              <div className="feat-card-big__body" style={{ textAlign: 'left' }}>
-                <div className="feat-card-big__field">🔬 STEM · Education</div>
-                <div className="feat-card-big__title">Girls' Education Career Playbook — Dr. Sheen Gurrib</div>
-                <div className="feat-card-big__desc">Complete episode breakdown with key insights, career action steps, resource recommendations, and a personal reflection worksheet. Based on EP. 01 with Oxford &amp; Cambridge graduate Dr. Sheen Gurrib.</div>
-                <div className="feat-card-big__footer">
-                  <span className="feat-card-big__ep">EP. 01 · 18 min listen</span>
-                  <button className="dl-btn" onClick={(e) => { e.stopPropagation(); handleDownload("Girls' Education Career Playbook"); }}>
-                    <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                    </svg>
-                    Download Free
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* SMALL 1 */}
-            <div className="feat-card-sm" onClick={() => handleDownload("Women in Finance Salary Report 2025")}>
-              <div className="feat-card-sm__cover" style={{ background: 'linear-gradient(155deg,#082F49,#0369A1,#38BDF8)' }}>
-                <svg viewBox="0 0 200 130" fill="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: .15 }}>
-                  <rect x="10" y="90" width="25" height="35" fill="white" rx="3" />
-                  <rect x="45" y="70" width="25" height="55" fill="white" rx="3" />
-                  <rect x="80" y="45" width="25" height="80" fill="white" rx="3" />
-                  <rect x="115" y="25" width="25" height="100" fill="white" rx="3" />
-                  <rect x="150" y="10" width="25" height="115" fill="white" rx="3" />
-                  <path d="M22 88 L57 68 L92 43 L127 23 L162 8" stroke="white" strokeWidth="3" opacity=".5" />
-                </svg>
-                <div className="feat-card-sm__icon">📊</div>
-              </div>
-              <div className="feat-card-sm__body" style={{ textAlign: 'left' }}>
-                <div className="feat-card-sm__type">Salary Report · Finance</div>
-                <div className="feat-card-sm__title">Women in Finance — Salary &amp; Progression Report 2025</div>
-                <div className="feat-card-sm__desc">Real salary data across banking, investment, fintech and accounting — broken down by experience level and region.</div>
-                <div className="feat-card-sm__footer">
-                  <span className="feat-card-sm__pages">24 pages</span>
-                  <button className="dl-btn" style={{ fontSize: '11px', height: '32px', padding: '0 12px' }} onClick={(e) => { e.stopPropagation(); handleDownload("Women in Finance Salary Report 2025"); }}>
-                    <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                    </svg>
-                    Free PDF
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* SMALL 2 */}
-            <div className="feat-card-sm" onClick={() => handleDownload("Tech Interview Prep Kit")}>
-              <div className="feat-card-sm__cover" style={{ background: 'linear-gradient(155deg,#022C22,#065F46,#34D399)' }}>
-                <svg viewBox="0 0 200 130" fill="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: .12 }}>
-                  <rect x="20" y="20" width="160" height="90" rx="10" fill="white" />
-                  <rect x="40" y="40" width="120" height="10" rx="3" fill="#000" />
-                  <rect x="40" y="60" width="80" height="10" rx="3" fill="#000" />
-                  <rect x="40" y="80" width="100" height="10" rx="3" fill="#000" />
-                </svg>
-                <div className="feat-card-sm__icon">💻</div>
-              </div>
-              <div className="feat-card-sm__body" style={{ textAlign: 'left' }}>
-                <div className="feat-card-sm__type">Toolkit · STEM</div>
-                <div className="feat-card-sm__title">Women in Tech Interview Prep Kit</div>
-                <div className="feat-card-sm__desc">50 common tech interview questions, STAR method templates, and confidence-building strategies from our STEM guests.</div>
-                <div className="feat-card-sm__footer">
-                  <span className="feat-card-sm__pages">18 pages</span>
-                  <button className="dl-btn" style={{ fontSize: '11px', height: '32px', padding: '0 12px' }} onClick={(e) => { e.stopPropagation(); handleDownload("Tech Interview Prep Kit"); }}>
-                    <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                    </svg>
-                    Free PDF
-                  </button>
-                </div>
-              </div>
-            </div>
-
+            {featuredResources.map((r, idx) => {
+              const t = TYPE_COLORS[r.type] || TYPE_COLORS.pdf;
+              if (idx === 0) {
+                return (
+                  <div key={r.uid} className="feat-card-big" onClick={() => handleDownload(r.title)}>
+                    <div className="feat-card-big__cover" style={{ background: r.bg || r.cover_color }}>
+                      <span className="feat-card-big__badge" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff' }}>{t.label}</span>
+                      <span className="feat-card-big__new">NEW</span>
+                      <svg viewBox="0 0 200 140" fill="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: .2 }}>
+                        <circle cx="160" cy="30" r="60" fill="white" />
+                        <circle cx="40" cy="110" r="40" fill="white" />
+                        <rect x="70" y="50" width="60" height="80" rx="8" fill="white" opacity=".3" />
+                        <rect x="80" y="30" width="40" height="10" rx="5" fill="white" opacity=".4" />
+                      </svg>
+                      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '6px' }}>
+                        <div style={{ fontSize: '52px', filter: 'drop-shadow(0 4px 20px rgba(0,0,0,0.3))' }}>{r.icon}</div>
+                        {r.pages > 0 && <div style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.15em', color: 'rgba(255,255,255,0.7)' }}>{r.pages}-Page Deep Dive</div>}
+                      </div>
+                    </div>
+                    <div className="feat-card-big__body" style={{ textAlign: 'left' }}>
+                      <div className="feat-card-big__field">{r.fieldName}</div>
+                      <div className="feat-card-big__title">{r.title}</div>
+                      <div className="feat-card-big__desc">{r.desc || r.description}</div>
+                      <div className="feat-card-big__footer">
+                        <span className="feat-card-big__ep">{r.ep}</span>
+                        <button className="dl-btn" onClick={(e) => { e.stopPropagation(); handleDownload(r.title); }}>
+                          <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                          </svg>
+                          Download Free
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={r.uid} className="feat-card-sm" onClick={() => handleDownload(r.title)}>
+                    <div className="feat-card-sm__cover" style={{ background: r.bg || r.cover_color }}>
+                      <div className="feat-card-sm__icon">{r.icon}</div>
+                    </div>
+                    <div className="feat-card-sm__body" style={{ textAlign: 'left' }}>
+                      <div className="feat-card-sm__type">{t.label} · {r.fieldName}</div>
+                      <div className="feat-card-sm__title">{r.title}</div>
+                      <div className="feat-card-sm__desc">{r.desc || r.description}</div>
+                      <div className="feat-card-sm__footer">
+                        {r.pages > 0 && <span className="feat-card-sm__pages">{r.pages} pages</span>}
+                        <button className="dl-btn" style={{ fontSize: '11px', height: '32px', padding: '0 12px' }} onClick={(e) => { e.stopPropagation(); handleDownload(r.title); }}>
+                          <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                          </svg>
+                          Free PDF
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+            })}
           </div>
         </div>
       </div>
@@ -1156,34 +1130,15 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
           <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.35)', marginBottom: '0' }}>Notify me when they drop.</p>
 
           <div className="coming-grid">
-            <div className="coming-card">
-              <div className="coming-card__lock">🏛️</div>
-              <div className="coming-card__title">Breaking Into Law — The Complete Playbook</div>
-              <div className="coming-card__desc">Bar exam timelines, law school application guide, and networking scripts for aspiring lawyers.</div>
-              <div className="coming-card__tag">⚖️ Law · Q2 2026</div>
-              <button className="coming-card__notify" onClick={() => handleNotifyMe("Breaking Into Law")}>🔔 Notify Me</button>
-            </div>
-            <div className="coming-card">
-              <div className="coming-card__lock">🎙️</div>
-              <div className="coming-card__title">Podcast Ep. 05 — Healthcare Career Guide</div>
-              <div className="coming-card__desc">Full insight PDF for our upcoming episode featuring a senior NHS consultant and medical researcher.</div>
-              <div className="coming-card__tag">🏥 Healthcare · Coming June</div>
-              <button className="coming-card__notify" onClick={() => handleNotifyMe("Ep. 05 Healthcare Guide")}>🔔 Notify Me</button>
-            </div>
-            <div className="coming-card">
-              <div className="coming-card__lock">💡</div>
-              <div className="coming-card__title">Founder's Toolkit — Starting From Zero</div>
-              <div className="coming-card__desc">Business model canvas, pitch deck templates, and a step-by-step guide to validating your idea.</div>
-              <div className="coming-card__tag">🚀 Entrepreneurship · Q2 2026</div>
-              <button className="coming-card__notify" onClick={() => handleNotifyMe("Founder's Toolkit")}>🔔 Notify Me</button>
-            </div>
-            <div className="coming-card">
-              <div className="coming-card__lock">🎨</div>
-              <div className="coming-card__title">Creative Industry Rate Card &amp; Negotiation Guide</div>
-              <div className="coming-card__desc">Freelance rates, agency salaries, and scripts for negotiating your creative fees like a pro.</div>
-              <div className="coming-card__tag">🎨 Creative · Q3 2026</div>
-              <button className="coming-card__notify" onClick={() => handleNotifyMe("Creative Industry Rate Card")}>🔔 Notify Me</button>
-            </div>
+            {comingSoonResources.map((r) => (
+              <div key={r.uid} className="coming-card">
+                <div className="coming-card__lock">{r.icon}</div>
+                <div className="coming-card__title">{r.title}</div>
+                <div className="coming-card__desc">{r.desc || r.description}</div>
+                <div className="coming-card__tag">{r.fieldName} · {r.ep}</div>
+                <button className="coming-card__notify" onClick={() => handleNotifyMe(r.title)}>🔔 Notify Me</button>
+              </div>
+            ))}
           </div>
         </div>
       </div>
