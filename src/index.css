@@ -11730,8 +11730,6 @@ textarea.ask-input {
   }
 }
 
-.resources-page-container {
-
 .newsletter::before {
   content: '';
   position: absolute;
@@ -12066,5 +12064,4 @@ textarea.ask-input {
   .types-grid {
     grid-template-columns: 1fr 1fr
   }
-}
 }
