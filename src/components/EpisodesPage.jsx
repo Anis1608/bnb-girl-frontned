@@ -406,10 +406,162 @@ const SUBTOPIC_MAP = {
   'Investing': 'investing'
 };
 
+const SYNONYMS = {
+  job: ['career', 'work', 'employ', 'position', 'hire', 'recruit', 'cv', 'resume', 'portfolio', 'interview', 'salary', 'progress'],
+  career: ['job', 'work', 'employ', 'position', 'hire', 'recruit', 'cv', 'resume', 'portfolio', 'interview', 'salary', 'progress'],
+  cv: ['resume', 'portfolio', 'profile', 'apply', 'job', 'bio', 'letter'],
+  resume: ['cv', 'portfolio', 'profile', 'apply', 'job', 'bio', 'letter'],
+  interview: ['prep', 'question', 'star', 'prepare', 'job', 'hiring', 'hr', 'test'],
+  hiring: ['job', 'work', 'employ', 'apply', 'interview'],
+  
+  money: ['finance', 'wealth', 'budget', 'salary', 'earn', 'investment', 'pay', 'income', 'compensation', 'stock', 'save'],
+  wealth: ['money', 'finance', 'budget', 'salary', 'earn', 'investment', 'pay', 'income', 'compensation', 'stock', 'save'],
+  salary: ['pay', 'earn', 'income', 'wage', 'money', 'wealth', 'compensation', 'rate', 'negotiate'],
+  income: ['pay', 'earn', 'salary', 'wage', 'money', 'wealth', 'compensation', 'rate'],
+  finance: ['money', 'wealth', 'budget', 'salary', 'investment', 'stock', 'saving', 'banking', 'fintech'],
+  budget: ['saving', 'track', 'expense', 'money', 'workbook', 'personal finance'],
+  investment: ['stock', 'save', 'grow', 'capital', 'finance', 'wealth'],
+
+  tech: ['stem', 'software', 'coding', 'developer', 'engineering', 'programmer', 'science', 'computer', 'data', 'math'],
+  coding: ['software', 'developer', 'programmer', 'tech', 'engineering', 'computer', 'science', 'data'],
+  software: ['coding', 'developer', 'programmer', 'tech', 'engineering', 'computer', 'science', 'data'],
+  engineering: ['tech', 'software', 'coding', 'science', 'computer', 'data', 'mechanic'],
+  science: ['stem', 'biology', 'math', 'data science', 'physics', 'chemistry', 'research'],
+  data: ['analytics', 'database', 'science', 'tech', 'computer'],
+
+  stress: ['burnout', 'mental', 'mind', 'wellness', 'wellbeing', 'anxiety', 'calm', 'peace', 'stress', 'compassion'],
+  burnout: ['stress', 'mental', 'mind', 'wellness', 'wellbeing', 'anxiety', 'calm', 'peace', 'recovery'],
+  peace: ['stress', 'burnout', 'mental', 'mind', 'wellness', 'wellbeing', 'calm', 'anxiety', 'mindfulness'],
+  wellness: ['wellbeing', 'mental', 'mind', 'stress', 'burnout', 'calm', 'peace', 'mindfulness', 'imposter'],
+  wellbeing: ['wellness', 'mental', 'mind', 'stress', 'burnout', 'calm', 'peace', 'mindfulness', 'imposter'],
+  confidence: ['imposter', 'syndrome', 'mindset', 'affirmation', 'worth', 'self-esteem', 'fear'],
+  imposter: ['confidence', 'syndrome', 'mindset', 'affirmation', 'worth', 'self-esteem', 'fear'],
+
+  business: ['startup', 'founder', 'entrepreneur', 'side hustle', 'pitch', 'deck', 'investment', 'model', 'canvas', 'brand'],
+  startup: ['business', 'founder', 'entrepreneur', 'side hustle', 'pitch', 'deck', 'investment', 'model', 'canvas', 'brand'],
+  founder: ['business', 'startup', 'entrepreneur', 'side hustle', 'pitch', 'deck', 'investment', 'model', 'canvas', 'brand'],
+  brand: ['marketing', 'positioning', 'logo', 'identity', 'hustle', 'founder', 'business'],
+
+  law: ['legal', 'court', 'justice', 'bar exam', 'lawyer', 'contract', 'agreement'],
+  legal: ['law', 'court', 'justice', 'bar exam', 'lawyer', 'contract', 'agreement'],
+  lawyer: ['law', 'legal', 'court', 'justice', 'bar exam', 'contract', 'agreement'],
+
+  study: ['education', 'teaching', 'school', 'college', 'student', 'graduate', 'learn', 'academy'],
+  learn: ['education', 'teaching', 'school', 'college', 'student', 'graduate', 'study', 'academy'],
+  student: ['education', 'study', 'graduate', 'school', 'college', 'learn', 'networking'],
+};
+
+function levenshteinDistance(s1, s2) {
+  const len1 = s1.length;
+  const len2 = s2.length;
+  const matrix = Array.from({ length: len1 + 1 }, () => Array(len2 + 1).fill(0));
+
+  for (let i = 0; i <= len1; i++) matrix[i][0] = i;
+  for (let j = 0; j <= len2; j++) matrix[0][j] = j;
+
+  for (let i = 1; i <= len1; i++) {
+    for (let j = 1; j <= len2; j++) {
+      const cost = s1[i - 1] === s2[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return matrix[len1][len2];
+}
+
+function isFuzzyMatch(word1, word2) {
+  const w1 = word1.toLowerCase().trim();
+  const w2 = word2.toLowerCase().trim();
+  if (w1 === w2) return true;
+  if (w1.length < 3 || w2.length < 3) return false;
+  const maxDist = w1.length > 5 ? 2 : 1;
+  return levenshteinDistance(w1, w2) <= maxDist;
+}
+
+const getEpisodeRelevanceScore = (ep, queryStr) => {
+  const q = queryStr.toLowerCase().trim();
+  if (!q) return 1;
+
+  const terms = q.split(/\s+/).filter(Boolean);
+  let totalScore = 0;
+
+  const title = (ep.title || '').toLowerCase();
+  const guest = (ep.name || ep.guest || '').toLowerCase();
+  const role = (ep.role || '').toLowerCase();
+  const catL = (ep.catL || ep.category_name || '').toLowerCase();
+  const tags = (ep.tags || []).map(t => t.toLowerCase());
+  const quote = (ep.ins?.quote || '').toLowerCase();
+  const summary = (ep.ins?.summary || '').toLowerCase();
+  const takeaways = (ep.ins?.takeaways || []).map(t => t.toLowerCase());
+  const themes = (ep.ins?.themes || []).map(t => t.toLowerCase());
+
+  terms.forEach(term => {
+    let termScore = 0;
+
+    // Direct substring matches
+    if (guest.includes(term)) termScore += 25;
+    if (title.includes(term)) termScore += 15;
+    if (catL.includes(term)) termScore += 10;
+    if (role.includes(term)) termScore += 8;
+    if (tags.some(t => t.includes(term))) termScore += 6;
+    if (themes.some(t => t.includes(term))) termScore += 5;
+    if (summary.includes(term)) termScore += 4;
+    if (quote.includes(term)) termScore += 3;
+    if (takeaways.some(t => t.includes(term))) termScore += 2;
+
+    // Fuzzy matching
+    const titleWords = title.split(/[^a-zA-Z0-9]+/).filter(Boolean);
+    const guestWords = guest.split(/[^a-zA-Z0-9]+/).filter(Boolean);
+
+    if (guestWords.some(w => isFuzzyMatch(w, term))) termScore += 20;
+    if (titleWords.some(w => isFuzzyMatch(w, term))) termScore += 10;
+    if (tags.some(t => isFuzzyMatch(t, term))) termScore += 8;
+    if (themes.some(t => isFuzzyMatch(t, term))) termScore += 6;
+
+    // Synonyms
+    const syns = SYNONYMS[term] || [];
+    syns.forEach(syn => {
+      if (guest.includes(syn)) termScore += 10;
+      if (title.includes(syn)) termScore += 5;
+      if (tags.some(t => t.includes(syn))) termScore += 4;
+      if (themes.some(t => t.includes(syn))) termScore += 3;
+      if (summary.includes(syn)) termScore += 2;
+    });
+
+    totalScore += termScore;
+  });
+
+  return totalScore;
+};
+
 export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onShowToast }) {
   const { episodes: dbEpisodes, categories: dbCategories, loading } = useApp();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
+  const [heroQuery, setHeroQuery] = useState('');
+  const [filterQuery, setFilterQuery] = useState('');
+  const [heroSuggestionsOpen, setHeroSuggestionsOpen] = useState(false);
+  const [filterSuggestionsOpen, setFilterSuggestionsOpen] = useState(false);
+  const [highlightedEpKey, setHighlightedEpKey] = useState(null);
+
+  const heroSearchRef = useRef(null);
+  const filterSearchRef = useRef(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (heroSearchRef.current && !heroSearchRef.current.contains(e.target)) {
+        setHeroSuggestionsOpen(false);
+      }
+      if (filterSearchRef.current && !filterSearchRef.current.contains(e.target)) {
+        setFilterSuggestionsOpen(false);
+      }
+    };
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, []);
 
   // Parse category query parameter from URL
   useEffect(() => {
@@ -496,12 +648,25 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
     setVisibleCount(9);
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+  const handleHeroSearchChange = (e) => {
+    const val = e.target.value;
+    setHeroQuery(val);
+    setFilterQuery('');
+    setSearchQuery(val);
+    setVisibleCount(9);
+  };
+
+  const handleFilterSearchChange = (e) => {
+    const val = e.target.value;
+    setFilterQuery(val);
+    setHeroQuery('');
+    setSearchQuery(val);
     setVisibleCount(9);
   };
 
   const handleClearSearch = () => {
+    setHeroQuery('');
+    setFilterQuery('');
     setSearchQuery('');
   };
 
@@ -532,16 +697,17 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
       list = list.filter(ep => ep.subcategory_name === selectedSubtopic || ep.subtopic === selectedSubtopic);
     }
 
-    // Filter by Search Query
+    // Filter by Search Query (Advanced Relevance Scoring)
     if (searchQuery.trim().length > 0) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter(ep => 
-        (ep.title && ep.title.toLowerCase().includes(q)) || 
-        (ep.guest && ep.guest.toLowerCase().includes(q)) || 
-        (ep.name && ep.name.toLowerCase().includes(q)) || 
-        (ep.role && ep.role.toLowerCase().includes(q)) || 
-        (ep.tags && ep.tags.some(t => t.toLowerCase().includes(q)))
-      );
+      list = list
+        .map(ep => ({
+          ...ep,
+          _score: getEpisodeRelevanceScore(ep, searchQuery)
+        }))
+        .filter(ep => ep._score > 0);
+      
+      // Sort by search relevance score descending
+      list.sort((a, b) => b._score - a._score);
     }
 
     // Sort order
@@ -709,8 +875,145 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
     setQuizResult(null);
   };
 
+  const ALL_CATEGORIES = [
+    { slug: 'business', label: 'Business', icon: '💼' },
+    { slug: 'health', label: 'Health & Wellness', icon: '❤️' },
+    { slug: 'arts', label: 'Arts & Media', icon: '🎨' },
+    { slug: 'tech', label: 'Tech & STEM', icon: '⚡' },
+    { slug: 'leadership', label: 'Leadership', icon: '🌟' },
+    { slug: 'finance', label: 'Finance & Wealth', icon: '💰' },
+    { slug: 'law', label: 'Law', icon: '⚖️' },
+    { slug: 'social', label: 'Social', icon: '🌍' },
+  ];
+
+  const getSearchSuggestions = (queryStr) => {
+    const q = queryStr.toLowerCase().trim();
+    if (q.length < 2) return { categories: [], episodes: [] };
+    
+    // Match categories
+    const matchedCats = ALL_CATEGORIES.filter(c =>
+      c.label.toLowerCase().includes(q) || c.slug.includes(q)
+    );
+
+    // Match episodes
+    const list = dbEpisodes.length > 0 ? dbEpisodes : Object.values(EPS);
+    const matchedEps = list
+      .map(ep => ({
+        ...ep,
+        _score: getEpisodeRelevanceScore(ep, queryStr)
+      }))
+      .filter(ep => ep._score > 0)
+      .sort((a, b) => b._score - a._score)
+      .slice(0, 5);
+
+    return { categories: matchedCats.slice(0, 3), episodes: matchedEps };
+  };
+
+  const heroSuggestions = getSearchSuggestions(heroQuery);
+  const filterSuggestions = getSearchSuggestions(filterQuery);
+
+  const handleSuggestionEpClick = (ep, closeFns) => {
+    // Close dropdowns
+    closeFns.forEach(fn => fn());
+    // DB episodes use ep.id; static EPS use ep.key
+    const key = ep.key || ep.id || ep._id;
+
+    // 1. Show all episodes so the card is definitely in DOM
+    setSelectedCategory('all');
+    setVisibleCount(999);
+
+    // 2. Wait for React to re-render the full grid
+    setTimeout(() => {
+      const cardEl = document.getElementById(`ep-card-${key}`);
+      if (cardEl) {
+        // Scroll to card
+        cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // 3. Apply glow directly via inline DOM styles (bypasses CSS specificity)
+        cardEl.style.transition = 'none';
+        cardEl.style.border = '3px solid #EC4899';
+        cardEl.style.boxShadow = '0 0 12px 4px #EC4899, 0 0 40px 14px #9333EA';
+        cardEl.style.animation = 'ep-glow-pulse 1s ease-in-out 0s 6';
+        cardEl.style.zIndex = '2';
+
+        // 4. Clear glow after animation (6 seconds)
+        setTimeout(() => {
+          cardEl.style.border = '';
+          cardEl.style.boxShadow = '';
+          cardEl.style.animation = '';
+          cardEl.style.transition = '';
+          cardEl.style.zIndex = '';
+        }, 6000);
+      } else {
+        // fallback: try the episode's category
+        const catSlug = ep.cat || ep.category_slug || 'all';
+        setSelectedCategory(catSlug);
+        setTimeout(() => {
+          const el2 = document.getElementById(`ep-card-${key}`);
+          if (el2) {
+            el2.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el2.style.transition = 'none';
+            el2.style.border = '3px solid #EC4899';
+            el2.style.boxShadow = '0 0 12px 4px #EC4899, 0 0 40px 14px #9333EA';
+            el2.style.animation = 'ep-glow-pulse 1s ease-in-out 0s 6';
+            el2.style.zIndex = '2';
+            setTimeout(() => {
+              el2.style.border = '';
+              el2.style.boxShadow = '';
+              el2.style.animation = '';
+              el2.style.transition = '';
+              el2.style.zIndex = '';
+            }, 6000);
+          }
+        }, 80);
+      }
+    }, 80);
+  };
+
   return (
     <div className="episodes-page-container">
+      <style>{`
+        .search-results-drop {
+          transition: opacity 0.2s, transform 0.2s;
+        }
+        .search-drop-item:hover {
+          background: rgba(255, 255, 255, 0.08) !important;
+        }
+        .search-cat-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 7px 14px;
+          border-radius: 30px;
+          background: rgba(147, 51, 234, 0.18);
+          border: 1px solid rgba(147, 51, 234, 0.35);
+          color: #D8B4FE;
+          font-size: 12px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.18s;
+          font-family: 'Syne', sans-serif;
+        }
+        .search-cat-chip:hover {
+          background: rgba(147, 51, 234, 0.35);
+          border-color: rgba(147, 51, 234, 0.6);
+          color: #fff;
+        }
+        .search-drop-section-label {
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.25);
+          padding: 10px 16px 4px;
+          font-family: 'Syne', sans-serif;
+        }
+        @keyframes ep-glow-pulse {
+          0%   { box-shadow: 0 0 8px 2px #EC4899, 0 0 24px 8px #9333EA; }
+          50%  { box-shadow: 0 0 26px 10px #EC4899, 0 0 60px 22px #9333EA; }
+          100% { box-shadow: 0 0 8px 2px #EC4899, 0 0 24px 8px #9333EA; }
+        }
+      `}</style>
       {/* ── TICKER ── */}
       <div className="ticker">
         <div className="ticker-track">
@@ -744,7 +1047,7 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
             </h1>
             <p className="hero-p">Conversations with women rewriting the rules. New episodes every week — watch, listen, and take notes.</p>
             
-            <div className="hero-search">
+            <div className="hero-search" ref={heroSearchRef} style={{ position: 'relative' }}>
               <div className="hero-search-wrap">
                 <span className="hero-search-icon">
                   <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -756,17 +1059,114 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
                   type="text" 
                   autoComplete="off" 
                   placeholder={placeholder} 
-                  value={searchQuery}
-                  onChange={handleSearchChange}
+                  value={heroQuery}
+                  onChange={(e) => {
+                    handleHeroSearchChange(e);
+                    setHeroSuggestionsOpen(true);
+                  }}
+                  onFocus={() => setHeroSuggestionsOpen(true)}
                 />
                 <button className="hero-search-btn">Search</button>
               </div>
+
+              {/* Suggestions overlay */}
+              {heroSuggestionsOpen && heroQuery.trim().length >= 2 && (
+                <div className="search-results-drop open" style={{
+                  position: 'absolute',
+                  top: '60px',
+                  left: 0,
+                  right: 0,
+                  background: '#1A0D35',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '14px',
+                  maxHeight: '380px',
+                  overflowY: 'auto',
+                  zIndex: 8000,
+                  display: 'block',
+                  boxShadow: '0 24px 60px rgba(0, 0, 0, 0.5)',
+                  textAlign: 'left'
+                }}>
+                  {/* Category chips */}
+                  {heroSuggestions.categories.length > 0 && (
+                    <>
+                      <div className="search-drop-section-label">📂 Categories</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', padding: '4px 16px 12px' }}>
+                        {heroSuggestions.categories.map(cat => (
+                          <span key={cat.slug} className="search-cat-chip" onClick={() => {
+                            setHeroSuggestionsOpen(false);
+                            setHeroQuery('');
+                            setSearchQuery('');
+                            handleCategorySelect(cat.slug);
+                            setTimeout(() => {
+                              const el = document.getElementById('filterBar');
+                              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }, 100);
+                          }}>
+                            {cat.icon} {cat.label}
+                          </span>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {/* Episode results */}
+                  {heroSuggestions.episodes.length > 0 && (
+                    <>
+                      {heroSuggestions.categories.length > 0 && <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '0 0 0' }} />}
+                      <div className="search-drop-section-label">🎙 Episodes</div>
+                      {heroSuggestions.episodes.map((ep, idx) => {
+                        const guestName = ep.name || ep.guest || 'Guest';
+                        const categoryLabel = ep.catL || ep.category_name || 'Podcast';
+                        return (
+                          <div key={ep._id || ep.key || idx} className="search-drop-item" onClick={() => {
+                            setHeroSuggestionsOpen(false);
+                            setHeroQuery('');
+                            setSearchQuery('');
+                            handleSuggestionEpClick(ep, [() => setHeroSuggestionsOpen(false)]);
+                          }} style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            padding: '12px 16px',
+                            borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s'
+                          }}>
+                            <div style={{
+                              width: '32px', height: '32px', borderRadius: '50%',
+                              background: ep.grad || 'linear-gradient(135deg, #A259FF, #FF1F7D)',
+                              color: '#fff', display: 'flex', alignItems: 'center',
+                              justifyContent: 'center', fontWeight: 'bold', fontSize: '11px', flexShrink: 0
+                            }}>
+                              {getInitials(guestName)}
+                            </div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: '13px', fontWeight: '600', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                {ep.title}
+                              </div>
+                              <div style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.5)', marginTop: '2px' }}>
+                                {guestName} · <span style={{ color: 'rgba(168,139,250,0.8)' }}>{categoryLabel}</span>
+                              </div>
+                            </div>
+                            <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.2)', flexShrink: 0 }}>↗</div>
+                          </div>
+                        );
+                      })}
+                    </>
+                  )}
+                  {heroSuggestions.categories.length === 0 && heroSuggestions.episodes.length === 0 && (
+                    <div style={{ padding: '20px 16px', textAlign: 'center', color: 'rgba(255,255,255,0.35)', fontSize: '13px' }}>
+                      No results for "{heroQuery}"
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="hero-hints">
-                <span className="hint-pill" onClick={() => setSearchQuery('Entrepreneurship')}>💼 Business</span>
-                <span className="hint-pill" onClick={() => setSearchQuery('Mental Health')}>🧠 Mental Health</span>
-                <span className="hint-pill" onClick={() => setSearchQuery('Leadership')}>🌟 Leadership</span>
-                <span className="hint-pill" onClick={() => setSearchQuery('Burnout')}>🔥 Burnout</span>
-                <span className="hint-pill" onClick={() => setSearchQuery('Identity')}>✨ Identity</span>
+                <span className="hint-pill" onClick={() => { setHeroQuery('Entrepreneurship'); setSearchQuery('Entrepreneurship'); setHeroSuggestionsOpen(true); }}>💼 Business</span>
+                <span className="hint-pill" onClick={() => { setHeroQuery('Mental Health'); setSearchQuery('Mental Health'); setHeroSuggestionsOpen(true); }}>🧠 Mental Health</span>
+                <span className="hint-pill" onClick={() => { setHeroQuery('Leadership'); setSearchQuery('Leadership'); setHeroSuggestionsOpen(true); }}>🌟 Leadership</span>
+                <span className="hint-pill" onClick={() => { setHeroQuery('Burnout'); setSearchQuery('Burnout'); setHeroSuggestionsOpen(true); }}>🔥 Burnout</span>
+                <span className="hint-pill" onClick={() => { setHeroQuery('Identity'); setSearchQuery('Identity'); setHeroSuggestionsOpen(true); }}>✨ Identity</span>
               </div>
             </div>
 
@@ -857,7 +1257,7 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
       <div className="filter-bar" id="filterBar">
         <div className="filter-inner">
           <div className="search-row">
-            <div className="search-outer">
+            <div className="search-outer" ref={filterSearchRef} style={{ position: 'relative' }}>
               <div className="search-wrap">
                 <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--gm)', flexShrink: 0 }}>
                   <circle cx="11" cy="11" r="8"/>
@@ -866,13 +1266,105 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
                 <input 
                   type="text" 
                   placeholder="Search guest, topic, keyword…" 
-                  value={searchQuery}
-                  onChange={handleSearchChange}
+                  value={filterQuery}
+                  onChange={(e) => {
+                    handleFilterSearchChange(e);
+                    setFilterSuggestionsOpen(true);
+                  }}
+                  onFocus={() => setFilterSuggestionsOpen(true)}
                 />
-                {searchQuery && (
+                {filterQuery && (
                   <button onClick={handleClearSearch} style={{ background: 'none', border: 'none', color: 'var(--gm)', cursor: 'pointer', fontSize: '.8rem', padding: 0 }}>✕</button>
                 )}
               </div>
+
+              {/* Suggestions overlay */}
+              {filterSuggestionsOpen && filterQuery.trim().length >= 2 && (
+                <div className="search-results-drop open" style={{
+                  position: 'absolute',
+                  top: '50px',
+                  left: 0,
+                  right: 0,
+                  background: '#1A0D35',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '14px',
+                  maxHeight: '360px',
+                  overflowY: 'auto',
+                  zIndex: 8000,
+                  display: 'block',
+                  boxShadow: '0 24px 60px rgba(0, 0, 0, 0.5)',
+                  textAlign: 'left'
+                }}>
+                  {/* Category chips */}
+                  {filterSuggestions.categories.length > 0 && (
+                    <>
+                      <div className="search-drop-section-label">📂 Categories</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', padding: '4px 16px 12px' }}>
+                        {filterSuggestions.categories.map(cat => (
+                          <span key={cat.slug} className="search-cat-chip" onClick={() => {
+                            setFilterSuggestionsOpen(false);
+                            setFilterQuery('');
+                            setSearchQuery('');
+                            handleCategorySelect(cat.slug);
+                          }}>
+                            {cat.icon} {cat.label}
+                          </span>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {/* Episode results */}
+                  {filterSuggestions.episodes.length > 0 && (
+                    <>
+                      {filterSuggestions.categories.length > 0 && <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)' }} />}
+                      <div className="search-drop-section-label">🎙 Episodes</div>
+                      {filterSuggestions.episodes.map((ep, idx) => {
+                        const guestName = ep.name || ep.guest || 'Guest';
+                        const categoryLabel = ep.catL || ep.category_name || 'Podcast';
+                        return (
+                          <div key={ep._id || ep.key || idx} className="search-drop-item" onClick={() => {
+                            setFilterSuggestionsOpen(false);
+                            setFilterQuery('');
+                            setSearchQuery('');
+                            handleSuggestionEpClick(ep, [() => setFilterSuggestionsOpen(false)]);
+                          }} style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            padding: '12px 16px',
+                            borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s'
+                          }}>
+                            <div style={{
+                              width: '32px', height: '32px', borderRadius: '50%',
+                              background: ep.grad || 'linear-gradient(135deg, #A259FF, #FF1F7D)',
+                              color: '#fff', display: 'flex', alignItems: 'center',
+                              justifyContent: 'center', fontWeight: 'bold', fontSize: '11px', flexShrink: 0
+                            }}>
+                              {getInitials(guestName)}
+                            </div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: '13px', fontWeight: '600', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                {ep.title}
+                              </div>
+                              <div style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.5)', marginTop: '2px' }}>
+                                {guestName} · <span style={{ color: 'rgba(168,139,250,0.8)' }}>{categoryLabel}</span>
+                              </div>
+                            </div>
+                            <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.2)', flexShrink: 0 }}>↗</div>
+                          </div>
+                        );
+                      })}
+                    </>
+                  )}
+                  {filterSuggestions.categories.length === 0 && filterSuggestions.episodes.length === 0 && (
+                    <div style={{ padding: '20px 16px', textAlign: 'center', color: 'rgba(255,255,255,0.35)', fontSize: '13px' }}>
+                      No results for "{filterQuery}"
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <select className="sort-sel" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
               <option value="newest">Newest First</option>
@@ -984,8 +1476,15 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
           </div>
 
           <div className="ep-grid">
-            {displayedList.map((ep) => (
-              <div key={ep.key} className="ep-card fade-up visible">
+            {displayedList.map((ep) => {
+              const epKey = ep.key || ep.id || ep._id;
+              const isHighlighted = false; // highlight done via direct DOM style
+              return (
+              <div
+                key={epKey}
+                id={`ep-card-${epKey}`}
+                className="ep-card fade-up visible"
+              >
                 <div className="card-thumb" onClick={() => onOpenGuestModal(ep)}>
                   <img src={ep.ytId ? `https://i.ytimg.com/vi/${ep.ytId}/hqdefault.jpg` : 'https://placehold.co/400x225/1E3A5F/ffffff?text=Podcast'} alt={ep.name} />
                   <div className="thumb-ov"></div>
@@ -994,6 +1493,13 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
                   </div>
                   <div className="card-cat">{ep.catL}</div>
                   {ep.isNew && <div className="card-new">NEW</div>}
+                  {isHighlighted && (
+                    <div style={{
+                      position: 'absolute', inset: 0, borderRadius: 'inherit',
+                      background: 'linear-gradient(135deg, rgba(147,51,234,0.18), rgba(236,72,153,0.12))',
+                      pointerEvents: 'none', zIndex: 3
+                    }} />
+                  )}
                 </div>
                 <span className="card-accent" style={{ background: ep.grad }}></span>
                 <div className="card-body">
@@ -1007,7 +1513,7 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
                     <div className="card-av" style={{ background: ep.grad }}>{ep.av}</div>
                     <div>
                       <div className="card-g-name">{ep.name}</div>
-                      <div className="card-g-role">{ep.role.split('·')[0]}</div>
+                      <div className="card-g-role">{ep.role && ep.role.split('·')[0]}</div>
                     </div>
                   </div>
                   {ep.prog > 0 && (
@@ -1022,7 +1528,8 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
 
             {/* Coming Soon cards */}
             {selectedCategory === 'all' && (

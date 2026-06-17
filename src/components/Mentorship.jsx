@@ -7,7 +7,7 @@ import './Mentorship.css';
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const MONS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const STRIPE_PK = (import.meta.env && import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY) || 'pk_test_YOUR_KEY';
-const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE) || 'https://bnb-girl-backend.onrender.com';
+const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE) || 'http://localhost:5002';
 
 // Hardcoded mentors matching the ones from final mentorship.txt
 const STATIC_MENTORS = [
@@ -390,6 +390,16 @@ export default function Mentorship({ onShowToast, onNavChange }) {
       if (foundMentor) {
         const timer = setTimeout(() => {
           openSheet(foundMentor);
+          // Scroll to the specific mentor's card
+          const targetCard = document.getElementById(`mentor-card-${foundMentor.id}`);
+          if (targetCard) {
+            targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            const targetSection = document.getElementById('mentors');
+            if (targetSection) {
+              targetSection.scrollIntoView({ behavior: 'smooth' });
+            }
+          }
           // Clean the query parameters so reload doesn't keep opening it
           const newUrl = window.location.pathname;
           window.history.replaceState({}, document.title, newUrl);
@@ -762,7 +772,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
 
             <div className="grid">
               {filteredMentors.map((mentor) => (
-                <article key={mentor.id} className="card rev" onClick={() => openSheet(mentor)}>
+                <article id={`mentor-card-${mentor.id}`} key={mentor.id} className="card rev" onClick={() => openSheet(mentor)}>
                   <div className="card-top">
                     <div className="ava" style={mentor.photo ? { backgroundImage: `url(${mentor.photo})` } : null}>
                       {mentor.photo ? '' : mentor.init}

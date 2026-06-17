@@ -104,6 +104,125 @@ const FIELD_COLORS = {
   creative: '#F97316', finance: '#0284C7', health: '#10B981', education: '#9333EA',
 };
 
+const SYNONYMS = {
+  job: ['career', 'work', 'employ', 'position', 'hire', 'recruit', 'cv', 'resume', 'portfolio', 'interview', 'salary', 'progress'],
+  career: ['job', 'work', 'employ', 'position', 'hire', 'recruit', 'cv', 'resume', 'portfolio', 'interview', 'salary', 'progress'],
+  cv: ['resume', 'portfolio', 'profile', 'apply', 'job', 'bio', 'letter'],
+  resume: ['cv', 'portfolio', 'profile', 'apply', 'job', 'bio', 'letter'],
+  interview: ['prep', 'question', 'star', 'prepare', 'job', 'hiring', 'hr', 'test'],
+  hiring: ['job', 'work', 'employ', 'apply', 'interview'],
+  
+  money: ['finance', 'wealth', 'budget', 'salary', 'earn', 'investment', 'pay', 'income', 'compensation', 'stock', 'save'],
+  wealth: ['money', 'finance', 'budget', 'salary', 'earn', 'investment', 'pay', 'income', 'compensation', 'stock', 'save'],
+  salary: ['pay', 'earn', 'income', 'wage', 'money', 'wealth', 'compensation', 'rate', 'negotiate'],
+  income: ['pay', 'earn', 'salary', 'wage', 'money', 'wealth', 'compensation', 'rate'],
+  finance: ['money', 'wealth', 'budget', 'salary', 'investment', 'stock', 'saving', 'banking', 'fintech'],
+  budget: ['saving', 'track', 'expense', 'money', 'workbook', 'personal finance'],
+  investment: ['stock', 'save', 'grow', 'capital', 'finance', 'wealth'],
+
+  tech: ['stem', 'software', 'coding', 'developer', 'engineering', 'programmer', 'science', 'computer', 'data', 'math'],
+  coding: ['software', 'developer', 'programmer', 'tech', 'engineering', 'computer', 'science', 'data'],
+  software: ['coding', 'developer', 'programmer', 'tech', 'engineering', 'computer', 'science', 'data'],
+  engineering: ['tech', 'software', 'coding', 'science', 'computer', 'data', 'mechanic'],
+  science: ['stem', 'biology', 'math', 'data science', 'physics', 'chemistry', 'research'],
+  data: ['analytics', 'database', 'science', 'tech', 'computer'],
+
+  stress: ['burnout', 'mental', 'mind', 'wellness', 'wellbeing', 'anxiety', 'calm', 'peace', 'stress', 'compassion'],
+  burnout: ['stress', 'mental', 'mind', 'wellness', 'wellbeing', 'anxiety', 'calm', 'peace', 'recovery'],
+  peace: ['stress', 'burnout', 'mental', 'mind', 'wellness', 'wellbeing', 'calm', 'anxiety', 'mindfulness'],
+  wellness: ['wellbeing', 'mental', 'mind', 'stress', 'burnout', 'calm', 'peace', 'mindfulness', 'imposter'],
+  wellbeing: ['wellness', 'mental', 'mind', 'stress', 'burnout', 'calm', 'peace', 'mindfulness', 'imposter'],
+  confidence: ['imposter', 'syndrome', 'mindset', 'affirmation', 'worth', 'self-esteem', 'fear'],
+  imposter: ['confidence', 'syndrome', 'mindset', 'affirmation', 'worth', 'self-esteem', 'fear'],
+
+  business: ['startup', 'founder', 'entrepreneur', 'side hustle', 'pitch', 'deck', 'investment', 'model', 'canvas', 'brand'],
+  startup: ['business', 'founder', 'entrepreneur', 'side hustle', 'pitch', 'deck', 'investment', 'model', 'canvas', 'brand'],
+  founder: ['business', 'startup', 'entrepreneur', 'side hustle', 'pitch', 'deck', 'investment', 'model', 'canvas', 'brand'],
+  brand: ['marketing', 'positioning', 'logo', 'identity', 'hustle', 'founder', 'business'],
+
+  law: ['legal', 'court', 'justice', 'bar exam', 'lawyer', 'contract', 'agreement'],
+  legal: ['law', 'court', 'justice', 'bar exam', 'lawyer', 'contract', 'agreement'],
+  lawyer: ['law', 'legal', 'court', 'justice', 'bar exam', 'contract', 'agreement'],
+
+  study: ['education', 'teaching', 'school', 'college', 'student', 'graduate', 'learn', 'academy'],
+  learn: ['education', 'teaching', 'school', 'college', 'student', 'graduate', 'study', 'academy'],
+  student: ['education', 'study', 'graduate', 'school', 'college', 'learn', 'networking'],
+};
+
+function levenshteinDistance(s1, s2) {
+  const len1 = s1.length;
+  const len2 = s2.length;
+  const matrix = Array.from({ length: len1 + 1 }, () => Array(len2 + 1).fill(0));
+
+  for (let i = 0; i <= len1; i++) matrix[i][0] = i;
+  for (let j = 0; j <= len2; j++) matrix[0][j] = j;
+
+  for (let i = 1; i <= len1; i++) {
+    for (let j = 1; j <= len2; j++) {
+      const cost = s1[i - 1] === s2[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return matrix[len1][len2];
+}
+
+function isFuzzyMatch(word1, word2) {
+  const w1 = word1.toLowerCase().trim();
+  const w2 = word2.toLowerCase().trim();
+  if (w1 === w2) return true;
+  if (w1.length < 3 || w2.length < 3) return false;
+  const maxDist = w1.length > 5 ? 2 : 1;
+  return levenshteinDistance(w1, w2) <= maxDist;
+}
+
+const getRelevanceScore = (r, fieldName, queryStr) => {
+  const q = queryStr.toLowerCase().trim();
+  if (!q) return 1;
+
+  const terms = q.split(/\s+/).filter(Boolean);
+  let totalScore = 0;
+
+  const title = r.title.toLowerCase();
+  const desc = r.desc.toLowerCase();
+  const tags = (r.tags || []).map(t => t.toLowerCase());
+  const field = (fieldName || '').toLowerCase();
+  const typeLabel = (TYPE_COLORS[r.type]?.label || '').toLowerCase();
+
+  terms.forEach(term => {
+    let termScore = 0;
+
+    if (title.includes(term)) termScore += 15;
+    if (field.includes(term)) termScore += 8;
+    if (typeLabel.includes(term)) termScore += 6;
+    if (tags.some(t => t.includes(term))) termScore += 5;
+    if (desc.includes(term)) termScore += 3;
+
+    const titleWords = title.split(/[^a-zA-Z0-9]+/).filter(Boolean);
+    const descWords = desc.split(/[^a-zA-Z0-9]+/).filter(Boolean);
+
+    if (titleWords.some(w => isFuzzyMatch(w, term))) termScore += 10;
+    if (tags.some(t => isFuzzyMatch(t, term))) termScore += 8;
+    if (isFuzzyMatch(field, term)) termScore += 6;
+    if (descWords.some(w => isFuzzyMatch(w, term))) termScore += 2;
+
+    const syns = SYNONYMS[term] || [];
+    syns.forEach(syn => {
+      if (title.includes(syn)) termScore += 5;
+      if (tags.some(t => t.includes(syn))) termScore += 4;
+      if (field.includes(syn)) termScore += 3;
+      if (desc.includes(syn)) termScore += 1;
+    });
+
+    totalScore += termScore;
+  });
+
+  return totalScore;
+};
+
 export default function ResourcesPage({ onNavChange, onShowToast }) {
   const { resources: dbFields, loading, submitForm } = useApp();
   const fields = dbFields.length > 0 ? dbFields : FIELDS;
@@ -113,6 +232,8 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchSuggestionsOpen, setSearchSuggestionsOpen] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
+  const [newsletterSubmitting, setNewsletterSubmitting] = useState(false);
   const [subfieldFilters, setSubfieldFilters] = useState({});
 
   // Reset or initialize subfieldFilters when fields change
@@ -170,18 +291,24 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
   const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!newsletterEmail.trim()) return;
-    try {
-      await submitForm('community', { email: newsletterEmail });
-      if (onShowToast) {
-        onShowToast('✉️', 'Subscribed!', 'Welcome to the BBG Resource newsletter!');
-      }
-      setNewsletterEmail('');
-    } catch (err) {
-      console.error(err);
-      if (onShowToast) {
-        onShowToast('❌', 'Error', err.message || 'Subscription failed.');
-      }
+
+    const emailToSubmit = newsletterEmail;
+
+    // Optimistically update UI state immediately
+    setNewsletterSubscribed(true);
+    setNewsletterEmail('');
+    if (onShowToast) {
+      onShowToast('✉️', 'Subscribed!', 'Welcome to the BBG Resource newsletter!');
     }
+
+    // Trigger API request in the background
+    submitForm('community', { email: emailToSubmit }).catch(err => {
+      console.error('Newsletter background subscription error:', err);
+      // Notify user on background error
+      if (onShowToast) {
+        onShowToast('❌', 'Error', 'Background subscription sync failed.');
+      }
+    });
   };
 
   const handleSubfieldChange = (fieldId, subfield) => {
@@ -208,12 +335,14 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
   const getSearchSuggestions = () => {
     const q = searchQuery.toLowerCase().trim();
     if (q.length < 2) return [];
-    return ALL_RESOURCES.filter(r =>
-      r.title.toLowerCase().includes(q) ||
-      r.desc.toLowerCase().includes(q) ||
-      r.tags.some(t => t.toLowerCase().includes(q)) ||
-      r.fieldName.toLowerCase().includes(q)
-    ).slice(0, 6);
+    return ALL_RESOURCES
+      .map(r => ({
+        ...r,
+        _score: getRelevanceScore(r, r.fieldName, searchQuery)
+      }))
+      .filter(r => r._score > 0)
+      .sort((a, b) => b._score - a._score)
+      .slice(0, 6);
   };
 
   const suggestions = getSearchSuggestions();
@@ -240,18 +369,17 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
     const matchType = activeType === 'all' || activeType === r.type;
     // 2. Matches active field chip
     const matchField = activeField === 'all' || activeField === fieldId;
-    // 3. Matches global search query
-    const q = searchQuery.toLowerCase().trim();
-    const matchSearch = q === '' ||
-      r.title.toLowerCase().includes(q) ||
-      r.desc.toLowerCase().includes(q) ||
-      r.tags.some(t => t.toLowerCase().includes(q)) ||
-      fieldName.toLowerCase().includes(q);
-    // 4. Matches category-specific subfield tab
+    // 3. Matches category-specific subfield tab
     const activeSub = subfieldFilters[fieldId] || 'All';
-    const matchSubfield = activeSub === 'All' || r.tags.some(t => t.toLowerCase().includes(activeSub.toLowerCase()));
+    const matchSubfield = activeSub === 'All' || (r.tags || []).some(t => t.toLowerCase().includes(activeSub.toLowerCase()));
 
-    return matchType && matchField && matchSearch && matchSubfield;
+    if (!matchType || !matchField || !matchSubfield) return false;
+
+    const q = searchQuery.toLowerCase().trim();
+    if (q === '') return true;
+
+    const score = getRelevanceScore(r, fieldName, searchQuery);
+    return score > 0;
   };
 
   // Calculate total visible items
@@ -267,7 +395,7 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
   });
 
   return (
-    <div className="resources-page-container" style={{ background: '#0A0414', minHeight: '100vh', color: '#fff' }}>
+    <div className="resources-page-container" style={{ position: 'relative', zIndex: 1, background: '#0A0414', minHeight: '100vh', color: '#fff' }}>
       {/* Back to Home Button */}
       <button className="back-nav" onClick={() => onNavChange('home')} style={{ border: 'none', cursor: 'pointer' }}>
         <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -281,7 +409,8 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
         minHeight: '480px',
         background: 'linear-gradient(160deg, #0A0414 0%, #1A0D35 40%, #2D1060 70%, #0A0414 100%)',
         position: 'relative',
-        overflow: 'hidden',
+        overflow: 'visible',
+        zIndex: 8000,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -309,7 +438,7 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
           maxWidth: '900px',
           margin: '0 auto',
           position: 'relative',
-          zIndex: 1,
+          zIndex: 8000,
           textAlign: 'center'
         }}>
           <div className="hero__eyebrow" style={{
@@ -357,7 +486,8 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
           <div className="search-wrap" ref={searchWrapRef} style={{
             maxWidth: '620px',
             margin: '0 auto 40px',
-            position: 'relative'
+            position: 'relative',
+            zIndex: 8000
           }}>
             <svg className="search-icon" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{
               position: 'absolute',
@@ -427,8 +557,9 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
                 background: '#1A0D35',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 borderRadius: '14px',
-                overflow: 'hidden',
-                zIndex: 200,
+                maxHeight: '350px',
+                overflowY: 'auto',
+                zIndex: 8000,
                 display: 'block',
                 boxShadow: '0 24px 60px rgba(0, 0, 0, 0.5)',
                 textAlign: 'left'
@@ -489,7 +620,7 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
       </section>
 
       {/* ── STICKY FILTER BAR ── */}
-      <div className="filter-bar" id="filterBar">
+      <div className="filter-bar" id="filterBar" style={{ zIndex: 100 }}>
         <div className="filter-bar__inner">
           <div className="filter-types">
             <button className={`filter-type-btn ${activeType === 'all' ? 'active' : ''}`} onClick={() => setActiveType('all')}>
@@ -711,13 +842,13 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
           }
 
           /* Reset resources-grid global conflict from landing page */
-          .resources-grid {
-            display: grid !important;
-            grid-template-columns: repeat(4, 1fr) !important;
-            gap: 20px !important;
-            max-width: none !important;
-            margin: 32px 0 0 !important;
-            padding: 0 !important;
+          .resources-page-container .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: none;
+            margin: 32px 0 0;
+            padding: 0;
           }
 
           /* Featured section spacing and background */
@@ -841,7 +972,7 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
 
           /* Responsive Rules */
           @media(max-width:1024px){
-            .resources-grid{grid-template-columns:repeat(3,1fr)}
+            .resources-page-container .resources-grid{grid-template-columns:repeat(3,1fr)}
             .coming-grid{grid-template-columns:repeat(2,1fr)}
             .types-grid{grid-template-columns:repeat(2,1fr)}
             .featured-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}
@@ -849,13 +980,13 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
           }
           @media(max-width:768px){
             .featured-grid{grid-template-columns:1fr}
-            .resources-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+            .resources-page-container .resources-grid{grid-template-columns:repeat(2,1fr);gap:14px}
             .coming-grid{grid-template-columns:repeat(2,1fr)}
             .types-grid{grid-template-columns:repeat(2,1fr)}
             .resources-section{padding:36px 16px 60px}
           }
           @media(max-width:480px){
-            .resources-grid{grid-template-columns:1fr}
+            .resources-page-container .resources-grid{grid-template-columns:1fr}
             .coming-grid{grid-template-columns:1fr}
             .types-grid{grid-template-columns:1fr 1fr}
           }
@@ -864,8 +995,14 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
           {fields.map((f) => {
             const showField = activeField === 'all' || activeField === f.id;
 
-            // Filter resources of this category
-            const visibleResources = f.resources.filter(r => matchesFilters(r, f.id, f.name));
+            // Filter and sort resources of this category by search relevance
+            const visibleResources = f.resources
+              .filter(r => matchesFilters(r, f.id, f.name))
+              .map(r => ({
+                ...r,
+                _score: searchQuery.trim() ? getRelevanceScore(r, f.name, searchQuery) : 0
+              }))
+              .sort((a, b) => b._score - a._score);
 
             if (!showField || visibleResources.length === 0) return null;
 
@@ -1056,17 +1193,37 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
         <div className="newsletter__inner">
           <h2 className="newsletter__h2">New Resources,<br />Every Week</h2>
           <p className="newsletter__sub">Get notified the moment we drop a new PDF, guide, or template — straight to your inbox.</p>
-          <form className="newsletter__form" onSubmit={handleSubscribe}>
-            <input
-              type="email"
-              className="newsletter__input"
-              placeholder="your@email.com"
-              value={newsletterEmail}
-              onChange={(e) => setNewsletterEmail(e.target.value)}
-              required
-            />
-            <button type="submit" className="newsletter__btn">Subscribe Free</button>
-          </form>
+          {!newsletterSubscribed ? (
+            <form className="newsletter__form" onSubmit={handleSubscribe}>
+              <input
+                type="email"
+                className="newsletter__input"
+                placeholder="your@email.com"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                disabled={newsletterSubmitting}
+                required
+              />
+              <button type="submit" className="newsletter__btn" disabled={newsletterSubmitting}>
+                {newsletterSubmitting ? 'Subscribing...' : 'Subscribe Free'}
+              </button>
+            </form>
+          ) : (
+            <div className="newsletter__success" style={{
+              background: 'rgba(236, 72, 153, 0.1)',
+              border: '1px solid rgba(236, 72, 153, 0.25)',
+              borderRadius: '12px',
+              padding: '24px',
+              marginTop: '20px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '1.8rem', marginBottom: '8px' }}>✉️</div>
+              <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#fff', fontFamily: "'Syne', sans-serif", fontWeight: 700 }}>You're Subscribed!</h3>
+              <p style={{ margin: '8px 0 0 0', fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.65)', lineHeight: 1.5 }}>
+                Welcome to the circle. A confirmation welcome email has been sent to your inbox.
+              </p>
+            </div>
+          )}
           <div className="newsletter__perks">
             <span className="newsletter__perk">✓ Weekly drops</span>
             <span className="newsletter__perk">✓ No spam, ever</span>

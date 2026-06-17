@@ -10681,7 +10681,8 @@ textarea.ask-input {
   background: #1A0D35;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 14px;
-  overflow: hidden;
+  max-height: 350px;
+  overflow-y: auto;
   z-index: 200;
   display: none;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5)
@@ -10689,6 +10690,22 @@ textarea.ask-input {
 
 .search-results-drop.open {
   display: block
+}
+
+.search-results-drop::-webkit-scrollbar {
+  width: 6px;
+}
+.search-results-drop::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+  margin: 8px 0;
+}
+.search-results-drop::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+.search-results-drop::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .search-drop-item {

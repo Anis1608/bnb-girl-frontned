@@ -29,6 +29,7 @@ import Dashboard from './components/Dashboard';
 import MinorDisclaimer from './components/MinorDisclaimer';
 import BecomeMentor from './components/BecomeMentor';
 import MentorDashboard from './components/MentorDashboard';
+import UnsubscribePage from './components/UnsubscribePage';
 import './App.css';
 
 
@@ -53,6 +54,7 @@ export default function App() {
       case '/dashboard': return 'dashboard';
       case '/become-a-mentor': return 'become-mentor';
       case '/mentor-dashboard': return 'mentor-dashboard';
+      case '/unsubscribe': return 'unsubscribe';
       case '/home':
       case '/':
       default:
@@ -77,6 +79,7 @@ export default function App() {
       dashboard: '/dashboard',
       'become-mentor': '/become-a-mentor',
       'mentor-dashboard': '/mentor-dashboard',
+      unsubscribe: '/unsubscribe',
       home: '/'
     };
     
@@ -200,14 +203,18 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  const isMentorDashboard = activeNav === 'mentor-dashboard';
+
   return (
     <>
       {/* 1. Header Navigation */}
-      <Navbar
-        onSearchOpen={() => setIsSearchOpen(true)}
-        activeNav={activeNav}
-        onNavChange={handleNavChange}
-      />
+      {!isMentorDashboard && (
+        <Navbar
+          onSearchOpen={() => setIsSearchOpen(true)}
+          activeNav={activeNav}
+          onNavChange={handleNavChange}
+        />
+      )}
 
       <div className="route-transition-wrap" key={activeNav}>
         {activeNav === 'about' ? (
@@ -250,6 +257,10 @@ export default function App() {
           />
         ) : activeNav === 'mentor-dashboard' ? (
           <MentorDashboard
+            onShowToast={showToast}
+          />
+        ) : activeNav === 'unsubscribe' ? (
+          <UnsubscribePage
             onShowToast={showToast}
           />
         ) : activeNav === 'dashboard' ? (
@@ -326,7 +337,7 @@ export default function App() {
       </div>
 
       {/* 15. Footer Links, Copyright and Back-to-top button */}
-      <Footer />
+      {!isMentorDashboard && <Footer />}
 
       {/* ══ MODALS PORTAL OVERLAYS ══ */}
       

@@ -9,14 +9,23 @@ export default function Community({ onShowToast }) {
   const handleNLSubmit = async (e) => {
     e.preventDefault();
     if (!emailNL.trim()) return;
-    try {
-      await submitForm('community', { email: emailNL });
-      setNlSubscribed(true);
-      setEmailNL('');
-    } catch (err) {
-      console.error(err);
-      onShowToast('❌', 'Error', err.message || 'Subscription failed.');
+
+    const emailToSubmit = emailNL;
+
+    // Optimistically update UI state immediately
+    setNlSubscribed(true);
+    setEmailNL('');
+    if (onShowToast) {
+      onShowToast('✉️', 'Subscribed!', 'Welcome to the BBG newsletter!');
     }
+
+    // Trigger API request in the background
+    submitForm('community', { email: emailToSubmit }).catch(err => {
+      console.error('Newsletter background subscription error in Community:', err);
+      if (onShowToast) {
+        onShowToast('❌', 'Error', 'Background newsletter sync failed.');
+      }
+    });
   };
 
   return (

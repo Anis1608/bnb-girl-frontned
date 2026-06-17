@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE) || 'https://bnb-girl-backend.onrender.com';
+export const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE)  || 'http://localhost:5002';
 
 const AppContext = createContext(null);
 
