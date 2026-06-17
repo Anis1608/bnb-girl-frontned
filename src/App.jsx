@@ -28,6 +28,7 @@ import Mentorship from './components/Mentorship';
 import Dashboard from './components/Dashboard';
 import MinorDisclaimer from './components/MinorDisclaimer';
 import BecomeMentor from './components/BecomeMentor';
+import MentorDashboard from './components/MentorDashboard';
 import './App.css';
 
 
@@ -51,6 +52,7 @@ export default function App() {
       case '/mentorship': return 'mentorship';
       case '/dashboard': return 'dashboard';
       case '/become-a-mentor': return 'become-mentor';
+      case '/mentor-dashboard': return 'mentor-dashboard';
       case '/home':
       case '/':
       default:
@@ -74,6 +76,7 @@ export default function App() {
       mentorship: '/mentorship',
       dashboard: '/dashboard',
       'become-mentor': '/become-a-mentor',
+      'mentor-dashboard': '/mentor-dashboard',
       home: '/'
     };
     
@@ -243,6 +246,10 @@ export default function App() {
           />
         ) : activeNav === 'become-mentor' ? (
           <BecomeMentor
+            onShowToast={showToast}
+          />
+        ) : activeNav === 'mentor-dashboard' ? (
+          <MentorDashboard
             onShowToast={showToast}
           />
         ) : activeNav === 'dashboard' ? (

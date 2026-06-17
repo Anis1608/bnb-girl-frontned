@@ -312,6 +312,73 @@ export default function AppContextProvider({ children }) {
     return data.bookings || [];
   };
 
+  const [mentorToken, setMentorToken] = useState(localStorage.getItem('bbg_mentor_token') || '');
+  const [mentorProfile, setMentorProfile] = useState(() => {
+    try {
+      const cached = localStorage.getItem('bbg_mentor_profile');
+      return cached ? JSON.parse(cached) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const loginMentor = async (email, password) => {
+    const res = await fetch(`${API_BASE}/api/mentor/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Login failed');
+    }
+    setMentorToken(data.token);
+    setMentorProfile(data.mentor);
+    localStorage.setItem('bbg_mentor_token', data.token);
+    localStorage.setItem('bbg_mentor_profile', JSON.stringify(data.mentor));
+    return data;
+  };
+
+  const logoutMentor = () => {
+    setMentorToken('');
+    setMentorProfile(null);
+    localStorage.removeItem('bbg_mentor_token');
+    localStorage.removeItem('bbg_mentor_profile');
+  };
+
+  const fetchMentorBookings = async () => {
+    if (!mentorToken) return [];
+    const res = await fetch(`${API_BASE}/api/mentor/bookings`, {
+      headers: {
+        'Authorization': `Bearer ${mentorToken}`
+      }
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Failed to fetch bookings');
+    }
+    return data.bookings || [];
+  };
+
+  const updateMentorProfile = async (profileFields) => {
+    if (!mentorToken) throw new Error('Not logged in as mentor');
+    const res = await fetch(`${API_BASE}/api/mentor/profile`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${mentorToken}`
+      },
+      body: JSON.stringify(profileFields)
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Failed to update profile');
+    }
+    setMentorProfile(data.mentor);
+    localStorage.setItem('bbg_mentor_profile', JSON.stringify(data.mentor));
+    return data;
+  };
+
   useEffect(() => {
     loadData();
   }, []);
@@ -335,6 +402,12 @@ export default function AppContextProvider({ children }) {
       loginWithFirebase,
       logoutUser,
       fetchUserBookings,
+      mentorToken,
+      mentorProfile,
+      loginMentor,
+      logoutMentor,
+      fetchMentorBookings,
+      updateMentorProfile,
       API_BASE
     }}>
       {children}

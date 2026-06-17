@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import './Mentorship.css';
 
@@ -143,7 +144,8 @@ const STATIC_MENTORS = [
 ];
 
 export default function Mentorship({ onShowToast, onNavChange }) {
-  const { mentors: backendMentors, submitForm } = useApp();
+  const { mentors: backendMentors, submitForm, userToken, userProfile } = useApp();
+  const navigate = useNavigate();
   const [mentorsList, setMentorsList] = useState([]);
   
   // Page Filter & Search State
@@ -157,6 +159,34 @@ export default function Mentorship({ onShowToast, onNavChange }) {
   const [selectedDuration, setSelectedDuration] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [bookedSlots, setBookedSlots] = useState([]);
+  const [loadingAvailability, setLoadingAvailability] = useState(false);
+
+  useEffect(() => {
+    if (selectedMentor && selectedDate) {
+      setLoadingAvailability(true);
+      fetch(`${API_BASE}/api/mentors/${selectedMentor.id}/availability?date=${selectedDate}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            setBookedSlots(data.bookedSlots || []);
+          }
+        })
+        .catch(err => {
+          console.error('Error fetching availability:', err);
+        })
+        .finally(() => {
+          setLoadingAvailability(false);
+        });
+    } else {
+      setBookedSlots([]);
+    }
+  }, [selectedMentor, selectedDate]);
+
+  useEffect(() => {
+    setSelectedTime(null);
+  }, [selectedMentor, selectedDate]);
+
   const [bookingStep, setBookingStep] = useState('picker'); // 'picker', 'email', 'pay', 'success'
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState(false);
@@ -371,11 +401,19 @@ export default function Mentorship({ onShowToast, onNavChange }) {
 
   // Modal Open Handler
   const openSheet = (mentor) => {
+    if (!userToken) {
+      if (onShowToast) {
+        onShowToast('🔑', 'Login Required', 'Please log in to book a mentorship session.');
+      }
+      navigate(`/dashboard?redirect=mentorship&mentor_id=${mentor.id}`);
+      return;
+    }
+
     setSelectedMentor(mentor);
     setSelectedDuration(mentor.durs.length === 1 ? mentor.durs[0] : null);
     setSelectedDate(null);
     setSelectedTime(null);
-    setEmail('');
+    setEmail(userProfile?.email || '');
     setEmailError(false);
     setStripeLoaded(false);
     setStripeError('');
@@ -1101,10 +1139,13 @@ export default function Mentorship({ onShowToast, onNavChange }) {
                   </div>
 
                   <div className="fld">
-                    <div className="fl">Available times</div>
-                    <div className="times">
+                    <div className="fl" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span>Available times</span>
+                      {loadingAvailability && <span style={{ fontSize: '11px', color: 'var(--primary)', opacity: 0.8 }}>Checking live slots...</span>}
+                    </div>
+                    <div className="times" style={{ opacity: loadingAvailability ? 0.6 : 1, transition: 'opacity 0.2s' }}>
                       {selectedMentor.slots.map((t) => {
-                        const isBusy = selectedMentor.busy.includes(t);
+                        const isBusy = selectedMentor.busy.includes(t) || bookedSlots.includes(t);
                         return (
                           <button
                             key={t}
@@ -1254,9 +1295,9 @@ export default function Mentorship({ onShowToast, onNavChange }) {
               )}
 
               {bookingStep === 'success' && (
-                <button className="s-go" onClick={closeSheet}>
-                  <span>Done</span>
-                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
+                <button className="s-go" onClick={() => { closeSheet(); navigate('/dashboard'); }}>
+                  <span>Go to My Dashboard</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
                 </button>
               )}
               
