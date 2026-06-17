@@ -1003,22 +1003,22 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
           /* Responsive Rules */
           @media(max-width:1024px){
             .resources-page-container .resources-grid{grid-template-columns:repeat(3,1fr)}
-            .coming-grid{grid-template-columns:repeat(2,1fr)}
-            .types-grid{grid-template-columns:repeat(2,1fr)}
+            .coming-grid{grid-template-columns:repeat(2,1fr) !important}
+            .types-grid{grid-template-columns:repeat(2,1fr) !important}
             .featured-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}
             .feat-card-big{grid-column:1/-1}
           }
           @media(max-width:768px){
             .featured-grid{grid-template-columns:1fr}
             .resources-page-container .resources-grid{grid-template-columns:repeat(2,1fr);gap:14px}
-            .coming-grid{grid-template-columns:repeat(2,1fr)}
-            .types-grid{grid-template-columns:repeat(2,1fr)}
+            .coming-grid{grid-template-columns:repeat(2,1fr) !important}
+            .types-grid{grid-template-columns:repeat(2,1fr) !important}
             .resources-section{padding:36px 16px 60px}
           }
           @media(max-width:480px){
             .resources-page-container .resources-grid{grid-template-columns:1fr}
-            .coming-grid{grid-template-columns:1fr}
-            .types-grid{grid-template-columns:1fr 1fr}
+            .coming-grid{grid-template-columns:1fr !important}
+            .types-grid{grid-template-columns:1fr 1fr !important}
           }
         `}</style>
         <div className="resources-section">

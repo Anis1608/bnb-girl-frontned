@@ -11984,11 +11984,11 @@ textarea.ask-input {
   }
 
   .coming-grid {
-    grid-template-columns: repeat(2, 1fr)
+    grid-template-columns: repeat(2, 1fr) !important
   }
 
   .types-grid {
-    grid-template-columns: repeat(2, 1fr)
+    grid-template-columns: repeat(2, 1fr) !important
   }
 
   .featured-grid {
@@ -12020,11 +12020,11 @@ textarea.ask-input {
   }
 
   .coming-grid {
-    grid-template-columns: repeat(2, 1fr)
+    grid-template-columns: repeat(2, 1fr) !important
   }
 
   .types-grid {
-    grid-template-columns: repeat(2, 1fr)
+    grid-template-columns: repeat(2, 1fr) !important
   }
 
   .newsletter__form {
@@ -12056,10 +12056,10 @@ textarea.ask-input {
   }
 
   .coming-grid {
-    grid-template-columns: 1fr
+    grid-template-columns: 1fr !important
   }
 
   .types-grid {
-    grid-template-columns: 1fr 1fr
+    grid-template-columns: 1fr 1fr !important
   }
 }
