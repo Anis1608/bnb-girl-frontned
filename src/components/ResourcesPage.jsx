@@ -271,9 +271,65 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
   }, [ALL_RESOURCES]);
 
   // Dynamic coming soon resources
-  const comingSoonResources = useMemo(() => {
-    return ALL_RESOURCES.filter(r => r.isComingSoon || r.is_coming_soon);
-  }, [ALL_RESOURCES]);
+  const pipelineCards = useMemo(() => {
+    const cards = [];
+    for (let i = 1; i <= 4; i++) {
+      const icon = cms?.[`cms_resources_coming_card${i}_icon`];
+      const title = cms?.[`cms_resources_coming_card${i}_title`];
+      const desc = cms?.[`cms_resources_coming_card${i}_desc`];
+      const tag = cms?.[`cms_resources_coming_card${i}_tag`];
+      const notify = cms?.[`cms_resources_coming_card${i}_notify`];
+      
+      if (title) {
+        cards.push({
+          uid: `coming_card_${i}`,
+          icon: icon || "🔒",
+          title,
+          desc,
+          tag,
+          notifyTitle: notify || title
+        });
+      }
+    }
+    
+    if (cards.length === 0) {
+      return [
+        {
+          uid: 'coming_card_1',
+          icon: '🏛️',
+          title: 'Breaking Into Law — The Complete Playbook',
+          desc: 'Bar exam timelines, law school application guide, and networking scripts for aspiring lawyers.',
+          tag: '⚖️ Law · Q2 2026',
+          notifyTitle: 'Law Playbook'
+        },
+        {
+          uid: 'coming_card_2',
+          icon: '🎙️',
+          title: 'Podcast Ep. 05 — Healthcare Career Guide',
+          desc: 'Full insight PDF for our upcoming episode featuring a senior NHS consultant and medical researcher.',
+          tag: '🏥 Healthcare · Coming June',
+          notifyTitle: 'Healthcare Guide'
+        },
+        {
+          uid: 'coming_card_3',
+          icon: '💡',
+          title: "Founder's Toolkit — Starting From Zero",
+          desc: 'Business model canvas, pitch deck templates, and a step-by-step guide to validating your idea.',
+          tag: '🚀 Entrepreneurship · Q2 2026',
+          notifyTitle: 'Founder Toolkit'
+        },
+        {
+          uid: 'coming_card_4',
+          icon: '🎨',
+          title: 'Creative Industry Rate Card & Negotiation Guide',
+          desc: 'Freelance rates, agency salaries, and scripts for negotiating your creative fees like a pro.',
+          tag: '🎨 Creative · Q3 2026',
+          notifyTitle: 'Creative Rate Guide'
+        }
+      ];
+    }
+    return cards;
+  }, [cms]);
 
   const searchWrapRef = useRef(null);
 
@@ -944,24 +1000,25 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
             font-family: var(--font-b);
           }
 
-          @media (max-width: 1024px) {
-            .resources-page-container .resources-grid { grid-template-columns: repeat(3, 1fr); }
-            .coming-grid { grid-template-columns: repeat(2, 1fr); }
-            .types-grid { grid-template-columns: repeat(2, 1fr); }
-            .featured-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
-            .feat-card-big { grid-column: 1/-1; }
+          /* Responsive Rules */
+          @media(max-width:1024px){
+            .resources-page-container .resources-grid{grid-template-columns:repeat(3,1fr)}
+            .coming-grid{grid-template-columns:repeat(2,1fr)}
+            .types-grid{grid-template-columns:repeat(2,1fr)}
+            .featured-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}
+            .feat-card-big{grid-column:1/-1}
           }
-          @media (max-width: 768px) {
-            .featured-grid { grid-template-columns: 1fr; }
-            .resources-page-container .resources-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
-            .coming-grid { grid-template-columns: repeat(2, 1fr); }
-            .types-grid { grid-template-columns: repeat(2, 1fr); }
-            .resources-section { padding: 36px 16px 60px; }
+          @media(max-width:768px){
+            .featured-grid{grid-template-columns:1fr}
+            .resources-page-container .resources-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+            .coming-grid{grid-template-columns:repeat(2,1fr)}
+            .types-grid{grid-template-columns:repeat(2,1fr)}
+            .resources-section{padding:36px 16px 60px}
           }
-          @media (max-width: 600px) {
-            .resources-page-container .resources-grid { grid-template-columns: 1fr; }
-            .coming-grid { grid-template-columns: 1fr; }
-            .types-grid { grid-template-columns: 1fr; }
+          @media(max-width:480px){
+            .resources-page-container .resources-grid{grid-template-columns:1fr}
+            .coming-grid{grid-template-columns:1fr}
+            .types-grid{grid-template-columns:1fr 1fr}
           }
         `}</style>
         <div className="resources-section">
@@ -1139,13 +1196,13 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
           </p>
 
           <div className="coming-grid">
-            {comingSoonResources.map((r) => (
+            {pipelineCards.map((r) => (
               <div key={r.uid} className="coming-card">
                 <div className="coming-card__lock">{r.icon}</div>
                 <div className="coming-card__title">{r.title}</div>
-                <div className="coming-card__desc">{r.desc || r.description}</div>
-                <div className="coming-card__tag">{r.fieldName} · {r.ep}</div>
-                <button className="coming-card__notify" onClick={() => handleNotifyMe(r.title)}>🔔 Notify Me</button>
+                <div className="coming-card__desc">{r.desc}</div>
+                <div className="coming-card__tag">{r.tag}</div>
+                <button className="coming-card__notify" onClick={() => handleNotifyMe(r.notifyTitle || r.title)}>🔔 Notify Me</button>
               </div>
             ))}
           </div>

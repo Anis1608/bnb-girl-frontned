@@ -11,7 +11,6 @@
   --grey-text: #4B5563;
   --grey-muted: #9CA3AF;
   --grey-light: #F3F4F6;
-  --black: #0F0A1E;
   --hero-gradient: linear-gradient(135deg, #6B21A8 0%, #9333EA 25%, #EC4899 55%, #F97316 80%, #EAB308 100%);
   --dark-bg: #0F172A;
   --mid-dark: #1E293B;
@@ -11729,7 +11728,6 @@ textarea.ask-input {
     background-position: 100% 50%
   }
 }
-
 .newsletter::before {
   content: '';
   position: absolute;
@@ -11980,7 +11978,7 @@ textarea.ask-input {
 /* ════════════════════════════════
    RESPONSIVE
 ════════════════════════════════ */
-@media (max-width: 1024px) {
+@media(max-width:1024px) {
   .resources-grid {
     grid-template-columns: repeat(3, 1fr)
   }
@@ -12003,7 +12001,7 @@ textarea.ask-input {
   }
 }
 
-@media (max-width: 768px) {
+@media(max-width:768px) {
   .hero {
     padding: 80px 20px 48px
   }
@@ -12052,7 +12050,7 @@ textarea.ask-input {
   }
 }
 
-@media (max-width: 600px) {
+@media(max-width:480px) {
   .resources-grid {
     grid-template-columns: 1fr
   }
@@ -12062,6 +12060,7 @@ textarea.ask-input {
   }
 
   .types-grid {
-    grid-template-columns: 1fr
+    grid-template-columns: 1fr 1fr
   }
+}
 }
