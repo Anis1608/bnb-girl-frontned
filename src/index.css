@@ -11728,9 +11728,6 @@ textarea.ask-input {
     background-position: 100% 50%
   }
 }
-
-.resources-page-container {
-
 .newsletter::before {
   content: '';
   position: absolute;
