@@ -944,25 +944,24 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
             font-family: var(--font-b);
           }
 
-          /* Responsive Rules */
-          @media(max-width:1024px){
-            .resources-page-container .resources-grid{grid-template-columns:repeat(3,1fr)}
-            .coming-grid{grid-template-columns:repeat(2,1fr)}
-            .types-grid{grid-template-columns:repeat(2,1fr)}
-            .featured-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}
-            .feat-card-big{grid-column:1/-1}
+          @media (max-width: 1024px) {
+            .resources-page-container .resources-grid { grid-template-columns: repeat(3, 1fr); }
+            .coming-grid { grid-template-columns: repeat(2, 1fr); }
+            .types-grid { grid-template-columns: repeat(2, 1fr); }
+            .featured-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
+            .feat-card-big { grid-column: 1/-1; }
           }
-          @media(max-width:768px){
-            .featured-grid{grid-template-columns:1fr}
-            .resources-page-container .resources-grid{grid-template-columns:repeat(2,1fr);gap:14px}
-            .coming-grid{grid-template-columns:repeat(2,1fr)}
-            .types-grid{grid-template-columns:repeat(2,1fr)}
-            .resources-section{padding:36px 16px 60px}
+          @media (max-width: 768px) {
+            .featured-grid { grid-template-columns: 1fr; }
+            .resources-page-container .resources-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+            .coming-grid { grid-template-columns: repeat(2, 1fr); }
+            .types-grid { grid-template-columns: repeat(2, 1fr); }
+            .resources-section { padding: 36px 16px 60px; }
           }
-          @media(max-width:480px){
-            .resources-page-container .resources-grid{grid-template-columns:1fr}
-            .coming-grid{grid-template-columns:1fr}
-            .types-grid{grid-template-columns:1fr 1fr}
+          @media (max-width: 600px) {
+            .resources-page-container .resources-grid { grid-template-columns: 1fr; }
+            .coming-grid { grid-template-columns: 1fr; }
+            .types-grid { grid-template-columns: 1fr; }
           }
         `}</style>
         <div className="resources-section">

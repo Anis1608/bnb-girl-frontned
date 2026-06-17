@@ -11980,7 +11980,7 @@ textarea.ask-input {
 /* ════════════════════════════════
    RESPONSIVE
 ════════════════════════════════ */
-@media(max-width:1024px) {
+@media (max-width: 1024px) {
   .resources-grid {
     grid-template-columns: repeat(3, 1fr)
   }
@@ -12003,7 +12003,7 @@ textarea.ask-input {
   }
 }
 
-@media(max-width:768px) {
+@media (max-width: 768px) {
   .hero {
     padding: 80px 20px 48px
   }
@@ -12052,7 +12052,7 @@ textarea.ask-input {
   }
 }
 
-@media(max-width:480px) {
+@media (max-width: 600px) {
   .resources-grid {
     grid-template-columns: 1fr
   }
@@ -12062,6 +12062,6 @@ textarea.ask-input {
   }
 
   .types-grid {
-    grid-template-columns: 1fr 1fr
+    grid-template-columns: 1fr
   }
 }
