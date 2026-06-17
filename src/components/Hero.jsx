@@ -16,7 +16,7 @@ const TOPICS = [
   { e: '🌱', l: 'Sustainability' }
 ];
 
-export default function Hero({ onWatchNow }) {
+export default function Hero({ onWatchNow, onFindMentor }) {
   const { stats, cms } = useApp();
   // Sparkle configuration
   const sparkles = [
@@ -93,9 +93,9 @@ export default function Hero({ onWatchNow }) {
               </svg>
               {cms.cms_hero_cta_primary_text || "Watch Now"}
             </button>
-            <a href="#mentorship" className="btn btn--secondary">
+            <button className="btn btn--secondary" onClick={onFindMentor}>
               {cms.cms_hero_cta_secondary_text || "Find a Mentor \u2192"}
-            </a>
+            </button>
           </div>
           <div className="hero__social-proof">
             <div className="hero__avatars">

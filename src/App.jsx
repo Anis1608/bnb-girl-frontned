@@ -260,7 +260,7 @@ export default function App() {
         ) : (
           <>
             {/* 2. Hero Presentation */}
-            <Hero onWatchNow={() => setActiveGuestModal(0)} />
+            <Hero onWatchNow={() => handleNavChange('episodes')} onFindMentor={() => handleNavChange('mentorship')} />
 
             {/* 3. Infinite News Ticker */}
             <Ticker />
