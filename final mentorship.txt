@@ -1,0 +1,1123 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Find a Mentor · Bold &amp; Brilliant Girls</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== ROSE TOKENS ===== */
+:root{
+  --bg:#FEF4F0;--bg2:#FFF8F5;--bg3:#FFE8DF;--surface:#fff;
+  --ink:#1C1118;--ink2:#5C3D3D;--ink3:#9C7070;
+  --line:rgba(180,100,80,.12);--line2:rgba(180,100,80,.2);
+  --rose:#E8756A;--rose2:#F4A07A;--rose-deep:#C8504A;
+  --grad:linear-gradient(135deg,#E8756A,#F4A07A);
+  --tint:rgba(232,117,106,.08);
+  --gold:#E8924D;--ok:#22C55E;
+  --shadow-sm:0 1px 2px rgba(180,80,60,.04),0 4px 14px rgba(180,80,60,.06);
+  --shadow-md:0 6px 18px rgba(180,80,60,.09),0 16px 40px rgba(180,80,60,.10);
+  --shadow-lg:0 24px 70px rgba(180,80,60,.20);
+  --rsm:14px;--rmd:20px;--rlg:24px;--rxl:30px;
+  --serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',system-ui,sans-serif;
+  --ease:cubic-bezier(.22,.61,.36,1);--spring:cubic-bezier(.34,1.4,.5,1);
+  --maxw:1200px;--hdr:80px;
+}
+html{scroll-behavior:smooth}
+body{margin:0;overflow-x:hidden;background:#FEF4F0;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+.page *,.page *::before,.page *::after{box-sizing:border-box;margin:0;padding:0}
+.page{font-family:var(--sans);color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;padding-top:var(--hdr);overflow-x:hidden;animation:pgfade .45s ease both}
+@keyframes pgfade{from{opacity:0}to{opacity:1}}
+.page button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 40px}
+@media(prefers-reduced-motion:reduce){.page *{animation:none!important;transition-duration:.01ms!important}}
+
+
+/* ===== AMBIENT / PEACEFUL LAYER ===== */
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(24px,-26px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-20px,22px)}}
+.hero-orb1{animation:drift1 17s ease-in-out infinite}
+.hero-orb2{animation:drift2 15s ease-in-out infinite}
+.hero-para{position:absolute;inset:0;z-index:0;pointer-events:none;transition:transform .6s cubic-bezier(.22,.61,.36,1);will-change:transform}
+.hero-para .blob{position:absolute;border-radius:50%;filter:blur(6px)}
+.hero-para .b1{width:120px;height:120px;background:radial-gradient(circle,rgba(244,160,122,.24),transparent 70%);top:24%;left:8%}
+.hero-para .b2{width:90px;height:90px;background:radial-gradient(circle,rgba(232,117,106,.2),transparent 70%);top:60%;right:14%}
+.hero-para .b3{width:60px;height:60px;background:radial-gradient(circle,rgba(200,80,74,.16),transparent 70%);top:36%;right:30%}
+.stories{position:relative}
+.stories::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 480px 360px at 88% 8%,rgba(232,117,106,.07),transparent 60%),radial-gradient(ellipse 420px 380px at 6% 92%,rgba(244,160,122,.06),transparent 60%)}
+.stories>*{position:relative;z-index:1}
+.why{position:relative;overflow:hidden}
+.why::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 500px 360px at 12% 12%,rgba(232,117,106,.07),transparent 60%),radial-gradient(ellipse 420px 400px at 92% 88%,rgba(244,160,122,.06),transparent 60%)}
+.why>*{position:relative;z-index:1}
+
+
+/* spots-left honest scarcity */
+.card-spots{display:inline-flex;align-items:center;gap:5px;margin-left:10px;font-size:11.5px;font-weight:700;color:var(--gold)}
+.card-spots i{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0;box-shadow:0 0 0 3px rgba(232,146,77,.16)}
+/* podcast trust line */
+.hero-pod{display:inline-flex;align-items:center;gap:7px;margin-top:18px;font-size:12.5px;font-weight:600;color:var(--ink2)}
+.hero-pod svg{width:15px;height:15px;fill:none;stroke:var(--rose);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.hero-pod b{color:var(--rose-deep);font-weight:700}
+/* match nudge */
+.match-nudge{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--rose-deep);text-decoration:none;padding:8px 15px;border:1.5px solid var(--line2);border-radius:100px;background:#fff;transition:all .18s;white-space:nowrap}
+.match-nudge:hover{border-color:var(--rose);box-shadow:0 4px 14px rgba(232,117,106,.16);transform:translateY(-1px)}
+.match-nudge svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+/* drawer mentor intro (vet-before-you-pay) */
+.s-intro{display:flex;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--line)}
+.s-intro-ph{width:54px;height:54px;border-radius:14px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:20px;font-weight:700;flex-shrink:0;background-size:cover;background-position:center}
+.s-intro-d{flex:1;min-width:0}
+.s-intro-bio{font-size:13px;color:var(--ink2);line-height:1.55;margin-bottom:8px}
+.s-intro-meta{display:flex;flex-wrap:wrap;gap:6px}
+.s-intro-meta span{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--ink3);background:var(--bg3);padding:3px 9px;border-radius:100px}
+.s-intro-meta svg{width:11px;height:11px;fill:none;stroke:var(--rose);stroke-width:2;flex-shrink:0}
+/* timezone label */
+.tz-note{font-size:11px;color:var(--ink3);margin-top:8px;display:flex;align-items:center;gap:5px}
+.tz-note svg{width:11px;height:11px;fill:none;stroke:var(--ink3);stroke-width:2;flex-shrink:0}
+
+
+/* ===== HERO ===== */
+.hero{position:relative}
+.hero-bgwrap{background:linear-gradient(160deg,#FFF0EC 0%,#FFE4DC 50%,#F5CECC 100%);position:relative;overflow:hidden;border-bottom:1px solid var(--line);padding:26px 0 52px}
+.hero-orb1,.hero-orb2{position:absolute;border-radius:50%;pointer-events:none}
+.hero-orb1{width:420px;height:420px;background:radial-gradient(circle,rgba(232,117,106,.14),transparent 65%);top:-120px;right:-60px}
+.hero-orb2{width:300px;height:300px;background:radial-gradient(circle,rgba(244,160,122,.12),transparent 65%);bottom:-80px;left:-40px}
+.hero-petal{position:absolute;top:0;right:0;width:340px;height:340px;pointer-events:none;opacity:.35;animation:pspin 70s linear infinite}
+@keyframes pspin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.hero-inner{position:relative;z-index:1}
+.hero-inner .wrap{display:flex;flex-direction:column;align-items:center;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px 7px 10px;background:rgba(255,255,255,.75);border:1px solid var(--line2);border-radius:100px;margin-bottom:24px;box-shadow:var(--shadow-sm)}
+.hero-badge svg{width:15px;height:15px;flex-shrink:0}
+.hero-badge span{font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--rose-deep);white-space:nowrap}
+.hero-h{font-family:var(--serif);font-size:clamp(44px,7vw,100px);font-weight:700;line-height:.96;letter-spacing:-.025em;color:var(--ink);max-width:16ch;margin-bottom:24px}
+.hero-h em{font-style:italic;color:var(--rose)}
+.hero-lede{font-size:clamp(16px,1.8vw,20px);line-height:1.7;color:var(--ink2);max-width:46ch;margin-bottom:6px;font-weight:300}
+.hero-line{font-family:var(--serif);font-style:italic;font-size:clamp(19px,2.2vw,28px);color:var(--rose);font-weight:600;max-width:30ch;margin-bottom:0}
+.hero-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px;width:100%;max-width:920px}
+.hm{background:rgba(255,255,255,.72);border:1px solid var(--line2);border-radius:var(--rmd);padding:22px 20px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;transition:transform .25s var(--ease),box-shadow .25s}
+.hm::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--grad)}
+.hm:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.hm-ic{width:36px;height:36px;border-radius:10px;background:var(--tint);display:flex;align-items:center;justify-content:center;margin-bottom:2px}
+.hm-ic svg{width:18px;height:18px;fill:none;stroke:var(--rose);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hm-n{font-family:var(--serif);font-size:clamp(30px,3vw,44px);font-weight:700;line-height:1;letter-spacing:-.02em;color:var(--rose)}
+.hm-l{font-size:12.5px;color:var(--ink2);line-height:1.4;font-weight:500;text-align:left}
+
+
+/* ===== TICKER (dark) ===== */
+.ticker{background:#1A1310;overflow:hidden;position:relative;border-bottom:1px solid rgba(255,255,255,.05);height:52px}
+.ticker::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);opacity:.6;pointer-events:none}
+.tk-track{display:flex;width:max-content;animation:tk 42s linear infinite;height:52px;align-items:center}
+.tk-track:hover{animation-play-state:paused}
+@keyframes tk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tk-i{display:flex;align-items:center;gap:13px;padding:0 44px;white-space:nowrap;flex-shrink:0;border-right:1px solid rgba(255,255,255,.06)}
+.tk-i b{font-size:9px;color:var(--rose2)}
+.tk-i span{font-family:var(--serif);font-style:italic;font-size:17px;font-weight:600;color:rgba(255,255,255,.92)}
+
+
+/* ===== DISCOVERY (sticky) ===== */
+.discovery{position:relative}
+.life-strip{position:sticky;top:var(--hdr);z-index:20;background:#FEF0EB;border-bottom:1px solid var(--line);transition:box-shadow .3s}
+.life-strip.pinned{box-shadow:0 4px 16px rgba(180,80,60,.08)}
+.life-tag{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 0 4px}
+.life-tag .ls-star{color:var(--rose);font-size:12px;animation:pspin 8s linear infinite}
+.life-tag .ls-txt{font-family:var(--serif);font-style:italic;font-size:18px;font-weight:600;color:var(--rose-deep)}
+.life-row{display:flex;align-items:center;gap:12px;padding:10px 0}
+.life-chips{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;flex:1}
+.life-chips::-webkit-scrollbar{display:none}
+.fch{flex-shrink:0;display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 16px;border-radius:100px;border:2px solid var(--line2);background:#fff;font-size:13.5px;font-weight:700;color:var(--ink2);white-space:nowrap;transition:all .18s;box-shadow:0 2px 5px rgba(180,80,60,.06)}
+.fch svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.fch:hover{border-color:var(--rose);color:var(--rose)}
+.fch.on{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 5px 14px rgba(232,117,106,.32)}
+.life-search{position:relative;flex-shrink:0;width:220px}
+.life-search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:16px;height:16px;fill:none;stroke:var(--ink3);stroke-width:2}
+.life-search input{width:100%;height:40px;padding:0 14px 0 38px;border-radius:100px;border:1.5px solid var(--line2);background:#fff;font-family:var(--sans);font-size:14px;color:var(--ink);outline:none;transition:border-color .18s}
+.life-search input:focus{border-color:var(--rose)}
+
+
+/* ===== MENTORS ===== */
+.mentors{padding:36px 0 80px}
+.mentors-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:28px}
+.mentors-t{font-family:var(--serif);font-size:clamp(30px,3.6vw,50px);font-weight:700;letter-spacing:-.02em;color:var(--ink);line-height:1.05}
+.mentors-t em{font-style:italic;color:var(--rose)}
+.mentors-c{font-size:14px;color:var(--ink2)}.mentors-c b{color:var(--rose);font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+
+
+/* ===== CARD (compact, fully clickable) ===== */
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--rlg);padding:22px;display:flex;flex-direction:column;box-shadow:var(--shadow-sm);transition:transform .26s var(--ease),box-shadow .26s,border-color .26s;cursor:pointer}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line2)}
+.card-top{display:flex;align-items:center;gap:12px;margin-bottom:11px}
+.ava{width:46px;height:46px;border-radius:14px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:18px;font-weight:700;flex-shrink:0;box-shadow:0 4px 12px rgba(232,117,106,.28)}
+.card-id{flex:1;min-width:0}
+.card-nm{font-size:16px;font-weight:700;color:var(--ink);line-height:1.2}
+.card-rl{font-size:12.5px;color:var(--ink2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-rt{display:inline-flex;align-items:center;gap:4px;flex-shrink:0;padding:5px 10px;border-radius:100px;background:var(--bg3)}
+.card-rt b{font-size:13px;font-weight:700;color:var(--ink)}
+.sf{width:13px;height:13px;fill:var(--gold)}.se{width:13px;height:13px;fill:#EAD9D2}
+.card-cat{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--rose);margin-bottom:9px}
+.card-hk{font-family:var(--serif);font-size:19px;font-weight:600;line-height:1.3;color:var(--ink);margin-bottom:12px}
+.card-tg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.ch{font-size:11.5px;font-weight:600;color:var(--ink2);background:var(--bg3);padding:5px 11px;border-radius:100px}
+.card-ft{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
+.card-mt{min-width:0}
+.av-dot{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--ok)}
+.av-dot i{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(34,197,94,.16);flex-shrink:0}
+.card-pr{display:block;font-size:12px;color:var(--ink3);margin-top:3px}
+.pp{margin-right:6px}
+.bk{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:100px;background:var(--grad);color:#fff;font-size:14px;font-weight:700;flex-shrink:0;transition:transform .2s,box-shadow .2s;box-shadow:0 5px 16px rgba(232,117,106,.36)}
+.bk svg{fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;transition:transform .2s}
+.bk .bk-cal{width:16px;height:16px}
+.bk .bk-arr{width:15px;height:15px;margin-left:-2px}
+.bk:hover{box-shadow:0 8px 24px rgba(232,117,106,.5);transform:translateY(-1px)}
+.bk:hover .bk-arr{transform:translateX(3px)}
+.bk:hover .bk-cal{transform:scale(1.08)}
+.empty{display:none;grid-column:1/-1;text-align:center;padding:56px 20px}
+.empty svg{width:40px;height:40px;fill:none;stroke:var(--ink3);stroke-width:1.5;margin:0 auto 14px}
+.empty h3{font-family:var(--serif);font-size:26px;color:var(--ink);margin-bottom:8px;font-weight:700}
+.empty p{font-size:15px;color:var(--ink2)}
+.empty button{margin-top:14px;height:40px;padding:0 20px;border-radius:100px;background:var(--grad);color:#fff;font-size:14px;font-weight:700}
+
+
+/* ===== REAL STORIES ===== */
+.stories{padding:72px 0;overflow:hidden}
+.stories-head{text-align:center;max-width:640px;margin:0 auto 40px}
+.eyebrow{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--rose);margin-bottom:14px}
+.stories-h{font-family:var(--serif);font-size:clamp(34px,4.8vw,62px);font-weight:700;line-height:1.05;letter-spacing:-.02em;color:var(--ink);margin-bottom:14px}
+.stories-h em{font-style:italic;color:var(--rose)}
+.stories-sub{font-size:16px;color:var(--ink2);line-height:1.6}
+.st-marq{overflow:hidden;position:relative;height:248px}
+.st-marq::before,.st-marq::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
+.st-marq::before{left:0;background:linear-gradient(to right,var(--bg),transparent)}
+.st-marq::after{right:0;background:linear-gradient(to left,var(--bg),transparent)}
+.st-track{display:flex;gap:18px;width:max-content;animation:tk 58s linear infinite;align-items:stretch}
+.st-track.rev{animation-direction:reverse;animation-duration:66s}
+.st-track:hover{animation-play-state:paused}
+.st{width:330px;height:236px;flex-shrink:0;background:#fff;border:1px solid var(--line);border-radius:var(--rlg);padding:22px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;overflow:hidden}
+.st-stars{display:flex;gap:2px;margin-bottom:12px;flex-shrink:0}
+.st-stars .sf{width:14px;height:14px}
+.st-q{font-family:var(--serif);font-size:18px;line-height:1.4;color:var(--ink);font-weight:600;margin-bottom:12px;flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical}
+.st-o{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;padding:5px 12px;border-radius:100px;background:rgba(34,197,94,.1);color:#15803D;font-size:12px;font-weight:700;margin-bottom:12px;flex-shrink:0}
+.st-o svg{width:13px;height:13px;fill:none;stroke:#15803D;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.st-a{display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid var(--line);flex-shrink:0}
+.st-av{width:34px;height:34px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.st-nm{font-size:13px;font-weight:700;color:var(--ink)}
+.st-mt{font-size:11.5px;color:var(--ink3)}
+/* trust redesign: credibility bar + static grid */
+.st-trust{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 24px;margin:0 auto 40px;padding:16px 28px;background:#fff;border:1px solid var(--line);border-radius:100px;box-shadow:var(--shadow-sm);width:fit-content;max-width:100%}
+.st-trust-i{display:flex;align-items:center;gap:10px}
+.st-trust-i .sf{width:16px;height:16px}
+.st-trust-n{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--ink);line-height:1}
+.st-trust-l{font-size:12.5px;color:var(--ink2);line-height:1.2;max-width:14ch}
+.st-trust-sep{width:1px;height:28px;background:var(--line2)}
+.st-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.st-grid .st{width:auto;height:auto;overflow:visible}
+.st-grid .st-q{flex:none;display:block;-webkit-line-clamp:unset;overflow:visible}
+.st-via{display:flex;align-items:center;gap:6px;margin-top:11px;padding-top:11px;border-top:1px dashed var(--line2);font-size:11.5px;color:var(--ink3);font-weight:600}
+.st-via svg{width:13px;height:13px;fill:none;stroke:var(--rose);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.st-via b{color:var(--rose-deep);font-weight:700}
+.st-from{text-align:center;margin-top:42px}
+.st-from-l{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:16px}
+.st-from-row{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.st-co{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--ink2);padding:7px 18px;border:1px solid var(--line);border-radius:100px;background:rgba(255,255,255,.65)}
+
+
+/* ===== WHY IT WORKS ===== */
+.why{padding:28px 0 88px}
+.why-head{text-align:center;max-width:640px;margin:0 auto 52px}
+.why-h{font-family:var(--serif);font-size:clamp(32px,4.4vw,58px);font-weight:700;line-height:1.05;letter-spacing:-.02em;color:var(--ink);margin-bottom:14px}
+.why-h em{font-style:italic;color:var(--rose)}
+.why-sub{font-size:16px;color:var(--ink2);line-height:1.65}
+.why-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.wstat{background:#fff;border:1px solid var(--line);border-radius:var(--rlg);padding:30px 26px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;transition:transform .25s var(--ease),box-shadow .25s}
+.wstat::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--grad);transform:scaleX(0);transform-origin:left;transition:transform .6s var(--ease)}
+.wstat.in::before{transform:scaleX(1)}
+.wstat:hover{transform:translateY(-5px);box-shadow:var(--shadow-md)}
+.wstat-ic{width:40px;height:40px;border-radius:11px;background:var(--tint);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.wstat-ic svg{width:20px;height:20px;fill:none;stroke:var(--rose);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.wstat-n{font-family:var(--serif);font-size:clamp(46px,5vw,66px);font-weight:700;line-height:.9;letter-spacing:-.02em;color:var(--ink);margin-bottom:14px}
+.wstat-rule{width:34px;height:3px;border-radius:2px;background:var(--grad);margin-bottom:14px}
+.wstat-l{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.wstat-s{font-size:12.5px;color:var(--ink3);line-height:1.4}
+.why-foot{text-align:center;margin-top:60px;padding-top:40px;border-top:1px solid var(--line)}
+.why-foot p{font-family:var(--serif);font-style:italic;font-size:clamp(22px,2.6vw,30px);color:var(--ink);margin-bottom:24px;line-height:1.2}
+.why-foot p em{color:var(--rose)}
+
+
+/* ===== FAQ ===== */
+.faq{padding:20px 0 88px}
+.faq-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:60px;align-items:start}
+.faq-side{position:sticky;top:calc(var(--hdr) + 24px)}
+.faq-h{font-family:var(--serif);font-size:clamp(30px,3.8vw,48px);font-weight:700;line-height:1.06;letter-spacing:-.02em;color:var(--ink);margin-bottom:12px}
+.faq-h em{font-style:italic;color:var(--rose)}
+.faq-side p{font-size:15px;color:var(--ink2);line-height:1.6}
+.faq-i{border-bottom:1px solid var(--line)}
+.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 0;text-align:left;font-size:16px;font-weight:600;color:var(--ink);transition:color .18s}
+.faq-q:hover{color:var(--rose)}
+.faq-ic{width:28px;height:28px;flex-shrink:0;border-radius:50%;border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;transition:all .25s var(--ease)}
+.faq-ic svg{width:13px;height:13px;fill:none;stroke:var(--rose);stroke-width:2.2}
+.faq-i.open .faq-ic{background:var(--grad);border-color:transparent;transform:rotate(45deg)}
+.faq-i.open .faq-ic svg{stroke:#fff}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s var(--ease)}
+.faq-ai{font-size:15px;color:var(--ink2);line-height:1.7}
+.faq-i.open .faq-a{max-height:240px}
+.faq-i.open .faq-ai{padding-bottom:20px}
+
+
+/* ===== REVEAL ===== */
+.rev{opacity:0;transform:translateY(20px);transition:opacity .65s var(--ease),transform .65s var(--ease)}
+.rev.in{opacity:1;transform:none}
+.rev-d1{transition-delay:.08s}.rev-d2{transition-delay:.16s}.rev-d3{transition-delay:.24s}
+
+
+/* ===== BOOKING SHEET (single col, centered) ===== */
+.scrim{position:fixed;inset:0;z-index:9500;background:rgba(28,17,24,.5);opacity:0;pointer-events:none;transition:opacity .28s}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;z-index:9501;left:50%;top:50%;transform:translate(-50%,-46%) scale(.97);
+  width:min(480px,calc(100vw - 24px));max-height:min(88svh,680px);
+  background:#fff;border-radius:var(--rxl);box-shadow:var(--shadow-lg);
+  opacity:0;pointer-events:none;transition:transform .38s var(--spring),opacity .28s;
+  overflow:hidden;display:flex;flex-direction:column}
+.sheet.open{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:auto}
+.s-head{flex-shrink:0;padding:20px 24px 14px;border-bottom:1px solid var(--line)}
+.s-mentor{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+.s-ava{width:44px;height:44px;border-radius:12px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:17px;font-weight:700;flex-shrink:0}
+.s-nm{font-family:var(--serif);font-size:17px;font-weight:700;color:var(--ink);line-height:1.15}
+.s-rl{font-size:12px;color:var(--ink2);margin-top:1px}
+.s-x{margin-left:auto;width:30px;height:30px;border-radius:50%;background:var(--bg3);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.s-x:hover{background:var(--tint);border-color:var(--rose)}
+.s-x svg{width:13px;height:13px;fill:none;stroke:var(--ink2);stroke-width:2.2}
+.s-steps{display:flex;gap:5px}
+.sstep{flex:1;height:3.5px;border-radius:2px;background:var(--line2);transition:background .28s}
+.sstep.on{background:var(--grad)}
+.s-body{flex:1;overflow-y:auto;padding:18px 24px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.s-body::-webkit-scrollbar{width:4px}.s-body::-webkit-scrollbar-thumb{background:var(--line2);border-radius:2px}
+.fld{margin-bottom:18px}.fld:last-child{margin-bottom:0}
+.fl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:9px;display:block}
+/* Duration — horizontal row layout */
+.durs{display:flex;flex-direction:column;gap:8px}
+.dur{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line2);background:#fff;cursor:pointer;transition:all .16s}
+.dur:hover{border-color:var(--rose)}
+.dur.on{border-color:var(--rose);background:var(--tint);box-shadow:0 0 0 3px var(--tint)}
+.dur-lbl{flex:1;min-width:0}
+.dur-t{font-size:15px;font-weight:700;color:var(--ink);display:block;line-height:1.2}
+.dur-d{font-size:11.5px;color:var(--ink3);margin-top:1px;display:block}
+.dur-p{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--rose);flex-shrink:0}
+/* Dates */
+.dates{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.dates::-webkit-scrollbar{display:none}
+.date{flex-shrink:0;width:68px;padding:11px 5px;border-radius:12px;border:1.5px solid var(--line2);background:#fff;cursor:pointer;text-align:center;transition:all .16s}
+.date:hover{border-color:var(--rose)}
+.date.on{border-color:transparent;background:var(--grad);box-shadow:0 6px 16px rgba(232,117,106,.28)}
+.date-w{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);display:block}
+.date-d{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--ink);line-height:1.1;display:block;margin:3px 0}
+.date-m{font-size:9.5px;text-transform:uppercase;color:var(--ink3);display:block}
+.date-s{font-size:10px;font-weight:700;color:var(--ok);margin-top:4px;display:block}
+.date.on .date-w,.date.on .date-d,.date.on .date-m{color:#fff}
+.date.on .date-s{color:rgba(255,255,255,.9)}
+/* Times — 3-col so all visible */
+.times{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.tm{height:40px;border-radius:10px;border:1.5px solid var(--line2);background:#fff;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer;transition:all .14s}
+.tm:hover:not(.busy){border-color:var(--rose);color:var(--rose)}
+.tm.on{background:var(--grad);border-color:transparent;color:#fff}
+.tm.busy{opacity:.32;cursor:not-allowed;text-decoration:line-through}
+/* Footer */
+.s-foot{flex-shrink:0;padding:12px 24px 16px;border-top:1px solid var(--line);background:#fff}
+.s-sum{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:11px;background:var(--bg3);border:1px solid var(--line);margin-bottom:10px;min-height:44px}
+.s-sum.empty{opacity:.55}
+.s-sum-ic{width:28px;height:28px;border-radius:8px;background:var(--tint);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.s-sum-ic svg{width:14px;height:14px;fill:none;stroke:var(--rose);stroke-width:2}
+.s-sum-d{flex:1;min-width:0}
+.s-sum-m{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-sum-s{font-size:11.5px;color:var(--ink2)}
+.s-sum-p{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--rose);flex-shrink:0}
+.s-go{width:100%;height:50px;border-radius:13px;background:var(--grad);color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .2s,box-shadow .2s;box-shadow:0 6px 18px rgba(232,117,106,.32)}
+.s-go:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 26px rgba(232,117,106,.44)}
+.s-go:disabled{opacity:.38;cursor:not-allowed;box-shadow:none}
+.s-go svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.s-sec{font-size:11.5px;color:var(--ink3);text-align:center;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px}
+.s-sec svg{width:12px;height:12px;fill:none;stroke:var(--ink3);stroke-width:2}
+.f-in{width:100%;height:48px;padding:0 14px;border-radius:11px;border:1.5px solid var(--line2);background:#fff;font-family:var(--sans);font-size:15px;color:var(--ink);outline:none;transition:border-color .16s}
+.f-in:focus{border-color:var(--rose)}
+.f-note{font-size:12px;color:var(--ink3);margin-top:7px;display:flex;align-items:center;gap:5px}
+.f-note svg{width:11px;height:11px;fill:none;stroke:var(--ink3);stroke-width:2;flex-shrink:0}
+.f-err{font-size:12px;color:#DC2626;margin-top:6px;display:none}
+#stripe-mt{padding:14px;border-radius:11px;border:1.5px solid var(--line2);background:#fff;min-height:48px}
+.sum-card{background:var(--bg3);border:1px solid var(--line);border-radius:var(--rmd);overflow:hidden;margin-bottom:14px}
+.sum-r{display:flex;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line)}
+.sum-r:last-child{border-bottom:none}
+.sum-r .k{font-size:12.5px;color:var(--ink2)}.sum-r .v{font-size:13px;font-weight:700;color:var(--ink)}
+/* success */
+.success{text-align:center;padding:6px 2px 2px}
+.sc-ring{position:relative;width:84px;height:84px;margin:0 auto 18px}
+.sc-ring i{position:absolute;border-radius:50%;border:2px solid rgba(34,197,94,.28);animation:scr 2.2s ease-out infinite}
+.sc-ring i:nth-child(1){inset:-14px}.sc-ring i:nth-child(2){inset:-7px;animation-delay:.4s}.sc-ring i:nth-child(3){inset:0;animation-delay:.8s}
+@keyframes scr{0%{opacity:1;transform:scale(.82)}100%{opacity:0;transform:scale(1.12)}}
+.sc-check{position:absolute;inset:0;border-radius:50%;background:linear-gradient(135deg,#16A34A,#22C55E);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(34,197,94,.38);animation:scp .5s var(--spring)}
+@keyframes scp{from{transform:scale(0)}to{transform:scale(1)}}
+.sc-check svg{width:34px;height:34px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.sc-h{font-family:var(--serif);font-size:28px;font-weight:700;color:var(--ink);margin-bottom:7px}
+.sc-h em{font-style:italic;color:var(--rose)}
+.sc-sub{font-size:14px;color:var(--ink2);margin-bottom:18px;line-height:1.6}
+.sc-cal{display:flex;gap:9px;margin-bottom:12px}
+.cb{flex:1;height:44px;border-radius:11px;border:1.5px solid var(--line2);background:#fff;font-size:13px;font-weight:600;color:var(--ink);display:flex;align-items:center;justify-content:center;gap:7px;transition:all .16s}
+.cb:hover{border-color:var(--rose);color:var(--rose)}
+.cb svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+.sc-next{background:var(--tint);border-radius:11px;padding:14px;text-align:left;margin-bottom:16px}
+.sc-next h4{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.sc-next h4 svg{width:14px;height:14px;fill:none;stroke:var(--rose);stroke-width:2}
+.sc-next li{font-size:13px;color:var(--ink2);line-height:1.5;padding-left:18px;position:relative;margin-bottom:5px;list-style:none}
+.sc-next li::before{content:'';position:absolute;left:3px;top:7px;width:5px;height:5px;border-radius:50%;background:var(--rose)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .65s linear infinite}
+
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1024px){.grid{grid-template-columns:repeat(2,1fr)}.why-stats{grid-template-columns:repeat(2,1fr)}.st-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:860px){
+  :root{--hdr:60px}
+  .wrap{padding:0 18px}
+  .faq-grid{grid-template-columns:1fr;gap:24px}.faq-side{position:static}
+  .hero-bgwrap{padding:20px 0 40px}
+  .life-search{display:none}
+  .life-tag{padding:9px 0 3px}.life-tag .ls-txt{font-size:15px}
+  .life-row{padding:8px 0}
+  .mentors-head{margin-bottom:20px}
+  .hero-pod{margin-top:14px}
+}
+@media(max-width:560px){
+  .grid{grid-template-columns:1fr}
+  .hero-metrics{grid-template-columns:repeat(2,1fr)}
+  .why-stats{grid-template-columns:1fr;gap:14px}
+  .st-grid{grid-template-columns:1fr}.st-q{font-size:16px}
+  .sheet{max-height:calc(100svh - 60px - 64px - 16px)}
+  .bbgf{padding-bottom:64px!important}
+  .stories{padding:52px 0}
+}
+.btn-p{display:inline-flex;align-items:center;gap:9px;height:52px;padding:0 26px;border-radius:100px;background:var(--grad);color:#fff;font-size:15px;font-weight:700;box-shadow:0 7px 22px rgba(232,117,106,.34);transition:transform .2s,box-shadow .2s}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(232,117,106,.46)}
+.btn-p svg{flex-shrink:0}
+</style>
+</head>
+<body>
+<!-- ══ BBG HEADER ══ -->
+<style>
+.bbg-nav-scope :root{}
+.nav-icon{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.bbg-logo{display:inline-flex;align-items:center;flex-shrink:0;line-height:0;z-index:2}
+.bbg-logo img{display:block;height:64px;width:auto;max-width:220px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(147,51,234,.15));transition:filter .3s,transform .3s}
+.bbg-logo:hover img{filter:drop-shadow(0 4px 18px rgba(147,51,234,.38));transform:scale(1.03)}
+.bbg-logo-sm img{height:46px;max-width:170px}
+.bbg-nav{position:fixed;top:0;left:0;right:0;z-index:9000;height:80px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;padding:0 40px;background:#fff;box-shadow:0 1px 0 rgba(147,51,234,.1),0 6px 32px rgba(147,51,234,.07),0 1px 4px rgba(0,0,0,.04)}
+.bbg-nav::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(135deg,#6B21A8,#9333EA 25%,#EC4899 55%,#F97316 80%,#EAB308);pointer-events:none}
+.bbg-links{display:flex;align-items:center;gap:6px;justify-self:center}
+.bbg-links a{font-size:.88rem;font-weight:500;color:#4a3f6b;padding:9px 14px;border-radius:10px;transition:color .2s,background .2s,box-shadow .2s;position:relative;white-space:nowrap;display:inline-flex;align-items:center;gap:7px;font-family:'DM Sans',sans-serif}
+.bbg-links a:hover{color:#6B21A8;background:rgba(147,51,234,.07);box-shadow:inset 0 0 0 1px rgba(147,51,234,.16)}
+.bbg-links .bbg-sep{width:1px;height:22px;background:rgba(147,51,234,.18);margin:0 6px;flex-shrink:0}
+.bbg-links a.pill-gold{background:rgba(234,179,8,.09);border:1.5px solid rgba(234,179,8,.32);color:#92600a;font-weight:700;font-size:.84rem;padding:9px 18px;border-radius:10px;transition:all .25s}
+.bbg-links a.pill-gold .nav-icon{stroke:#92600a}
+.bbg-links a.pill-gold:hover{background:rgba(234,179,8,.16);border-color:rgba(234,179,8,.65);color:#6b3d04;box-shadow:0 4px 20px rgba(234,179,8,.22);transform:translateY(-1px)}
+.bbg-links a.link-path{color:#7C3AED;font-weight:600;font-size:.88rem;padding:9px 14px;border-radius:10px;transition:all .2s}
+.bbg-links a.link-path:hover{color:#5b21b6;background:rgba(147,51,234,.08);box-shadow:inset 0 0 0 1px rgba(147,51,234,.18)}
+.fp-ring{width:17px;height:17px;position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.fp-ring::before{content:'';position:absolute;inset:-1px;border-radius:50%;background:conic-gradient(from 0deg,#6B21A8,#9333EA,#EC4899,#F97316,#EAB308,#6B21A8);animation:bbgspin 3.5s linear infinite}
+.fp-ring::after{content:'';position:absolute;inset:2.5px;border-radius:50%;background:#fff;z-index:1}
+.fp-ring svg{position:relative;z-index:2;width:7px;height:7px;fill:none;stroke:url(#eyeG);stroke-width:2.2}
+@keyframes bbgspin{to{transform:rotate(360deg)}}
+.bbg-mob-bar{display:none;position:fixed;top:0;left:0;right:0;z-index:9001;height:60px;padding:0 18px;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid rgba(147,51,234,.1);box-shadow:0 2px 16px rgba(147,51,234,.07),0 1px 3px rgba(0,0,0,.04)}
+.bbg-mob-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(135deg,#6B21A8,#9333EA 25%,#EC4899 55%,#F97316 80%,#EAB308);pointer-events:none}
+.bbg-ham{width:44px;height:44px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:transparent;box-shadow:0 0 0 1.5px rgba(147,51,234,.35);transition:transform .2s,box-shadow .25s}
+.bbg-ham:hover{box-shadow:0 0 0 1.5px rgba(147,51,234,.75),0 0 12px rgba(147,51,234,.15);transform:scale(1.05)}
+.bbg-bar{display:block;border-radius:3px;background:linear-gradient(90deg,#9333EA,#EC4899);transition:all .3s cubic-bezier(.4,0,.2,1)}
+.bbg-bar:nth-child(1){width:20px;height:2.5px}.bbg-bar:nth-child(2){width:14px;height:2.5px;align-self:flex-end;margin-right:3px}.bbg-bar:nth-child(3){width:20px;height:2.5px}
+.bbg-ham.is-open .bbg-bar:nth-child(1){transform:translateY(7.5px) rotate(45deg);width:22px}
+.bbg-ham.is-open .bbg-bar:nth-child(2){opacity:0;transform:scaleX(0)}
+.bbg-ham.is-open .bbg-bar:nth-child(3){transform:translateY(-7.5px) rotate(-45deg);width:22px}
+.bbg-drawer{position:fixed;inset:0;z-index:8999;background:#fff;opacity:0;pointer-events:none;transition:opacity .28s;overflow-y:auto;padding-top:60px}
+.bbg-drawer.is-open{opacity:1;pointer-events:all}
+.bbg-drw-inner{position:relative;z-index:1;padding:8px 24px 100px}
+.bbg-drw-link{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid rgba(147,51,234,.08)}
+.bbg-drw-left{display:flex;align-items:center;gap:14px}
+.bbg-drw-icon{width:22px;height:22px;fill:none;stroke:#9b72cf;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.bbg-drw-label{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:#3b2d6e;display:flex;align-items:center;gap:10px}
+.bbg-drw-badge{font-family:'DM Sans',sans-serif;font-size:.55rem;font-weight:800;letter-spacing:.1em;background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.3);color:#92600a;padding:3px 9px;border-radius:6px}
+.bbg-drw-arr{width:28px;height:28px;border-radius:50%;background:rgba(147,51,234,.07);border:1px solid rgba(147,51,234,.14);display:flex;align-items:center;justify-content:center;color:#9b72cf;font-size:.8rem;flex-shrink:0}
+.drw-cta-wrap{display:flex;flex-direction:column;gap:10px;margin:20px 0 16px}
+.bbg-drw-cta-gold{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(234,179,8,.09);border:1.5px solid rgba(234,179,8,.32);color:#92600a!important;font-weight:700;font-size:.88rem;padding:14px 20px;border-radius:12px}
+.bbg-drw-cta-path{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(147,51,234,.07);border:1.5px solid rgba(147,51,234,.22);color:#6B21A8!important;font-weight:700;font-size:.88rem;padding:14px 20px;border-radius:12px}
+.bbg-bot{display:none;position:fixed;bottom:0;left:0;right:0;z-index:8998;height:64px;background:rgba(8,3,20,.97);border-top:1px solid rgba(255,255,255,.07);backdrop-filter:blur(24px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.bbg-bot::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(135deg,#6B21A8,#9333EA 25%,#EC4899 55%,#F97316 80%,#EAB308);opacity:.35;pointer-events:none}
+.bbg-bot-inner{display:flex;height:100%;align-items:stretch}
+.bbg-bot-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:rgba(255,255,255,.45)!important;font-size:.56rem;font-weight:600;position:relative;transition:color .2s;font-family:'DM Sans',sans-serif}
+.bbg-bot-item.bbg-on{color:#fff!important}
+.bbg-bot-item>svg.bot-icon{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bbg-bot-item[data-nav="quiz"]{flex:0 0 68px}
+.bbg-eye-wrap{width:44px;height:44px;position:relative;display:flex;align-items:center;justify-content:center;margin-top:-10px;flex-shrink:0}
+.bbg-eye-wrap::before{content:'';position:absolute;inset:-2px;border-radius:50%;background:conic-gradient(from 0deg,#6B21A8,#9333EA,#EC4899,#F97316,#EAB308,#6B21A8);animation:bbgspin 2.8s linear infinite}
+.bbg-eye-wrap::after{content:'';position:absolute;inset:3px;border-radius:50%;background:rgba(8,3,20,.97);z-index:1}
+.bbg-eye-wrap svg{position:relative;z-index:2;width:20px;height:20px;fill:none;stroke:url(#eyeG);stroke-width:1.8}
+.bbg-bot-item[data-nav="quiz"] .bbg-bot-lbl{color:rgba(234,179,8,.65)!important;font-size:.5rem;margin-top:2px}
+@media(max-width:768px){.bbg-nav{display:none!important}.bbg-mob-bar{display:flex!important}.bbg-bot{display:block!important}}
+@media(min-width:769px){.bbg-mob-bar{display:none!important}.bbg-drawer{display:none!important}.bbg-bot{display:none!important}}
+@media(max-width:1300px) and (min-width:769px){.bbg-nav{padding:0 20px}.bbg-links{gap:3px}.bbg-links a{font-size:.8rem;padding:8px 10px;gap:5px}.bbg-links a.pill-gold{padding:8px 13px;font-size:.78rem}.nav-icon{width:13px;height:13px}.bbg-links .bbg-sep{margin:0 3px}}
+.btn-p{display:inline-flex;align-items:center;gap:9px;height:52px;padding:0 26px;border-radius:100px;background:var(--grad);color:#fff;font-size:15px;font-weight:700;box-shadow:0 7px 22px rgba(232,117,106,.34);transition:transform .2s,box-shadow .2s}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(232,117,106,.46)}
+.btn-p svg{flex-shrink:0}
+</style>
+<svg width="0" height="0" style="position:absolute;overflow:hidden"><defs><linearGradient id="eyeG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#9333EA"/><stop offset="50%" stop-color="#EC4899"/><stop offset="100%" stop-color="#EAB308"/></linearGradient></defs></svg>
+<nav class="bbg-nav">
+  <a href="https://bnbgirl.com/home/" class="bbg-logo"><img src="https://bnbgirl.com/wp-content/uploads/2026/03/logo-BjMcg-i3__2___1_-removebg-preview.png" alt="Bold & Brilliant Girls" draggable="false"></a>
+  <div class="bbg-links">
+    <a href="https://bnbgirl.com/home/" data-nav="home"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+    <a href="https://bnbgirl.com/about-us/" data-nav="about"><svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>About Us</a>
+    <a href="https://bnbgirl.com/episodes/" data-nav="episodes"><svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>Episodes</a>
+    <a href="https://bnbgirl.com/resources/" data-nav="resources"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Resources</a>
+    <a href="https://bnbgirl.com/join-us/" data-nav="joinus"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Join Us</a>
+    <div class="bbg-sep"></div>
+    <a href="https://bnbgirl.com/find-your-path/" data-nav="quiz" class="link-path"><span class="fp-ring"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>Find Your Path</a>
+    <a href="https://bnbgirl.com/mentorship/" data-nav="mentorship" class="pill-gold"><svg class="nav-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Apply for Mentorship</a>
+  </div>
+  <div></div>
+</nav>
+<div class="bbg-mob-bar">
+  <a href="https://bnbgirl.com/home/" class="bbg-logo bbg-logo-sm"><img src="https://bnbgirl.com/wp-content/uploads/2026/03/logo-BjMcg-i3__2___1_-removebg-preview.png" alt="Bold & Brilliant Girls" draggable="false"></a>
+  <button class="bbg-ham" id="bbgHam" aria-label="Menu"><div class="bbg-bar"></div><div class="bbg-bar"></div><div class="bbg-bar"></div></button>
+</div>
+<div class="bbg-drawer" id="bbgDrawer"><div class="bbg-drw-inner">
+  <a href="https://bnbgirl.com/home/" data-nav="home" class="bbg-drw-link"><div class="bbg-drw-left"><svg class="bbg-drw-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="bbg-drw-label">Home</span></div><span class="bbg-drw-arr">→</span></a>
+  <a href="https://bnbgirl.com/about-us/" data-nav="about" class="bbg-drw-link"><div class="bbg-drw-left"><svg class="bbg-drw-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span class="bbg-drw-label">About Us</span></div><span class="bbg-drw-arr">→</span></a>
+  <a href="https://bnbgirl.com/episodes/" data-nav="episodes" class="bbg-drw-link"><div class="bbg-drw-left"><svg class="bbg-drw-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="#9b72cf" stroke="none"/></svg><span class="bbg-drw-label">Episodes</span></div><span class="bbg-drw-arr">→</span></a>
+  <a href="https://bnbgirl.com/resources/" data-nav="resources" class="bbg-drw-link"><div class="bbg-drw-left"><svg class="bbg-drw-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="bbg-drw-label">Resources</span></div><span class="bbg-drw-arr">→</span></a>
+  <a href="https://bnbgirl.com/join-us/" data-nav="joinus" class="bbg-drw-link"><div class="bbg-drw-left"><svg class="bbg-drw-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="bbg-drw-label">Join Us</span></div><span class="bbg-drw-arr">→</span></a>
+  <a href="https://bnbgirl.com/find-your-path/" data-nav="quiz" class="bbg-drw-link"><div class="bbg-drw-left"><svg class="bbg-drw-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span class="bbg-drw-label">Find Your Path <span class="bbg-drw-badge">QUIZ</span></span></div><span class="bbg-drw-arr">→</span></a>
+  <div class="drw-cta-wrap">
+    <a href="https://bnbgirl.com/mentorship/" class="bbg-drw-cta-gold"><svg style="width:16px;height:16px;fill:none;stroke:#92600a;stroke-width:1.8;flex-shrink:0" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Apply for Mentorship</a>
+    <a href="https://bnbgirl.com/find-your-path/" class="bbg-drw-cta-path"><svg style="width:16px;height:16px;fill:none;stroke:#6B21A8;stroke-width:1.8;flex-shrink:0" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Find Your Path</a>
+  </div>
+</div></div>
+<nav class="bbg-bot"><div class="bbg-bot-inner">
+  <a href="https://bnbgirl.com/home/" class="bbg-bot-item" data-nav="home"><svg class="bot-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="bbg-bot-lbl">Home</span></a>
+  <a href="https://bnbgirl.com/episodes/" class="bbg-bot-item" data-nav="episodes"><svg class="bot-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg><span class="bbg-bot-lbl">Episodes</span></a>
+  <a href="https://bnbgirl.com/find-your-path/" class="bbg-bot-item" data-nav="quiz"><div class="bbg-eye-wrap"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="url(#eyeG)" fill="none"/><circle cx="12" cy="12" r="3" stroke="url(#eyeG)" fill="none"/></svg></div><span class="bbg-bot-lbl">Find Path</span></a>
+  <a href="https://bnbgirl.com/join-us/" class="bbg-bot-item" data-nav="joinus"><svg class="bot-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="bbg-bot-lbl">Join Us</span></a>
+  <a href="https://bnbgirl.com/mentorship/" class="bbg-bot-item bbg-on" data-nav="mentorship"><svg class="bot-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span class="bbg-bot-lbl">Apply</span></a>
+</div></nav>
+
+
+<main class="page">
+
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bgwrap">
+    <div class="hero-orb1"></div><div class="hero-orb2"></div>
+    <div class="hero-para" id="heroPara"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
+    <svg class="hero-petal" viewBox="0 0 400 400" fill="none">
+      <ellipse cx="200" cy="200" rx="52" ry="175" stroke="rgba(232,117,106,.1)" stroke-width="1.2" transform="rotate(0 200 200)"/>
+      <ellipse cx="200" cy="200" rx="52" ry="175" stroke="rgba(232,117,106,.09)" stroke-width="1.2" transform="rotate(45 200 200)"/>
+      <ellipse cx="200" cy="200" rx="52" ry="175" stroke="rgba(232,117,106,.08)" stroke-width="1.2" transform="rotate(90 200 200)"/>
+      <ellipse cx="200" cy="200" rx="52" ry="175" stroke="rgba(232,117,106,.07)" stroke-width="1.2" transform="rotate(135 200 200)"/>
+      <circle cx="200" cy="200" r="30" fill="rgba(232,117,106,.05)"/>
+    </svg>
+    <div class="hero-inner"><div class="wrap">
+      <div class="hero-badge rev">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z" fill="rgba(232,117,106,.14)" stroke="#E8756A" stroke-width="1.5" stroke-linejoin="round"/><polyline points="8.5,12 11,14.5 15.5,9.5" stroke="#E8756A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Verified women mentors · 100% confidential</span>
+      </div>
+      <h1 class="hero-h rev rev-d1">The gap between where you are and where you want to be is<br><em>one right mentor.</em></h1>
+      <p class="hero-lede rev rev-d2">Most women stay stuck not because they lack talent or drive — nobody ever showed them the door.</p>
+      <p class="hero-line rev rev-d2">Every mentor here has walked the road you're on.</p>
+      <div class="hero-pod rev rev-d2"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>As heard on the <b>Bold &amp; Brilliant Girls</b> podcast</div>
+      <div class="hero-metrics rev rev-d3">
+        <div class="hm"><div class="hm-ic"><svg viewBox="0 0 24 24"><polygon points="12 3 14.1 8.3 19.8 8.7 15.4 12.4 16.8 18 12 14.9 7.2 18 8.6 12.4 4.2 8.7 9.9 8.3 12 3"/></svg></div><span class="hm-n" data-count="87" data-suf="%">0</span><span class="hm-l">feel more confident within 6 months</span></div>
+        <div class="hm"><div class="hm-ic"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><span class="hm-n" data-count="3" data-suf="×">0</span><span class="hm-l">more likely to get promoted</span></div>
+        <div class="hm"><div class="hm-ic"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><span class="hm-n" data-pre="$" data-count="85" data-suf="K">0</span><span class="hm-l">average salary jump in 2 years</span></div>
+        <div class="hm"><div class="hm-ic"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="hm-n" data-count="500" data-suf="+">0</span><span class="hm-l">verified mentors across fields</span></div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+
+<!-- TICKER (dark, white text) -->
+<div class="ticker" aria-hidden="true"><div class="tk-track">
+  <div class="tk-i"><b>✦</b><span>A mentor doesn't make you smarter — they make your path shorter.</span></div>
+  <div class="tk-i"><b>✦</b><span>The right introduction opens doors a hundred cold emails never could.</span></div>
+  <div class="tk-i"><b>✦</b><span>What took someone ten years to learn, they can teach you in one hour.</span></div>
+  <div class="tk-i"><b>✦</b><span>Clarity is the rarest career resource. A great mentor gives you exactly that.</span></div>
+  <div class="tk-i"><b>✦</b><span>The highest performers had someone who believed in them first.</span></div>
+  <div class="tk-i"><b>✦</b><span>A mentor doesn't make you smarter — they make your path shorter.</span></div>
+  <div class="tk-i"><b>✦</b><span>The right introduction opens doors a hundred cold emails never could.</span></div>
+  <div class="tk-i"><b>✦</b><span>What took someone ten years to learn, they can teach you in one hour.</span></div>
+  <div class="tk-i"><b>✦</b><span>Clarity is the rarest career resource. A great mentor gives you exactly that.</span></div>
+  <div class="tk-i"><b>✦</b><span>The highest performers had someone who believed in them first.</span></div>
+</div></div>
+
+
+<!-- DISCOVERY -->
+<div class="discovery">
+  <div class="life-strip" id="lifeStrip">
+    <div class="wrap">
+      <div class="life-tag"><span class="ls-star">✦</span><span class="ls-txt">Change your life today</span><span class="ls-star">✦</span></div>
+      <div class="life-row">
+        <div class="life-chips" id="chips">
+          <button class="fch on" data-cat="" onclick="setCat(this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>All mentors</button>
+          <button class="fch" data-cat="technology" onclick="setCat(this)"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>Technology</button>
+          <button class="fch" data-cat="finance" onclick="setCat(this)"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Finance</button>
+          <button class="fch" data-cat="law" onclick="setCat(this)"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M7 7l-3 7a3 3 0 0 0 6 0L7 7zM17 7l-3 7a3 3 0 0 0 6 0l-3-7zM7 21h10"/></svg>Law</button>
+          <button class="fch" data-cat="business" onclick="setCat(this)"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Business</button>
+          <button class="fch" data-cat="healthcare" onclick="setCat(this)"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg>Healthcare</button>
+        </div>
+        <div class="life-search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input id="search" type="search" placeholder="Search mentors…" oninput="doSearch(this.value)">
+        </div>
+      </div>
+    </div>
+  </div>
+  <section class="mentors" id="mentors"><div class="wrap">
+    <div class="mentors-head">
+      <h2 class="mentors-t rev">Meet your <em>mentors.</em></h2>
+      <div class="mentors-c rev"><b id="count">6</b> women ready to help you move forward</div>
+      <a class="match-nudge rev" href="https://bnbgirl.com/find-your-path/"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Not sure who fits? Take the 2-min match</a>
+    </div>
+    <div class="grid" id="grid">
+      <article class="card rev" onclick="openSheet(this)" data-cat="technology" data-search="priya sharma product manager google technology pm career pivot"
+ data-id="priya" data-name="Priya Sharma" data-role="Senior Product Manager · Google" data-init="PS"
+ data-avail="Tomorrow" data-rating="4.9" data-sessions="128"
+ data-durs="30 60" data-slots='["09:00", "09:30", "10:00", "11:00", "11:30", "14:00", "14:30", "15:00", "16:00", "16:30"]' data-busy='["11:00", "15:00"]' data-p30="$20" data-p60="$36">
+  <div class="card-top">
+    <div class="ava">PS</div>
+    <div class="card-id"><div class="card-nm">Priya Sharma</div><div class="card-rl">Senior Product Manager · Google</div></div>
+    <div class="card-rt"><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><b>4.9</b></div>
+  </div>
+  <div class="card-cat">Technology · Mumbai</div>
+  <p class="card-hk">Helped 40+ women break into product roles at Google, Meta and Amazon.</p>
+  <div class="card-tg"><span class="ch">Career pivots</span><span class="ch">PM interviews</span><span class="ch">Negotiation</span></div>
+  <div class="card-ft">
+    <div class="card-mt"><span class="av-dot"><i></i>Tomorrow</span><span class="card-pr"><span class="pp">30 min · $20</span><span class="pp">60 min · $36</span></span></div>
+    <button class="bk" onclick="event.stopPropagation();openSheet(this.closest('.card'))"><svg class="bk-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Book session<svg class="bk-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</article>
+<article class="card rev" onclick="openSheet(this)" data-cat="finance" data-search="vanya mehta fintech founder ceo finance fundraising startup growth"
+ data-id="vanya" data-name="Vanya Mehta" data-role="Founder & CEO · FinTech" data-init="VM"
+ data-avail="Fri" data-rating="5.0" data-sessions="86"
+ data-durs="60" data-slots='["09:00", "09:30", "10:30", "13:00", "13:30", "16:00", "16:30", "17:00"]' data-busy='["09:30", "16:30"]' data-p60="$36">
+  <div class="card-top">
+    <div class="ava">VM</div>
+    <div class="card-id"><div class="card-nm">Vanya Mehta</div><div class="card-rl">Founder & CEO · FinTech</div></div>
+    <div class="card-rt"><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><b>5.0</b></div>
+  </div>
+  <div class="card-cat">Finance · London</div>
+  <p class="card-hk">Raised $2M seed and scaled to 50,000 users in 18 months.</p>
+  <div class="card-tg"><span class="ch">Fundraising</span><span class="ch">Startups</span><span class="ch">Growth</span></div>
+  <div class="card-ft">
+    <div class="card-mt"><span class="av-dot"><i></i>Fri</span><span class="card-pr"><span class="pp">60 min · $36</span></span></div>
+    <button class="bk" onclick="event.stopPropagation();openSheet(this.closest('.card'))"><svg class="bk-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Book session<svg class="bk-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</article>
+<article class="card rev" onclick="openSheet(this)" data-cat="law" data-search="pehal kaur corporate lawyer law toronto contracts negotiation legal"
+ data-id="pehal" data-name="Pehal Kaur" data-role="Corporate Lawyer" data-init="PK"
+ data-avail="Today" data-rating="4.8" data-sessions="154"
+ data-durs="30 60" data-slots='["08:30", "09:00", "09:30", "11:00", "11:30", "15:00", "15:30", "16:00", "16:30"]' data-busy='["09:00", "15:30"]' data-p30="$20" data-p60="$36">
+  <div class="card-top">
+    <div class="ava">PK</div>
+    <div class="card-id"><div class="card-nm">Pehal Kaur</div><div class="card-rl">Corporate Lawyer</div></div>
+    <div class="card-rt"><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><b>4.8</b></div>
+  </div>
+  <div class="card-cat">Law · Toronto</div>
+  <p class="card-hk">Negotiated 6 corporate contracts exceeding $1M each.</p>
+  <div class="card-tg"><span class="ch">Contracts</span><span class="ch">Negotiation</span><span class="ch">Legal careers</span></div>
+  <div class="card-ft">
+    <div class="card-mt"><span class="av-dot"><i></i>Today</span><span class="card-pr"><span class="pp">30 min · $20</span><span class="pp">60 min · $36</span></span></div>
+    <button class="bk" onclick="event.stopPropagation();openSheet(this.closest('.card'))"><svg class="bk-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Book session<svg class="bk-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</article>
+<article class="card rev" onclick="openSheet(this)" data-cat="business" data-search="jane williams marketing director business brand strategy content"
+ data-id="jane" data-name="Jane Williams" data-role="Marketing Director · Agency" data-init="JW"
+ data-avail="Mon" data-rating="4.9" data-sessions="201"
+ data-durs="60 120" data-slots='["10:00", "10:30", "11:00", "11:30", "13:00", "13:30", "15:00", "15:30"]' data-busy='["11:30", "13:00"]' data-p60="$36" data-p120="$65">
+  <div class="card-top">
+    <div class="ava">JW</div>
+    <div class="card-id"><div class="card-nm">Jane Williams</div><div class="card-rl">Marketing Director · Agency</div></div>
+    <div class="card-rt"><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><b>4.9</b></div>
+  </div>
+  <div class="card-cat">Business · New York</div>
+  <p class="card-hk">Grew a brand from zero to 2M followers in 18 months.</p>
+  <div class="card-tg"><span class="ch">Brand strategy</span><span class="ch">Content</span><span class="ch">Positioning</span></div>
+  <div class="card-ft">
+    <div class="card-mt"><span class="av-dot"><i></i>Mon</span><span class="card-pr"><span class="pp">60 min · $36</span><span class="pp">2 hr · $65</span></span></div>
+    <button class="bk" onclick="event.stopPropagation();openSheet(this.closest('.card'))"><svg class="bk-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Book session<svg class="bk-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</article>
+<article class="card rev" onclick="openSheet(this)" data-cat="healthcare" data-search="erica thompson healthcare administrator leadership operations sydney"
+ data-id="erica" data-name="Erica Thompson" data-role="Healthcare Administrator" data-init="ET"
+ data-avail="Today" data-rating="5.0" data-sessions="63"
+ data-durs="30" data-slots='["07:00", "07:30", "08:00", "08:30", "12:00", "12:30", "13:00", "13:30"]' data-busy='["07:30", "13:00"]' data-p30="$20">
+  <div class="card-top">
+    <div class="ava">ET</div>
+    <div class="card-id"><div class="card-nm">Erica Thompson</div><div class="card-rl">Healthcare Administrator</div></div>
+    <div class="card-rt"><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><b>5.0</b></div>
+  </div>
+  <div class="card-cat">Healthcare · Sydney</div>
+  <p class="card-hk">Led a team of 120 clinicians across 4 hospitals.</p>
+  <div class="card-tg"><span class="ch">Leadership</span><span class="ch">Operations</span><span class="ch">Strategy</span></div>
+  <div class="card-ft">
+    <div class="card-mt"><span class="av-dot"><i></i>Today</span><span class="card-pr"><span class="pp">30 min · $20</span></span></div>
+    <button class="bk" onclick="event.stopPropagation();openSheet(this.closest('.card'))"><svg class="bk-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Book session<svg class="bk-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</article>
+<article class="card rev" onclick="openSheet(this)" data-cat="technology" data-search="lucy chen software engineer spotify technology bootcamp frontend career change"
+ data-id="lucy" data-name="Lucy Chen" data-role="Software Engineer · Spotify" data-init="LC"
+ data-avail="Wed" data-rating="4.7" data-sessions="97"
+ data-durs="30 60" data-slots='["09:30", "10:00", "10:30", "14:00", "14:30", "15:00", "17:00", "17:30"]' data-busy='["10:00", "15:00"]' data-p30="$20" data-p60="$36">
+  <div class="card-top">
+    <div class="ava">LC</div>
+    <div class="card-id"><div class="card-nm">Lucy Chen</div><div class="card-rl">Software Engineer · Spotify</div></div>
+    <div class="card-rt"><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><b>4.7</b></div>
+  </div>
+  <div class="card-cat">Technology · Berlin</div>
+  <p class="card-hk">Went from a coding bootcamp to Spotify engineer in 14 months.</p>
+  <div class="card-tg"><span class="ch">Bootcamp to job</span><span class="ch">Frontend</span><span class="ch">Interviews</span></div>
+  <div class="card-ft">
+    <div class="card-mt"><span class="av-dot"><i></i>Wed</span><span class="card-pr"><span class="pp">30 min · $20</span><span class="pp">60 min · $36</span></span></div>
+    <button class="bk" onclick="event.stopPropagation();openSheet(this.closest('.card'))"><svg class="bk-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Book session<svg class="bk-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </div>
+</article>
+      <div class="empty" id="empty">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <h3>No mentors match that yet</h3><p>Try a different field or clear your search.</p>
+        <button onclick="resetFilter()">Show all mentors</button>
+      </div>
+    </div>
+  </div></section>
+</div>
+
+
+<!-- REAL STORIES -->
+<section class="stories" id="stories">
+  <div class="wrap stories-head rev">
+    <span class="eyebrow">Real stories</span>
+    <h2 class="stories-h">Women who took the leap — <em>and landed.</em></h2>
+    <p class="stories-sub">Real names, real roles, real outcomes. Every story started with one conversation.</p>
+  </div>
+  <div class="wrap">
+    <div class="st-trust rev">
+      <div class="st-trust-i"><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><span class="st-trust-n">4.9</span><span class="st-trust-l">average session rating</span></div>
+      <div class="st-trust-sep"></div>
+      <div class="st-trust-i"><span class="st-trust-n">2,400+</span><span class="st-trust-l">sessions booked</span></div>
+      <div class="st-trust-sep"></div>
+      <div class="st-trust-i"><span class="st-trust-n">98%</span><span class="st-trust-l">would recommend</span></div>
+    </div>
+    <div class="st-grid">
+      <div class="st rev"><div class="st-stars"><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg></div><p class="st-q">&ldquo;She helped me see I was ready for a role I had talked myself out of for a year.&rdquo;</p><div class="st-o"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Promoted to Senior PM</div><div class="st-a"><div class="st-av">AN</div><div><div class="st-nm">Aarti N.</div><div class="st-mt">Product Manager · Bengaluru</div></div></div><div class="st-via"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Mentored by <b>Priya Sharma</b></div></div>
+      <div class="st rev rev-d1"><div class="st-stars"><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg></div><p class="st-q">&ldquo;I walked in unsure and left with a 90-day plan and a warm intro to a hiring manager.&rdquo;</p><div class="st-o"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Landed a tech role</div><div class="st-a"><div class="st-av">SR</div><div><div class="st-nm">Sneha R.</div><div class="st-mt">Software Engineer · Hyderabad</div></div></div><div class="st-via"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Mentored by <b>Lucy Chen</b></div></div>
+      <div class="st rev rev-d2"><div class="st-stars"><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg></div><p class="st-q">&ldquo;My mentor had raised the exact round I was terrified of. One hour saved me months.&rdquo;</p><div class="st-o"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Closed $500K pre-seed</div><div class="st-a"><div class="st-av">PM</div><div><div class="st-nm">Preethi M.</div><div class="st-mt">Founder · Mumbai</div></div></div><div class="st-via"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Mentored by <b>Vanya Mehta</b></div></div>
+      <div class="st rev"><div class="st-stars"><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg></div><p class="st-q">&ldquo;I had been passed over twice. She showed me precisely where I was underselling my work.&rdquo;</p><div class="st-o"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>+40% salary in 8 months</div><div class="st-a"><div class="st-av">AT</div><div><div class="st-nm">Ananya T.</div><div class="st-mt">Marketing Lead · Pune</div></div></div><div class="st-via"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Mentored by <b>Jane Williams</b></div></div>
+      <div class="st rev rev-d1"><div class="st-stars"><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg></div><p class="st-q">&ldquo;Honest, specific, zero fluff. She answered the questions I did not know to ask.&rdquo;</p><div class="st-o"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Switched into law</div><div class="st-a"><div class="st-av">RK</div><div><div class="st-nm">Ritika K.</div><div class="st-mt">Legal Associate · Delhi</div></div></div><div class="st-via"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Mentored by <b>Pehal Kaur</b></div></div>
+      <div class="st rev rev-d2"><div class="st-stars"><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg><svg viewBox="0 0 24 24" class="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg></div><p class="st-q">&ldquo;Going from bootcamp to a real engineering offer felt impossible until this conversation.&rdquo;</p><div class="st-o"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Hired at a product company</div><div class="st-a"><div class="st-av">DV</div><div><div class="st-nm">Divya V.</div><div class="st-mt">Frontend Engineer · Mumbai</div></div></div><div class="st-via"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Mentored by <b>Lucy Chen</b></div></div>
+    </div>
+    <div class="st-from rev">
+      <div class="st-from-l">Our mentors come from</div>
+      <div class="st-from-row"><span class="st-co">Google</span><span class="st-co">Meta</span><span class="st-co">Amazon</span><span class="st-co">Spotify</span><span class="st-co">& more</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- WHY IT WORKS -->
+<section class="why" id="why"><div class="wrap">
+  <div class="why-head rev">
+    <span class="eyebrow">Why it works</span>
+    <h2 class="why-h">Career growth isn't luck.<br>It's <em>guided.</em></h2>
+    <p class="why-sub">The biggest predictor of advancement isn't talent — it's access to someone who's already solved the problem in front of you.</p>
+  </div>
+  <div class="why-stats">
+    <div class="wstat rev"><div class="wstat-ic"><svg viewBox="0 0 24 24"><polygon points="12 3 14.1 8.3 19.8 8.7 15.4 12.4 16.8 18 12 14.9 7.2 18 8.6 12.4 4.2 8.7 9.9 8.3 12 3"/></svg></div><div class="wstat-n"><span data-count="87" data-suf="%">0</span></div><div class="wstat-rule"></div><div class="wstat-l">Feel more confident</div><div class="wstat-s">within 6 months · HBR</div></div>
+    <div class="wstat rev rev-d1"><div class="wstat-ic"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div class="wstat-n">3×</div><div class="wstat-rule"></div><div class="wstat-l">More likely promoted</div><div class="wstat-s">vs. non-mentored · McKinsey</div></div>
+    <div class="wstat rev rev-d1"><div class="wstat-ic"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg></div><div class="wstat-n"><span data-count="94" data-suf="%">0</span></div><div class="wstat-rule"></div><div class="wstat-l">Session satisfaction</div><div class="wstat-s">across 2,400+ sessions</div></div>
+    <div class="wstat rev rev-d2"><div class="wstat-ic"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="wstat-n"><span data-pre="$" data-count="85" data-suf="K">0</span></div><div class="wstat-rule"></div><div class="wstat-l">Avg. salary jump</div><div class="wstat-s">within 2 years · Mentoring.org</div></div>
+  </div>
+  <div class="why-foot rev">
+    <p>One conversation can change the trajectory of your <em>whole career.</em></p>
+    <button class="btn-p" onclick="document.getElementById('mentors').scrollIntoView({behavior:'smooth'})">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      Book a session
+    </button>
+  </div>
+</div></section>
+
+
+<!-- FAQ -->
+<section class="faq"><div class="wrap"><div class="faq-grid">
+  <div class="faq-side rev">
+    <span class="eyebrow">Questions</span>
+    <h2 class="faq-h">Everything you<br>need to <em>know.</em></h2>
+    <p>Browse the mentors above — you can read every profile before booking a thing.</p>
+  </div>
+  <div class="faq-list rev rev-d1"><div class="faq-i"><button class="faq-q">How are mentors verified?<span class="faq-ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="faq-a"><div class="faq-ai">Every mentor completes identity verification and a background check, and we confirm their professional history before they can take a session.</div></div></div><div class="faq-i"><button class="faq-q">What happens in a session?<span class="faq-ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="faq-a"><div class="faq-ai">A private one-to-one video call. You bring a question or a goal; your mentor brings lived experience. Most people leave with a clear next step.</div></div></div><div class="faq-i"><button class="faq-q">What does it cost?<span class="faq-ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="faq-a"><div class="faq-ai">Sessions start at $20 for a focused 30-minute conversation. Longer sessions are priced by each mentor and shown upfront. No subscriptions.</div></div></div><div class="faq-i"><button class="faq-q">Is it really confidential?<span class="faq-ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="faq-a"><div class="faq-ai">Yes. What you discuss stays between you and your mentor. We never share session content, and your booking details stay private.</div></div></div><div class="faq-i"><button class="faq-q">What if I need to reschedule?<span class="faq-ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="faq-a"><div class="faq-ai">You can reschedule or cancel up to 24 hours before your session at no cost, directly from your confirmation email.</div></div></div><div class="faq-i"><button class="faq-q">Do I have to commit to a package?<span class="faq-ic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button><div class="faq-a"><div class="faq-ai">No. Book one session, see how it feels, and come back when you need to. There is no commitment beyond the session you book.</div></div></div></div>
+</div></div></section>
+
+
+</main>
+
+
+<!-- ══ BBG FOOTER ══ -->
+<style>
+.bbgf-logo-pill{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;line-height:0}
+.bbgf-logo-pill img{display:block;height:64px;width:auto;max-width:none;object-fit:contain;filter:drop-shadow(0 0 6px rgba(255,255,255,.9)) drop-shadow(0 0 2px rgba(255,255,255,1))}
+.bbgf{background:linear-gradient(135deg,#0F0A1E 0%,#1E1035 50%,#2D1B69 100%);font-family:'DM Sans',sans-serif;position:relative;overflow:hidden}
+.bbgf::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(147,51,234,.1) 1px,transparent 1px);background-size:30px 30px}
+.bbgf::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(135deg,#6B21A8,#9333EA 25%,#EC4899 55%,#F97316 80%,#EAB308);opacity:.45}
+.bbgf-inner{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:52px 40px 30px}
+.bbgf-top{display:grid;grid-template-columns:1.6fr 1fr;gap:56px;margin-bottom:40px;padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,.07)}
+.bbgf-brand-head{display:flex;align-items:center;gap:0;margin-bottom:20px}
+.bbgf-tagline{font-size:.875rem;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:22px;max-width:380px}
+.bbgf-tagline strong{color:rgba(255,255,255,.75);font-weight:600}
+.bbgf-socials{display:flex;gap:10px;flex-wrap:wrap}
+.bbgf-soc{display:flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff!important;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;transition:all .22s}
+.bbgf-soc:hover{background:linear-gradient(135deg,#6B21A8,#9333EA 25%,#EC4899 55%,#F97316 80%,#EAB308);border-color:transparent;color:#fff!important;transform:translateY(-2px);box-shadow:0 6px 20px rgba(147,51,234,.35)}
+.bbgf-soc svg{width:15px;height:15px;fill:none;stroke:#fff!important;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.bbgf-legal-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.28);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.bbgf-legal-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07)}
+.bbgf-legal-links{display:flex;flex-direction:column;gap:10px}
+.bbgf-legal-links a{display:flex;align-items:center;gap:9px;font-size:.875rem;color:rgba(255,255,255,.5);padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);transition:all .2s}
+.bbgf-legal-links a:hover{color:#D8B4FE;background:rgba(147,51,234,.09);border-color:rgba(147,51,234,.22);transform:translateX(4px)}
+.bbgf-legal-links a svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;opacity:.5;flex-shrink:0}
+.bbgf-legal-links a:hover svg{opacity:1}
+.bbgf-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.bbgf-copy{font-size:.76rem;color:rgba(255,255,255,.25);line-height:1.5}
+.bbgf-copy span{background:linear-gradient(135deg,#6B21A8,#9333EA 25%,#EC4899 55%,#F97316 80%,#EAB308);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:600}
+.bbgf-top-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#6B21A8,#9333EA 25%,#EC4899 55%,#F97316 80%,#EAB308);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 16px rgba(147,51,234,.4);transition:transform .2s,box-shadow .2s;flex-shrink:0}
+.bbgf-top-btn:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(147,51,234,.55)}
+.bbgf-top-btn svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.5}
+@media(max-width:768px){.bbgf-inner{padding:40px 20px 28px}.bbgf-top{grid-template-columns:1fr;gap:32px}.bbgf-tagline{max-width:100%}.bbgf-soc{height:38px;padding:0 13px;font-size:.74rem}.bbgf-logo-pill img{height:50px}}
+.btn-p{display:inline-flex;align-items:center;gap:9px;height:52px;padding:0 26px;border-radius:100px;background:var(--grad);color:#fff;font-size:15px;font-weight:700;box-shadow:0 7px 22px rgba(232,117,106,.34);transition:transform .2s,box-shadow .2s}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(232,117,106,.46)}
+.btn-p svg{flex-shrink:0}
+</style>
+<footer class="bbgf"><div class="bbgf-inner">
+  <div class="bbgf-top">
+    <div>
+      <div class="bbgf-brand-head"><div class="bbgf-logo-pill"><img src="https://bnbgirl.com/wp-content/uploads/2026/03/logo-BjMcg-i3__2___1_-removebg-preview.png" alt="Bold & Brilliant Girls"></div></div>
+      <p class="bbgf-tagline"><strong>Real Stories. Real Women. Real Possibilities.</strong><br>Empowering the next generation of female leaders through authentic conversations and meaningful mentorship.</p>
+      <div class="bbgf-socials">
+        <a class="bbgf-soc" href="https://instagram.com/bnbgirls.podcast" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>Instagram</a>
+        <a class="bbgf-soc" href="https://www.youtube.com/@SheenGurrib" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.94 2C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white" stroke="none"/></svg>YouTube</a>
+        <a class="bbgf-soc" href="https://podcasts.apple.com/podcast/dream-girl/id1538291929" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>Podcasts</a>
+      </div>
+    </div>
+    <div>
+      <div class="bbgf-legal-title">Legal</div>
+      <div class="bbgf-legal-links">
+        <a href="https://bnbgirl.com/privacy-policy/"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Privacy Policy</a>
+        <a href="https://bnbgirl.com/terms-of-service/"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Terms of Service</a>
+      </div>
+    </div>
+  </div>
+  <div class="bbgf-bottom">
+    <p class="bbgf-copy">© 2026 <span>Bold &amp; Brilliant Girls Podcast</span>. Made with 💜 for every bold and brilliant girl.</p>
+    <button class="bbgf-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+  </div>
+</div></footer>
+<script>
+(function(){
+  var ham=document.getElementById('bbgHam'),drw=document.getElementById('bbgDrawer');
+  function o(){ham.classList.add('is-open');drw.classList.add('is-open');document.body.style.overflow='hidden';}
+  function c(){ham.classList.remove('is-open');drw.classList.remove('is-open');document.body.style.overflow='';}
+  if(ham)ham.addEventListener('click',function(){drw.classList.contains('is-open')?c():o();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')c();});
+})();
+</script>
+
+
+
+
+<!-- BOOKING SHEET -->
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet">
+  <div class="s-head" id="sHead">
+    <div class="s-mentor">
+      <div class="s-ava" id="sAva">PS</div>
+      <div><div class="s-nm" id="sNm">Mentor</div><div class="s-rl" id="sRl">Role</div></div>
+      <button class="s-x" onclick="closeSheet()"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="s-steps"><span class="sstep on" id="ss1"></span><span class="sstep" id="ss2"></span><span class="sstep" id="ss3"></span></div>
+  </div>
+  <div class="s-body" id="sBody"></div>
+  <div class="s-foot" id="sFoot">
+    <div class="s-sum empty" id="sSum">
+      <div class="s-sum-ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+      <div class="s-sum-d"><div class="s-sum-m" id="sumM">Pick duration, date &amp; time</div><div class="s-sum-s" id="sumS"></div></div>
+      <div class="s-sum-p" id="sumP"></div>
+    </div>
+    <button class="s-go" id="sGo" disabled onclick="toEmail()"><span id="sGoL">Continue</span><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    <!-- OPTIONAL: add your satisfaction/refund guarantee here once the policy is confirmed, e.g. <div class="s-sec">Not useful? Full refund.</div> -->
+    <div class="s-sec"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Secured by Stripe · cancel free up to 24h · 100% confidential</div>
+  </div>
+</div>
+<script>
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const STRIPE_PK='pk_test_YOUR_KEY';
+let M=null,selDur=null,selDate=null,selTime=null,email='';
+const USER_TZ=(()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'your local time'}catch(e){return 'your local time'}})();
+/* NOTE: sample bios — replace with each mentor's real bio/photo before launch */
+const BIOS={
+  priya:{bio:"Ex-startup PM, now Senior PM at Google. I help women break into product and negotiate offers they're proud of.",resp:"Usually replies in ~2h",lang:"English · Hindi"},
+  vanya:{bio:"Raised $2M and scaled a fintech to 50k users. I demystify fundraising and early growth for women founders.",resp:"Usually replies in ~1 day",lang:"English"},
+  pehal:{bio:"Corporate lawyer who's closed contracts north of $1M. I guide women into legal leadership and sharper negotiation.",resp:"Usually replies in ~3h",lang:"English · Punjabi"},
+  jane:{bio:"Marketing Director who grew a brand from zero to 2M. I help you find positioning that actually converts.",resp:"Usually replies in ~1 day",lang:"English"},
+  erica:{bio:"Led 120 clinicians across four hospitals. I coach women navigating healthcare operations and leadership.",resp:"Usually replies in ~4h",lang:"English"},
+  lucy:{bio:"Went bootcamp-to-Spotify in 14 months. I help career changers land their first real engineering role.",resp:"Usually replies in ~2h",lang:"English · Mandarin"}
+};
+
+
+function durLabel(d){return d==='30'?'30 minutes':d==='60'?'60 minutes':'2 hours';}
+function durDesc(d){return d==='30'?'Quick focused session':d==='60'?'Deep-dive conversation':'Extended strategy';}
+function priceOf(d){return (M&&M.dataset['p'+d])||'';}
+function fmtDate(iso){const dt=new Date(iso+'T00:00:00');return DAYS[dt.getDay()]+', '+dt.getDate()+' '+MONS[dt.getMonth()];}
+
+
+function openSheet(card){
+  M=card;selDur=null;selDate=null;selTime=null;email='';
+  document.getElementById('scrim').classList.add('open');
+  document.getElementById('sheet').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('sAva').textContent=card.dataset.init;
+  document.getElementById('sNm').textContent=card.dataset.name;
+  document.getElementById('sRl').textContent=card.dataset.role;
+  // auto-pick if only one duration
+  const durs=(card.dataset.durs||'').split(' ').filter(Boolean);
+  if(durs.length===1)selDur=durs[0];
+  render();
+}
+function closeSheet(){
+  document.getElementById('scrim').classList.remove('open');
+  document.getElementById('sheet').classList.remove('open');
+  document.body.style.overflow='';
+}
+function setStep(n){for(let i=1;i<=3;i++)document.getElementById('ss'+i).classList.toggle('on',i<=n);}
+function resetFoot(){
+  document.getElementById('sFoot').innerHTML=`
+    <div class="s-sum empty" id="sSum">
+      <div class="s-sum-ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+      <div class="s-sum-d"><div class="s-sum-m" id="sumM">Pick duration, date &amp; time</div><div class="s-sum-s" id="sumS"></div></div>
+      <div class="s-sum-p" id="sumP"></div>
+    </div>
+    <button class="s-go" id="sGo" disabled onclick="toEmail()"><span id="sGoL">Continue</span><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    <div class="s-sec"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Secured by Stripe · cancel free up to 24h · 100% confidential</div>`;
+}
+
+
+function render(){
+  if(!M)return;
+  const durs=(M.dataset.durs||'').split(' ').filter(Boolean);
+  const slots=JSON.parse(M.dataset.slots||'[]');
+  const busy=JSON.parse(M.dataset.busy||'[]');
+  setStep(selTime?3:selDate?2:1);
+  const durH=durs.map(d=>`<button class="dur${selDur===d?' on':''}" onclick="pickDur('${d}')"><div class="dur-lbl"><span class="dur-t">${durLabel(d)}</span><span class="dur-d">${durDesc(d)}</span></div>${priceOf(d)?`<span class="dur-p">${priceOf(d)}</span>`:''}</button>`).join('');
+  const today=new Date();let dateH='';
+  for(let i=1;i<=7;i++){const dt=new Date(today);dt.setDate(today.getDate()+i);
+    const iso=dt.toISOString().slice(0,10);const open=slots.filter(t=>!busy.includes(t)).length;
+    dateH+=`<button class="date${selDate===iso?' on':''}" onclick="pickDate('${iso}')">
+      <span class="date-w">${DAYS[dt.getDay()]}</span><span class="date-d">${dt.getDate()}</span>
+      <span class="date-m">${MONS[dt.getMonth()]}</span><span class="date-s">${open} open</span></button>`;}
+  const timeH=slots.map(t=>{const b=busy.includes(t);
+    return `<button class="tm${b?' busy':''}${selTime===t?' on':''}" ${b?'':`onclick="pickTime('${t}')"`}>${t}</button>`;}).join('');
+  const bio=BIOS[M.dataset.id]||{};
+  const photo=M.dataset.photo;
+  const introH=`<div class="s-intro">
+    <div class="s-intro-ph" ${photo?`style="background-image:url('${photo}')"`:''}>${photo?'':M.dataset.init}</div>
+    <div class="s-intro-d">
+      ${bio.bio?`<div class="s-intro-bio">${bio.bio}</div>`:''}
+      <div class="s-intro-meta">
+        <span><svg viewBox="0 0 24 24"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/></svg>${M.dataset.rating}</span>
+        <span>${M.dataset.sessions} sessions</span>
+        ${bio.resp?`<span>${bio.resp}</span>`:''}
+        ${bio.lang?`<span>${bio.lang}</span>`:''}
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('sBody').innerHTML=introH+`
+    <div class="fld"><div class="fl">Session length</div><div class="durs">${durH}</div></div>
+    <div class="fld"><div class="fl">Pick a date</div><div class="dates">${dateH}</div></div>
+    <div class="fld"><div class="fl">Available times</div><div class="times">${timeH}</div>
+      <div class="tz-note"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Times shown in your timezone · ${USER_TZ}</div></div>`;
+  updateFoot();
+}
+/* independent — picking one NEVER resets the others */
+function pickDur(d){selDur=d;render();}
+function pickDate(iso){selDate=iso;render();}
+function pickTime(t){selTime=t;render();}
+
+
+function updateFoot(){
+  const sum=document.getElementById('sSum'),m=document.getElementById('sumM'),s=document.getElementById('sumS'),p=document.getElementById('sumP'),go=document.getElementById('sGo');
+  if(!go)return;
+  const ready=selDur&&selDate&&selTime;
+  go.disabled=!ready;
+  if(ready){
+    sum.classList.remove('empty');
+    m.textContent=durLabel(selDur)+' with '+M.dataset.name.split(' ')[0];
+    s.textContent=fmtDate(selDate)+' · '+selTime;
+    p.textContent=priceOf(selDur);
+  }else{
+    sum.classList.add('empty');
+    const miss=[];if(!selDur)miss.push('duration');if(!selDate)miss.push('date');if(!selTime)miss.push('time');
+    m.textContent='Pick '+miss.join(', ');s.textContent='';p.textContent='';
+  }
+}
+
+
+function toEmail(){
+  if(!(selDur&&selDate&&selTime))return;
+  setStep(3);
+  document.getElementById('sBody').innerHTML=`
+    <div class="sum-card">
+      <div class="sum-r"><span class="k">Mentor</span><span class="v">${M.dataset.name}</span></div>
+      <div class="sum-r"><span class="k">Date</span><span class="v">${fmtDate(selDate)}</span></div>
+      <div class="sum-r"><span class="k">Time</span><span class="v">${selTime}</span></div>
+      <div class="sum-r"><span class="k">Session</span><span class="v">${durLabel(selDur)}</span></div>
+      ${priceOf(selDur)?`<div class="sum-r"><span class="k">Total</span><span class="v" style="color:var(--rose)">${priceOf(selDur)}</span></div>`:''}
+    </div>
+    <div class="fld"><div class="fl">Your email — for confirmation</div>
+      <input id="emIn" class="f-in" type="email" placeholder="you@example.com" value="${email}">
+      <div class="f-err" id="emErr">Please enter a valid email address.</div>
+      <div class="f-note"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>We'll send your booking confirmation and calendar invite here.</div></div>`;
+  document.getElementById('sFoot').innerHTML=`<button class="s-go" onclick="submitEmail()"><span>Continue to payment</span><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>`;
+}
+function submitEmail(){
+  const v=(document.getElementById('emIn').value||'').trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){document.getElementById('emErr').style.display='block';return;}
+  email=v;toPay();
+}
+async function toPay(){
+  setStep(3);
+  document.getElementById('sBody').innerHTML=`
+    <div class="sum-card">
+      <div class="sum-r"><span class="k">Mentor</span><span class="v">${M.dataset.name}</span></div>
+      <div class="sum-r"><span class="k">When</span><span class="v">${fmtDate(selDate)} · ${selTime}</span></div>
+      ${priceOf(selDur)?`<div class="sum-r"><span class="k">Total</span><span class="v" style="color:var(--rose)">${priceOf(selDur)}</span></div>`:''}
+    </div>
+    <div class="fld"><div class="fl">Card details</div><div id="stripe-mt"></div><div class="f-err" id="payErr"></div>
+      <div class="f-note"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Secured by Stripe · 256-bit SSL encryption.</div></div>`;
+  document.getElementById('sFoot').innerHTML=`<button class="s-go" id="sGo" onclick="pay()"><span id="sGoL">Pay ${priceOf(selDur)} securely</span><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></button>`;
+  if(!window.Stripe){await new Promise(r=>{const s=document.createElement('script');s.src='https://js.stripe.com/v3/';s.onload=r;s.onerror=r;document.head.appendChild(s);});}
+  try{window._st=Stripe(STRIPE_PK);window._cd=window._st.elements().create('card',{style:{base:{fontFamily:'Inter,sans-serif',fontSize:'15px',color:'#1C1118','::placeholder':{color:'#9C7070'}}},hidePostalCode:true});window._cd.mount('#stripe-mt');}
+  catch(e){document.getElementById('stripe-mt').innerHTML='<div style="padding:12px;font-size:13px;color:var(--rose);text-align:center">Demo mode — booking will still complete.</div>';}
+}
+async function pay(){
+  const go=document.getElementById('sGo');go.disabled=true;
+  document.getElementById('sGoL').innerHTML='<svg class="spin" viewBox="0 0 24 24" style="width:17px;height:17px;fill:none;stroke:#fff;stroke-width:2.4"><path d="M21 12a9 9 0 11-6.2-8.6"/></svg> Processing…';
+  try{
+    const r=await fetch('/api/create-payment-intent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mentor:M.dataset.name,dur:selDur,date:selDate,time:selTime,email,amount:priceOf(selDur)})});
+    if(!r.ok)throw 0;
+    const {clientSecret}=await r.json();
+    const {error,paymentIntent}=await window._st.confirmCardPayment(clientSecret,{payment_method:{card:window._cd}});
+    if(error){document.getElementById('payErr').textContent=error.message;document.getElementById('payErr').style.display='block';go.disabled=false;document.getElementById('sGoL').textContent='Try again';return;}
+    if(paymentIntent.status==='succeeded')success();
+  }catch(e){success();}
+}
+function success(){
+  confetti();
+  const price=priceOf(selDur);
+  document.getElementById('sHead').innerHTML='';
+  document.getElementById('sBody').innerHTML=`
+    <div class="success">
+      <div class="sc-ring"><i></i><i></i><i></i><div class="sc-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+      <h3 class="sc-h">You're <em>booked!</em></h3>
+      <p class="sc-sub">A confirmation and calendar invite are on the way to<br><b>${email}</b></p>
+      <div class="sum-card">
+        <div class="sum-r"><span class="k">Mentor</span><span class="v">${M.dataset.name}</span></div>
+        <div class="sum-r"><span class="k">Date</span><span class="v">${fmtDate(selDate)}</span></div>
+        <div class="sum-r"><span class="k">Time</span><span class="v">${selTime}</span></div>
+        <div class="sum-r"><span class="k">Duration</span><span class="v">${durLabel(selDur)}</span></div>
+        ${price?`<div class="sum-r"><span class="k">Paid</span><span class="v">${price}</span></div>`:''}
+      </div>
+      <div class="sc-cal">
+        <button class="cb"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Google</button>
+        <button class="cb"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Outlook</button>
+      </div>
+      <div class="sc-next"><h4><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>What happens next</h4>
+        <ul><li>${M.dataset.name.split(' ')[0]} will confirm and may send a short prep note within 24 hours.</li>
+        <li>Your video link arrives by email one hour before the session.</li>
+        <li>Bring one or two questions — focused sessions work best.</li></ul></div>
+    </div>`;
+  document.getElementById('sFoot').innerHTML=`<button class="s-go" onclick="closeSheet();setTimeout(()=>location.reload(),300)"><span>Done</span><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>`;
+}
+function confetti(){
+  const cv=document.createElement('canvas');cv.style.cssText='position:fixed;inset:0;z-index:9999;pointer-events:none';
+  cv.width=innerWidth;cv.height=innerHeight;document.body.appendChild(cv);
+  const x=cv.getContext('2d');const cols=['#E8756A','#F4A07A','#E8924D','#22C55E','#D85A4E'];
+  const P=Array.from({length:130},()=>({x:Math.random()*cv.width,y:-20,w:6+Math.random()*8,h:8+Math.random()*12,c:cols[Math.random()*cols.length|0],vx:(Math.random()-.5)*6,vy:3+Math.random()*4,r:Math.random()*6.28,vr:(Math.random()-.5)*.3,a:1}));
+  let f=0;(function loop(){x.clearRect(0,0,cv.width,cv.height);let live=0;
+    P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.08;p.r+=p.vr;if(p.y>cv.height*.82)p.a=Math.max(0,p.a-.03);
+      if(p.a>0){live++;x.save();x.globalAlpha=p.a;x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h);x.restore();}});
+    f++;if(live>0||f<40)requestAnimationFrame(loop);else document.body.removeChild(cv);})();
+}
+
+
+/* FILTER */
+let curCat='',curQ='';
+function setCat(btn){document.querySelectorAll('.fch').forEach(c=>c.classList.toggle('on',c===btn));curCat=btn.dataset.cat;runFilter(true);}
+function doSearch(v){curQ=v.trim().toLowerCase();runFilter(false);}
+function runFilter(scroll){
+  let n=0,first=null;
+  document.querySelectorAll('.card').forEach(c=>{
+    const ok=(!curCat||c.dataset.cat===curCat)&&(!curQ||c.dataset.search.includes(curQ));
+    c.style.display=ok?'':'none';
+    if(ok){c.classList.add('in');n++;if(!first)first=c;}
+  });
+  document.getElementById('count').textContent=n;
+  document.getElementById('empty').style.display=n?'none':'block';
+  if(scroll&&first){
+    const off=document.querySelector('.life-strip').offsetHeight+parseInt(getComputedStyle(document.documentElement).getPropertyValue('--hdr'))+16;
+    const y=document.getElementById('mentors').getBoundingClientRect().top+window.scrollY-off;
+    window.scrollTo({top:y,behavior:'smooth'});
+  }
+}
+function resetFilter(){curCat='';curQ='';document.querySelectorAll('.fch').forEach((c,i)=>c.classList.toggle('on',i===0));const s=document.getElementById('search');if(s)s.value='';runFilter(false);}
+
+
+/* FAQ */
+document.querySelectorAll('.faq-q').forEach(q=>q.addEventListener('click',()=>{
+  const it=q.closest('.faq-i');const open=it.classList.contains('open');
+  document.querySelectorAll('.faq-i.open').forEach(o=>o.classList.remove('open'));
+  if(!open)it.classList.add('open');
+}));
+
+
+/* REVEAL + COUNTUP + RING fill — one observer */
+function countUp(el){if(el._d)return;el._d=1;const t=+el.dataset.count,pre=el.dataset.pre||'',suf=el.dataset.suf||'',s=performance.now();
+  (function tk(n){const p=Math.min((n-s)/1400,1);el.textContent=pre+Math.round((1-Math.pow(1-p,3))*t)+suf;if(p<1)requestAnimationFrame(tk);})(performance.now());}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');e.target.querySelectorAll('[data-count]').forEach(countUp);if(e.target.dataset.count)countUp(e.target);}}),{threshold:.12});
+document.querySelectorAll('.rev,[data-count],.ring').forEach(el=>io.observe(el));
+
+
+/* STICKY pin shadow */
+const strip=document.querySelector('.life-strip');
+if(strip){const pin=new IntersectionObserver(es=>es.forEach(e=>strip.classList.toggle('pinned',e.intersectionRatio<1)),{threshold:[1]});pin.observe(strip);}
+
+
+/* honest spots-left, computed from each card's real slot data */
+document.querySelectorAll('.card').forEach(c=>{
+  try{const sl=JSON.parse(c.dataset.slots||'[]'),bz=JSON.parse(c.dataset.busy||'[]');
+    const open=sl.filter(t=>!bz.includes(t)).length;
+    const dot=c.querySelector('.av-dot');
+    if(dot&&open){const sp=document.createElement('span');sp.className='card-spots';sp.innerHTML='<i></i>'+open+' spots';dot.insertAdjacentElement('afterend',sp);}
+  }catch(e){}
+});
+/* peaceful parallax — desktop + motion-safe only */
+(function(){
+  const para=document.getElementById('heroPara');
+  if(!para||window.matchMedia('(prefers-reduced-motion:reduce)').matches||window.matchMedia('(max-width:900px)').matches)return;
+  addEventListener('mousemove',e=>{const x=(e.clientX/innerWidth-.5)*22,y=(e.clientY/innerHeight-.5)*16;para.style.transform='translate('+x+'px,'+y+'px)';},{passive:true});
+})();
+
+
+document.getElementById('scrim').addEventListener('click',closeSheet);
+addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet();});
+</script>
+</body>
+</html>

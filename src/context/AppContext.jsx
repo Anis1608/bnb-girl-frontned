@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE) || 'https://bnb-girl-backend.onrender.com';
+export const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE) || 'https://bnb-girl-backend.onrender.com';
 
 const AppContext = createContext(null);
 
@@ -334,7 +334,8 @@ export default function AppContextProvider({ children }) {
       registerUser,
       loginWithFirebase,
       logoutUser,
-      fetchUserBookings
+      fetchUserBookings,
+      API_BASE
     }}>
       {children}
     </AppContext.Provider>

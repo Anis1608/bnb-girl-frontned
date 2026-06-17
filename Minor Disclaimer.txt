@@ -1,0 +1,415 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BB Girls – Mentorship Legal & Safety</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+
+:root {
+  --purple:#7c3aed; --purple-l:#a855f7;
+  --pink:#db2777; --amber:#d97706; --teal:#0d9488;
+  --bg:#faf8ff; --card:#ffffff; --border:#ede8f8;
+  --text:#18152e; --text2:#4b4870; --text3:#8b88a8;
+  --radius:18px;
+  --max:1180px;
+}
+
+
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+
+
+/* PROGRESS */
+#prog{position:fixed;top:0;left:0;z-index:200;height:3px;width:0;background:linear-gradient(90deg,#7c3aed,#ec4899,#f97316);transition:width .08s linear;border-radius:0 2px 2px 0}
+
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(250,248,255,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-brand{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--purple);letter-spacing:.05em;text-transform:uppercase;text-decoration:none}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#ec4899);flex-shrink:0}
+.nav-links{display:flex;gap:4px}
+.nav-link{font-size:12.5px;font-weight:500;color:var(--text3);padding:5px 13px;border-radius:8px;text-decoration:none;transition:all .15s;white-space:nowrap}
+.nav-link:hover{color:var(--purple);background:rgba(124,58,237,.07)}
+
+
+/* OUTER SHELL — full width with side padding */
+.shell{max-width:var(--max);margin:0 auto;padding:44px 40px 90px}
+
+
+/* HERO — full width */
+.hero{
+  border-radius:22px;padding:64px 64px 56px;
+  margin-bottom:40px;position:relative;overflow:hidden;
+  background:linear-gradient(145deg,#160828 0%,#2a1060 45%,#1a0a38 75%,#0f051a 100%);
+  display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:center;
+}
+.hero-blob1{position:absolute;top:-80px;right:-80px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.28) 0%,transparent 65%);pointer-events:none}
+.hero-blob2{position:absolute;bottom:-70px;left:-50px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,.2) 0%,transparent 65%);pointer-events:none}
+.hero-left{position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);border-radius:100px;padding:6px 16px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#c084fc;margin-bottom:22px}
+.hero-badge i{font-size:13px}
+.hero h1{font-family:'DM Serif Display',Georgia,serif;font-size:clamp(30px,3.8vw,50px);font-weight:400;color:#fff;line-height:1.1;margin-bottom:18px;letter-spacing:-.01em}
+.hero h1 em{font-style:italic;background:linear-gradient(135deg,#f0abfc,#c084fc,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-desc{font-size:15.5px;color:rgba(255,255,255,.58);line-height:1.8;margin-bottom:28px}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px}
+.htag{font-size:12px;font-weight:500;padding:6px 16px;border-radius:100px;border:1px solid rgba(255,255,255,.13);color:rgba(255,255,255,.55);background:rgba(255,255,255,.05);letter-spacing:.02em}
+
+
+/* hero right — quick stats */
+.hero-right{position:relative;z-index:1;display:flex;flex-direction:column;gap:12px}
+.hstat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:14px}
+.hstat-ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.hs1{background:rgba(168,85,247,.2);color:#c084fc}
+.hs2{background:rgba(236,72,153,.2);color:#f472b6}
+.hs3{background:rgba(245,158,11,.2);color:#fbbf24}
+.hs4{background:rgba(16,185,129,.2);color:#34d399}
+.hstat-text{}
+.hstat-title{font-size:13px;font-weight:600;color:#fff;margin-bottom:2px}
+.hstat-sub{font-size:11.5px;color:rgba(255,255,255,.4)}
+
+
+/* LAYOUT — sidebar + content */
+.layout{display:grid;grid-template-columns:240px 1fr;gap:32px;align-items:start}
+
+
+/* SIDEBAR */
+.sidebar{position:sticky;top:72px}
+.sb-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;padding:0 4px}
+.sb-nav{display:flex;flex-direction:column;gap:4px;margin-bottom:24px}
+.sb-link{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;text-decoration:none;transition:all .18s;border:1px solid transparent}
+.sb-link:hover{background:rgba(124,58,237,.06);border-color:rgba(124,58,237,.12)}
+.sb-link.active{background:rgba(124,58,237,.08);border-color:rgba(124,58,237,.18)}
+.sb-num{font-size:10px;font-weight:700;letter-spacing:.06em;width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sbn-s{background:#f3e8ff;color:var(--purple)}
+.sbn-p{background:#fce7f3;color:var(--pink)}
+.sbn-a{background:#fef3c7;color:var(--amber)}
+.sbn-t{background:#ccfbf1;color:var(--teal)}
+.sb-txt{font-size:13px;font-weight:500;color:var(--text2);line-height:1.3}
+.sb-link:hover .sb-txt,.sb-link.active .sb-txt{color:var(--text)}
+
+
+.sb-box{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:18px 16px}
+.sb-box-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
+.sb-box p{font-size:12.5px;color:var(--text3);line-height:1.65}
+.sb-box a{color:var(--purple);text-decoration:none;font-weight:500}
+
+
+/* MAIN CONTENT */
+.main{}
+
+
+/* SECTION */
+.sec{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden;transition:box-shadow .2s}
+.sec:hover{box-shadow:0 6px 32px rgba(0,0,0,.07)}
+.sec-hdr{padding:24px 28px 20px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #f4f0fd}
+.sec-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ico-s{background:#f3e8ff;color:var(--purple)}
+.ico-p{background:#fce7f3;color:var(--pink)}
+.ico-a{background:#fef3c7;color:var(--amber)}
+.ico-t{background:#ccfbf1;color:var(--teal)}
+.sec-title{font-family:'DM Serif Display',Georgia,serif;font-size:20px;font-weight:400;color:var(--text);margin:0 0 4px;line-height:1.2}
+.sec-sub{font-size:12px;color:var(--text3);font-weight:400}
+.sec-body{padding:28px 28px 32px}
+.intro{font-size:15px;color:var(--text2);line-height:1.8;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid #f0ebf8}
+
+
+/* BULLET ROWS */
+.brows{list-style:none;margin:0 0 24px;display:flex;flex-direction:column;gap:8px}
+.brow{display:flex;align-items:flex-start;gap:13px;font-size:14.5px;color:var(--text2);line-height:1.6;background:var(--bg);border:1px solid var(--border);border-radius:11px;padding:13px 16px}
+.brow-ico{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:1px}
+.bi-s{background:#f3e8ff;color:var(--purple)}
+.bi-p{background:#fce7f3;color:var(--pink)}
+.bi-a{background:#fef3c7;color:var(--amber)}
+.bi-t{background:#ccfbf1;color:var(--teal)}
+
+
+/* GUARANTEE CARDS */
+.gcards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 24px}
+.gcard{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px 14px;display:flex;flex-direction:column;gap:9px}
+.gcard i{font-size:22px;color:var(--text3)}
+.gcard span{font-size:13px;color:var(--text2);font-weight:500;line-height:1.35}
+
+
+/* SAFETY GRID */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 24px}
+.scard{background:#f0fdf8;border:1.5px solid #b2f0e0;border-radius:14px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:7px}
+.scard-ico{font-size:22px;color:var(--teal)}
+.scard-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.25}
+.scard-body{font-size:13px;color:#4a7068;line-height:1.6}
+
+
+/* CALLOUT */
+.callout{display:flex;gap:14px;align-items:flex-start;padding:18px 20px;border-radius:12px}
+.callout-s{background:#faf5ff}
+.callout-p{background:#fff0f7}
+.callout-a{background:#fffbeb}
+.callout-t{background:#f0fdf8}
+.callout i{font-size:20px;flex-shrink:0;margin-top:1px}
+.callout-s i{color:var(--purple)}
+.callout-p i{color:var(--pink)}
+.callout-a i{color:var(--amber)}
+.callout-t i{color:var(--teal)}
+.callout p{font-size:14px;color:var(--text2);line-height:1.75;margin:0}
+
+
+/* PAGE FOOTER */
+.pgfoot{margin-top:20px;background:#18112e;border-radius:var(--radius);padding:36px 40px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:32px}
+.pgfoot-left{}
+.pgfoot-hed{font-family:'DM Serif Display',Georgia,serif;font-size:22px;color:#fff;margin-bottom:8px}
+.pgfoot-hed em{font-style:italic;color:#c084fc}
+.pgfoot p{font-size:13px;color:rgba(255,255,255,.4);line-height:1.7;margin:0}
+.pgfoot-links{display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.pgfoot-links a{font-size:12px;color:rgba(255,255,255,.35);text-decoration:none;padding:6px 14px;border:1px solid rgba(255,255,255,.1);border-radius:8px;transition:all .15s;white-space:nowrap}
+.pgfoot-links a:hover{color:#c084fc;border-color:rgba(192,132,252,.35)}
+.pgfoot-meta{font-size:11px;color:rgba(255,255,255,.18);letter-spacing:.04em;margin-top:8px;text-align:right}
+
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .shell{padding:36px 28px 80px}
+  .hero{grid-template-columns:1fr;gap:28px}
+  .hero-right{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .layout{grid-template-columns:200px 1fr;gap:24px}
+  .nav-inner{padding:0 28px}
+}
+@media(max-width:768px){
+  .shell{padding:28px 18px 70px}
+  .nav-inner{padding:0 18px}
+  .nav-links{display:none}
+  .hero{padding:36px 28px 32px}
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:static}
+  .sb-nav{flex-direction:row;flex-wrap:wrap}
+  .sb-link{flex:1;min-width:120px}
+  .sb-box{display:none}
+  .sec-hdr,.sec-body{padding-left:20px;padding-right:20px}
+  .gcards{grid-template-columns:1fr 1fr}
+  .sgrid{grid-template-columns:1fr}
+  .pgfoot{grid-template-columns:1fr;gap:20px}
+  .pgfoot-links{align-items:flex-start;flex-direction:row;flex-wrap:wrap}
+  .pgfoot-meta{text-align:left}
+  .hero-right{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+  .hero{padding:28px 20px 24px}
+  .gcards{grid-template-columns:1fr}
+  .hero-right{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+
+<div id="prog"></div>
+
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="https://bnbgirl.com">
+      <div class="nav-dot"></div>BB Girls
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="#s1">Disclaimer</a>
+      <a class="nav-link" href="#s2">No Guarantees</a>
+      <a class="nav-link" href="#s3">Fees</a>
+      <a class="nav-link" href="#s4">Minor Safety</a>
+    </div>
+  </div>
+</nav>
+
+
+<div class="shell">
+
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-blob1"></div>
+    <div class="hero-blob2"></div>
+    <div class="hero-left">
+      <div class="hero-badge"><i class="ti ti-shield-lock"></i>Mentorship · Legal &amp; Safety</div>
+      <h1>Empowering connections,<br><em>clearly defined.</em></h1>
+      <p class="hero-desc">Our legal &amp; safety policies protect every girl in our community — mentors, mentees, and families alike. Please read these carefully before participating.</p>
+      <div class="hero-tags">
+        <span class="htag">Mentorship disclaimer</span>
+        <span class="htag">No guarantees</span>
+        <span class="htag">Fees &amp; refunds</span>
+        <span class="htag">Minor safety</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hstat"><div class="hstat-ico hs1"><i class="ti ti-shield-check"></i></div><div class="hstat-text"><div class="hstat-title">Mentorship Disclaimer</div><div class="hstat-sub">Platform role &amp; responsibility</div></div></div>
+      <div class="hstat"><div class="hstat-ico hs2"><i class="ti ti-circle-off"></i></div><div class="hstat-text"><div class="hstat-title">No Guarantees</div><div class="hstat-sub">Outcomes &amp; independent mentors</div></div></div>
+      <div class="hstat"><div class="hstat-ico hs3"><i class="ti ti-credit-card"></i></div><div class="hstat-text"><div class="hstat-title">Fees &amp; Payments</div><div class="hstat-sub">Pricing, access &amp; refunds</div></div></div>
+      <div class="hstat"><div class="hstat-ico hs4"><i class="ti ti-heart"></i></div><div class="hstat-text"><div class="hstat-title">Minor Safety Policy</div><div class="hstat-sub">Protecting participants under 18</div></div></div>
+    </div>
+  </div>
+
+
+  <!-- TWO COLUMN LAYOUT -->
+  <div class="layout">
+
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-label">On this page</div>
+      <div class="sb-nav">
+        <a class="sb-link" href="#s1"><span class="sb-num sbn-s">01</span><span class="sb-txt">Mentorship disclaimer</span></a>
+        <a class="sb-link" href="#s2"><span class="sb-num sbn-p">02</span><span class="sb-txt">No guarantees</span></a>
+        <a class="sb-link" href="#s3"><span class="sb-num sbn-a">03</span><span class="sb-txt">Fees &amp; payments</span></a>
+        <a class="sb-link" href="#s4"><span class="sb-num sbn-t">04</span><span class="sb-txt">Minor safety policy</span></a>
+      </div>
+      <div class="sb-box">
+        <div class="sb-box-title">Questions?</div>
+        <p>For any queries about these policies, visit <a href="https://bnbgirl.com">bnbgirl.com</a> or reach out via our contact page.</p>
+      </div>
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+
+      <div class="sec" id="s1">
+        <div class="sec-hdr">
+          <div class="sec-ico ico-s"><i class="ti ti-shield-check"></i></div>
+          <div>
+            <p class="sec-title">Mentorship disclaimer</p>
+            <p class="sec-sub">Section 01 &nbsp;·&nbsp; Platform role &amp; participant responsibility</p>
+          </div>
+        </div>
+        <div class="sec-body">
+          <p class="intro">BB Girls provides a platform to encourage mentorship, learning, and career conversations. While we aim to foster meaningful and supportive connections, we do not independently verify mentor or mentee backgrounds, qualifications, statements, or advice. Any guidance shared reflects the individual's views — not professional, legal, financial, medical, or psychological counsel.</p>
+          <ul class="brows">
+            <li class="brow"><span class="brow-ico bi-s"><i class="ti ti-minus"></i></span>BB Girls is not responsible for decisions made based on mentorship conversations</li>
+            <li class="brow"><span class="brow-ico bi-s"><i class="ti ti-minus"></i></span>Outcomes resulting from mentor or mentee interactions are the responsibility of participants</li>
+            <li class="brow"><span class="brow-ico bi-s"><i class="ti ti-minus"></i></span>Conduct or communications outside the BB Girls platform are beyond our supervision</li>
+          </ul>
+          <div class="callout callout-s">
+            <i class="ti ti-info-circle"></i>
+            <p>BB Girls does not supervise or monitor private meetings, calls, or communications. All users are encouraged to exercise good judgment, maintain respectful boundaries, and prioritize personal safety in every interaction.</p>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="sec" id="s2">
+        <div class="sec-hdr">
+          <div class="sec-ico ico-p"><i class="ti ti-circle-off"></i></div>
+          <div>
+            <p class="sec-title">No guarantee &amp; independent relationship</p>
+            <p class="sec-sub">Section 02 &nbsp;·&nbsp; Outcomes, mentor status &amp; program scope</p>
+          </div>
+        </div>
+        <div class="sec-body">
+          <p class="intro">The mentorship experience varies for each participant. BB Girls makes no guarantees regarding the following outcomes or opportunities — every journey is unique and results depend on many factors outside our control.</p>
+          <div class="gcards">
+            <div class="gcard"><i class="ti ti-school"></i><span>Admissions outcomes</span></div>
+            <div class="gcard"><i class="ti ti-briefcase"></i><span>Internship or employment</span></div>
+            <div class="gcard"><i class="ti ti-users"></i><span>Mentor availability</span></div>
+            <div class="gcard"><i class="ti ti-message"></i><span>Responses from mentors</span></div>
+            <div class="gcard"><i class="ti ti-star"></i><span>Career or personal outcomes</span></div>
+            <div class="gcard"><i class="ti ti-certificate"></i><span>Educational results</span></div>
+          </div>
+          <div class="callout callout-p">
+            <i class="ti ti-user-check"></i>
+            <p>Mentors participate independently and are not employees, representatives, agents, or contractors of BB Girls. Their guidance reflects their personal experience and perspective only.</p>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="sec" id="s3">
+        <div class="sec-hdr">
+          <div class="sec-ico ico-a"><i class="ti ti-credit-card"></i></div>
+          <div>
+            <p class="sec-title">Mentorship fees &amp; payment</p>
+            <p class="sec-sub">Section 03 &nbsp;·&nbsp; Pricing, access &amp; refund policy</p>
+          </div>
+        </div>
+        <div class="sec-body">
+          <p class="intro">Certain mentorship opportunities or platform features may require payment or participation fees. Fees collected support the operation, growth, accessibility, and mission-driven initiatives of BB Girls. Payment does not guarantee a specific mentor match, admission, internship, scholarship, or any other outcome.</p>
+          <ul class="brows">
+            <li class="brow"><span class="brow-ico bi-a"><i class="ti ti-x"></i></span>No guaranteed mentor match upon payment</li>
+            <li class="brow"><span class="brow-ico bi-a"><i class="ti ti-x"></i></span>No guaranteed placement, scholarship, or job outcome</li>
+            <li class="brow"><span class="brow-ico bi-a"><i class="ti ti-x"></i></span>Ongoing mentor availability is not assured</li>
+          </ul>
+          <div class="callout callout-a">
+            <i class="ti ti-receipt-refund"></i>
+            <p>Unless otherwise stated, mentorship fees are non-refundable once mentorship access, sessions, or introductions have been provided. BB Girls reserves the right to modify offerings, pricing, or scheduling at any time.</p>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="sec" id="s4">
+        <div class="sec-hdr">
+          <div class="sec-ico ico-t"><i class="ti ti-heart"></i></div>
+          <div>
+            <p class="sec-title">Minor participation &amp; safety policy</p>
+            <p class="sec-sub">Section 04 &nbsp;·&nbsp; Protecting participants under 18</p>
+          </div>
+        </div>
+        <div class="sec-body">
+          <p class="intro">BB Girls is committed to creating a respectful, safe, and empowering environment for all participants — especially younger members of our community. The following safeguards are in place to protect minors at every step.</p>
+          <div class="sgrid">
+            <div class="scard"><div class="scard-ico"><i class="ti ti-user-shield"></i></div><div class="scard-title">Parent or guardian involvement</div><div class="scard-body">Participants under 18 should involve a parent or guardian before engaging in any mentorship interactions.</div></div>
+            <div class="scard"><div class="scard-ico"><i class="ti ti-lock"></i></div><div class="scard-title">Protect personal information</div><div class="scard-body">Users should avoid sharing sensitive personal, financial, or private information in any interaction.</div></div>
+            <div class="scard"><div class="scard-ico"><i class="ti ti-heart-handshake"></i></div><div class="scard-title">Professional conduct required</div><div class="scard-body">All mentorship interactions must remain professional and appropriate at all times without exception.</div></div>
+            <div class="scard"><div class="scard-ico"><i class="ti ti-flag"></i></div><div class="scard-title">Report inappropriate behavior</div><div class="scard-body">Any inappropriate behavior should be reported immediately. BB Girls may restrict or remove any participant.</div></div>
+          </div>
+          <div class="callout callout-t" style="margin-top:16px">
+            <i class="ti ti-alert-circle"></i>
+            <p>Parents or guardians may be required to consent to certain activities involving minors. BB Girls reserves the right to review, restrict, or remove any participation where necessary to maintain community safety.</p>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="pgfoot">
+        <div class="pgfoot-left">
+          <div class="pgfoot-hed">BB <em>Girls</em> Mentorship Program</div>
+          <p>These policies apply to all mentors, mentees, and participants. By participating, you acknowledge and agree to the terms described above.</p>
+        </div>
+        <div>
+          <div class="pgfoot-links">
+            <a href="https://bnbgirl.com/privacy-policy/">Privacy Policy</a>
+            <a href="https://bnbgirl.com/terms-of-service/">Terms of Service</a>
+            <a href="https://bnbgirl.com">bnbgirl.com</a>
+          </div>
+          <p class="pgfoot-meta">© 2025 BB Girls Inc. · All rights reserved</p>
+        </div>
+      </div>
+
+
+    </main>
+  </div>
+</div>
+
+
+<script>
+window.addEventListener('scroll',function(){
+  var s=window.scrollY,t=document.body.scrollHeight-window.innerHeight;
+  document.getElementById('prog').style.width=(t>0?(s/t)*100:0)+'%';
+});
+// active sidebar link
+var links=document.querySelectorAll('.sb-link');
+var secs=document.querySelectorAll('.sec[id]');
+window.addEventListener('scroll',function(){
+  var pos=window.scrollY+80;
+  secs.forEach(function(sec){
+    var top=sec.offsetTop,bot=top+sec.offsetHeight;
+    var id=sec.getAttribute('id');
+    var link=document.querySelector('.sb-link[href="#'+id+'"]');
+    if(link){link.classList.toggle('active',pos>=top&&pos<bot)}
+  });
+},{ passive:true });
+</script>
+</body>
+</html>
