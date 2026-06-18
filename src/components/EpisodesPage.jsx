@@ -1366,11 +1366,16 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
                 </div>
               )}
             </div>
-            <select className="sort-sel" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
-              <option value="newest">Newest First</option>
-              <option value="popular">Most Popular</option>
-              <option value="az">A – Z</option>
-            </select>
+            <div className="sort-btn-wrapper">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5" className="sort-icon-svg" style={{ color: 'var(--gt)', pointerEvents: 'none' }}>
+                <path d="M3 6h18M6 12h12M10 18h4" />
+              </svg>
+              <select className="sort-sel" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
+                <option value="newest">Newest First</option>
+                <option value="popular">Most Popular</option>
+                <option value="az">A – Z</option>
+              </select>
+            </div>
           </div>
 
           <div className="pill-wrap">

@@ -41,7 +41,7 @@ export default function Community({ onShowToast }) {
             </span>
             <div style={{ height: '1px', flex: 1, background: 'rgba(255,255,255,.1)' }}></div>
           </div>
-          <div className="newsletter-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center', marginTop: '32px' }}>
+          <div className="newsletter-grid" style={{ alignItems: 'center', marginTop: '32px' }}>
             <div>
               <div style={{ fontFamily: "'DM Sans',sans-serif", fontSize: '.62rem', fontWeight: 700, letterSpacing: '.15em', textTransform: 'uppercase', color: '#EC4899', marginBottom: '12px' }}>
                 Weekly Edition
@@ -52,7 +52,7 @@ export default function Community({ onShowToast }) {
               <p style={{ fontSize: '.9rem', color: 'rgba(255,255,255,.5)', lineHeight: 1.75, marginBottom: '16px' }}>
                 Career stories · Episode drops · Mentorship insights · Real talk. Every Thursday.
               </p>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <div className="newsletter-chips" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 <span style={{ fontSize: '.68rem', fontWeight: 600, padding: '4px 12px', borderRadius: '20px', background: 'rgba(147,51,234,.12)', border: '1px solid rgba(147,51,234,.2)', color: '#D8B4FE' }}>
                   Business
                 </span>
