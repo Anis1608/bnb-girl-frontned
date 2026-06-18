@@ -12135,7 +12135,7 @@ textarea.ask-input {
     padding: 10px 0;
   }
 
-  .search-wrap {
+  .search-row .search-wrap {
     background: #F8F5FF !important;
     border-radius: 12px !important;
     height: 44px !important;
@@ -12145,9 +12145,43 @@ textarea.ask-input {
     box-sizing: border-box !important;
   }
 
-  .search-wrap input {
+  .search-row .search-wrap input {
     height: 100% !important;
     font-size: 13px !important;
+  }
+
+  /* Resources Page search bar overrides on mobile */
+  .hero .search-wrap {
+    z-index: 1000 !important;
+    position: relative !important;
+    pointer-events: auto !important;
+    margin-bottom: 24px !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 14px !important;
+    height: 52px !important;
+    padding: 0 !important;
+    display: block !important;
+    box-sizing: border-box !important;
+  }
+  .hero .search-box {
+    background: transparent !important;
+    color: #0A0414 !important;
+    border: 2px solid rgba(147, 51, 234, 0.3) !important;
+    height: 52px !important;
+    font-size: 14px !important;
+    pointer-events: auto !important;
+    box-sizing: border-box !important;
+  }
+  .hero .search-box::placeholder {
+    color: rgba(10, 4, 20, 0.5) !important;
+  }
+  .hero .search-icon {
+    color: #6B21A8 !important;
+    z-index: 1001 !important;
+  }
+  .hero .search-clear {
+    color: #6B21A8 !important;
+    z-index: 1001 !important;
   }
 
   .sort-btn-wrapper {
