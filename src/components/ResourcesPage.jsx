@@ -472,17 +472,7 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
       </button>
 
       {/* ── HERO ── */}
-      <section className="hero" style={{
-        minHeight: '480px',
-        background: 'linear-gradient(160deg, #0A0414 0%, #1A0D35 40%, #2D1060 70%, #0A0414 100%)',
-        position: 'relative',
-        overflow: 'visible',
-        zIndex: 8000,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        padding: '100px 24px 60px'
-      }}>
+      <section className="hero" style={{ zIndex: 8000 }}>
         {/* Glow Effects */}
         <div style={{
           content: "''",
@@ -500,14 +490,7 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
           pointerEvents: 'none'
         }} />
 
-        <div className="hero__inner" style={{
-          display: 'block',
-          maxWidth: '900px',
-          margin: '0 auto',
-          position: 'relative',
-          zIndex: 8000,
-          textAlign: 'center'
-        }}>
+        <div className="hero__inner" style={{ zIndex: 8000 }}>
           <div className="hero__eyebrow" style={{
             display: 'inline-flex',
             alignItems: 'center',
