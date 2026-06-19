@@ -715,7 +715,7 @@ export default function MentorDashboard({ onShowToast }) {
                 </div>
 
                 {/* Search & Sort Controls */}
-                <div className="rates-durations-grid" style={{ gap: '16px', marginBottom: '24px', alignItems: 'center', gridTemplateColumns: '1fr auto' }}>
+                <div className="sessions-controls-row">
                   {/* Search Bar */}
                   <div style={{ position: 'relative', width: '100%' }}>
                     <input
