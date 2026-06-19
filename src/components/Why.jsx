@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 const CARDS = [
@@ -7,7 +8,7 @@ const CARDS = [
     title: 'Podcast Episodes',
     desc: 'Inspiring conversations with accomplished women — designed for curious minds and busy schedules. Each episode is a career masterclass.',
     cta: 'Listen Now →',
-    link: '#episodes',
+    link: '/episodes',
     icon: (
       <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"></path>
@@ -22,7 +23,7 @@ const CARDS = [
     title: 'Mentorship',
     desc: "Connect directly with professionals who've walked the path you want to walk. Real mentors, real impact.",
     cta: 'Apply Now →',
-    link: '#mentorship',
+    link: '/mentorship',
     icon: (
       <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path>
@@ -36,7 +37,7 @@ const CARDS = [
     title: 'Resource Library',
     desc: 'Beautiful PDFs, guides, and templates distilling each episode into actionable career tools — completely free.',
     cta: 'Browse PDFs →',
-    link: '#resources',
+    link: '/resources',
     icon: (
       <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path d="M4 19.5A2.5 2.5 0 016.5 17H20"></path>
@@ -49,7 +50,7 @@ const CARDS = [
     title: 'Community',
     desc: 'A supportive network of like-minded girls where you can share goals, solve problems, and grow together.',
     cta: 'Join Now →',
-    link: '#community',
+    link: '/join-us',
     icon: (
       <svg fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -94,7 +95,7 @@ export default function Why() {
 
   return (
     <section className="why-section">
-      <div className="section-header reveal visible">
+      <div className="section-header reveal reveal-d1">
         <div className="eyebrow">{cms.cms_why_eyebrow || "What We Offer"}</div>
         <h2 className="section-h2" dangerouslySetInnerHTML={{ __html: cms.cms_why_title || `Why <span class="grad">Bold &amp; Brilliant</span> Girls?` }} />
         <p className="section-sub">
@@ -104,7 +105,7 @@ export default function Why() {
       </div>
       <div className="why-grid container">
         {cards.map((card, idx) => (
-          <div key={idx} className={`why-card reveal reveal-d${idx + 1} visible`}>
+          <div key={idx} className={`why-card reveal reveal-d${idx + 1}`}>
             <div className="why-card__inner">
               <div className="why-card__front">
                 <div className="why-card__icon-wrap">{card.icon}</div>
@@ -117,9 +118,9 @@ export default function Why() {
                   <div className="why-card__back-title">{card.title}</div>
                   <div className="why-card__back-desc">{card.desc}</div>
                 </div>
-                <a href={card.link} className="why-card__back-cta">
+                <Link to={card.link} className="why-card__back-cta">
                   {card.cta}
-                </a>
+                </Link>
               </div>
             </div>
           </div>

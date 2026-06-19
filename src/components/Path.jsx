@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const PILLS = [
   { label: 'Women in STEM', sub: '8 episodes · 5 mentors', icon: '🔬', color: 'rgba(13,148,136,.1)' },
@@ -8,6 +9,8 @@ const PILLS = [
 ];
 
 export default function Path() {
+  const navigate = useNavigate();
+
   return (
     <section className="path-section" id="quiz">
       <div className="path-orb-1"></div>
@@ -51,16 +54,16 @@ export default function Path() {
               <span className="path-feature">🎧 Episode picks</span>
               <span className="path-feature">👩‍🏫 Mentor match</span>
             </div>
-            <a href="#quiz" className="path-card__btn">
+            <Link to="/find-your-path" className="path-card__btn">
               <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" style={{ marginRight: '6px' }}>
                 <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
               </svg>
               Start the Quiz →
-            </a>
+            </Link>
           </div>
           <div className="path-card__visual">
             {PILLS.map((pill, idx) => (
-              <div key={idx} className="path-pill" onClick={() => window.location.hash = 'quiz'}>
+              <div key={idx} className="path-pill" onClick={() => navigate('/find-your-path')}>
                 <div className="path-pill__icon" style={{ background: pill.color }}>
                   {pill.icon}
                 </div>

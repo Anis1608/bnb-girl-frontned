@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 export const EP = [
@@ -33,7 +34,7 @@ export default function Episodes({ onOpenGuestModal, onOpenAudioPlayer, onShowTo
             Must-Listen <span style={{ background: 'var(--hero-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Hits</span>
           </h2>
         </div>
-        <a href="#episodes">Browse All →</a>
+        <Link to="/episodes">Browse All →</Link>
       </div>
       <div className="episodes-grid" id="episodesGrid">
         {featuredEpisodes.slice(0, 4).map((e) => (

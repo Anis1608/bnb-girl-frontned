@@ -683,6 +683,10 @@ textarea {
   flex: 0 0 68px;
 }
 
+.bbg-bot-item.bbg-on[data-nav="quiz"]::before {
+  display: none !important;
+}
+
 .bbg-eye-wrap {
   width: 44px;
   height: 44px;
@@ -692,6 +696,7 @@ textarea {
   justify-content: center;
   margin-top: -10px;
   flex-shrink: 0;
+  transition: box-shadow 0.3s;
 }
 
 .bbg-eye-wrap::before {
@@ -724,6 +729,11 @@ textarea {
 
 .bbg-bot-item[data-nav="quiz"].bbg-on .bbg-eye-wrap::before {
   animation-duration: 1s;
+}
+
+.bbg-bot-item[data-nav="quiz"].bbg-on .bbg-eye-wrap {
+  box-shadow: 0 0 16px rgba(147, 51, 234, 0.6) !important;
+  border-radius: 50% !important;
 }
 
 .bbg-bot-item[data-nav="quiz"] .bbg-bot-lbl {
@@ -5963,6 +5973,10 @@ textarea.ask-input {
   flex: 0 0 68px;
 }
 
+.bbg-bot-item.bbg-on[data-nav="quiz"]::before {
+  display: none !important;
+}
+
 .bbg-eye-wrap {
   width: 44px;
   height: 44px;
@@ -5972,6 +5986,7 @@ textarea.ask-input {
   justify-content: center;
   margin-top: -10px;
   flex-shrink: 0;
+  transition: box-shadow 0.3s;
 }
 
 .bbg-eye-wrap::before {
@@ -6004,6 +6019,11 @@ textarea.ask-input {
 
 .bbg-bot-item[data-nav="quiz"].bbg-on .bbg-eye-wrap::before {
   animation-duration: 1s;
+}
+
+.bbg-bot-item[data-nav="quiz"].bbg-on .bbg-eye-wrap {
+  box-shadow: 0 0 16px rgba(147, 51, 234, 0.6) !important;
+  border-radius: 50% !important;
 }
 
 .bbg-bot-item[data-nav="quiz"] .bbg-bot-lbl {

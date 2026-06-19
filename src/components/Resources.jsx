@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const RC_ART = [
   /* Card 1 — Education: Elegant dark purple, geometric constellation */
@@ -109,7 +110,7 @@ export default function Resources({ onShowToast }) {
         ))}
       </div>
       <div className="resources-section__cta reveal visible">
-        <a href="#resources" className="btn btn--grad">View All Resources →</a>
+        <Link to="/resources" className="btn btn--grad">View All Resources →</Link>
       </div>
     </section>
   );
