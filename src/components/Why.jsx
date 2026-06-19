@@ -95,7 +95,7 @@ export default function Why() {
 
   return (
     <section className="why-section">
-      <div className="section-header reveal reveal-d1">
+      <div className="section-header reveal reveal-d1 visible">
         <div className="eyebrow">{cms.cms_why_eyebrow || "What We Offer"}</div>
         <h2 className="section-h2" dangerouslySetInnerHTML={{ __html: cms.cms_why_title || `Why <span class="grad">Bold &amp; Brilliant</span> Girls?` }} />
         <p className="section-sub">
@@ -105,7 +105,7 @@ export default function Why() {
       </div>
       <div className="why-grid container">
         {cards.map((card, idx) => (
-          <div key={idx} className={`why-card reveal reveal-d${idx + 1}`}>
+          <div key={idx} className={`why-card reveal reveal-d${idx + 1} visible`}>
             <div className="why-card__inner">
               <div className="why-card__front">
                 <div className="why-card__icon-wrap">{card.icon}</div>

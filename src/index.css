@@ -2187,7 +2187,7 @@ textarea.ask-input {
    ========================================== */
 .why-section {
   padding: 80px 0;
-  background: transparent;
+  background: #ffffff;
   position: relative;
   overflow: hidden;
 }
@@ -2244,16 +2244,14 @@ textarea.ask-input {
 }
 
 .why-card__front {
-  background: rgba(17, 11, 38, 0.75);
-  border: 1px solid rgba(147, 51, 234, 0.12);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  background: #ffffff;
+  border: 1px solid rgba(147, 51, 234, .09);
+  box-shadow: 0 4px 24px rgba(107, 33, 168, .06);
   align-items: center;
   justify-content: center;
   text-align: center;
   padding: 28px 20px;
   position: relative;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
 }
 
 .why-card__front::before {
@@ -2300,7 +2298,7 @@ textarea.ask-input {
   font-family: var(--font-d);
   font-size: 18px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--page-text);
   margin-bottom: 8px;
   position: relative;
   z-index: 1;
