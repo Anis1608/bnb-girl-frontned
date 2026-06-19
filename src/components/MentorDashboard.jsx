@@ -552,7 +552,7 @@ export default function MentorDashboard({ onShowToast }) {
                 {/* Split widgets */}
                 <div className="overview-split-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '32px' }}>
                   {/* Next session details widget */}
-                  <div className="next-session-widget" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-light)', borderRadius: '20px', padding: '28px' }}>
+                  <div className="next-session-widget" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-light)', borderRadius: '20px' }}>
                     <div className="widget-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px', alignItems: 'center' }}>
                       <h4 style={{ margin: 0, fontSize: '18px', fontFamily: 'Outfit' }}>Next Scheduled Call</h4>
                       <span className="live-pulse" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', background: 'rgba(74, 222, 128, 0.15)', color: '#4ade80', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold' }}>
@@ -648,7 +648,7 @@ export default function MentorDashboard({ onShowToast }) {
                   </div>
 
                   {/* Operational checklist widget */}
-                  <div className="checklist-widget" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-light)', borderRadius: '20px', padding: '28px' }}>
+                  <div className="checklist-widget" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-light)', borderRadius: '20px' }}>
                     <h4 style={{ margin: '0 0 20px', fontSize: '18px', fontFamily: 'Outfit' }}>Platform Checklist</h4>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                       <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
@@ -874,11 +874,11 @@ export default function MentorDashboard({ onShowToast }) {
 
                 <form onSubmit={handleSettingsSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                   {/* Rate & Durations */}
-                  <div className="glass-box" style={{ padding: '28px' }}>
+                  <div className="glass-box">
                     <h3 style={{ margin: '0 0 20px', fontSize: '18px', fontFamily: 'Outfit' }}>Rates &amp; Durations</h3>
 
                     {/* Free Session Toggle */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderRadius: '12px', background: isFreeSession ? 'rgba(16,185,129,0.08)' : 'rgba(255,255,255,0.03)', border: isFreeSession ? '1px solid rgba(16,185,129,0.25)' : '1px solid rgba(255,255,255,0.07)', marginBottom: '24px', cursor: 'pointer' }} onClick={() => {
+                    <div className="free-session-toggle-card" style={{ background: isFreeSession ? 'rgba(16,185,129,0.08)' : 'rgba(255,255,255,0.03)', border: isFreeSession ? '1px solid rgba(16,185,129,0.25)' : '1px solid rgba(255,255,255,0.07)' }} onClick={() => {
                       const nowFree = !isFreeSession;
                       setIsFreeSession(nowFree);
                       setProfileForm(prev => ({ ...prev, rate: nowFree ? 'Free' : '$20' }));
@@ -888,14 +888,14 @@ export default function MentorDashboard({ onShowToast }) {
                         <div style={{ width: '44px', height: '24px', borderRadius: '12px', background: isFreeSession ? '#10B981' : 'rgba(255,255,255,0.12)', transition: 'background 0.25s' }}></div>
                         <div style={{ position: 'absolute', top: '3px', left: isFreeSession ? '23px' : '3px', width: '18px', height: '18px', borderRadius: '50%', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.3)', transition: 'left 0.25s' }}></div>
                       </div>
-                      <div>
+                      <div className="toggle-info">
                         <div style={{ fontSize: '14px', fontWeight: '700', color: isFreeSession ? '#10B981' : '#e5e7eb' }}>🎁 Offer Free Sessions</div>
                         <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
                           {isFreeSession ? 'Your sessions are currently FREE — students can book at no cost.' : 'Toggle ON to make all your sessions completely free for students.'}
                         </div>
                       </div>
                       {isFreeSession && (
-                        <span style={{ marginLeft: 'auto', fontSize: '11px', fontWeight: '700', color: '#10B981', background: 'rgba(16,185,129,0.12)', padding: '4px 10px', borderRadius: '20px', border: '1px solid rgba(16,185,129,0.25)' }}>FREE</span>
+                        <span className="free-badge-span" style={{ marginLeft: 'auto', fontSize: '11px', fontWeight: '700', color: '#10B981', background: 'rgba(16,185,129,0.12)', padding: '4px 10px', borderRadius: '20px', border: '1px solid rgba(16,185,129,0.25)' }}>FREE</span>
                       )}
                     </div>
 
@@ -955,7 +955,7 @@ export default function MentorDashboard({ onShowToast }) {
                   </div>
 
                   {/* Active Slots Checklist */}
-                  <div className="glass-box" style={{ padding: '28px' }}>
+                  <div className="glass-box">
                     <h3 style={{ margin: '0 0 8px', fontSize: '18px', fontFamily: 'Outfit' }}>Active Work Slots</h3>
                     <p style={{ fontSize: '13px', color: '#9ca3af', margin: '0 0 24px' }}>Check all potential slots you can accept sessions for. Busy status (regular lunch blocks) can be marked below.</p>
 
@@ -987,7 +987,7 @@ export default function MentorDashboard({ onShowToast }) {
                   </div>
 
                   {/* Statically Busy slots */}
-                  <div className="glass-box" style={{ padding: '28px' }}>
+                  <div className="glass-box">
                     <h3 style={{ margin: '0 0 8px', fontSize: '18px', fontFamily: 'Outfit' }}>Statically Busy Blocks</h3>
                     <p style={{ fontSize: '13px', color: '#9ca3af', margin: '0 0 24px' }}>Select slots that should be blocked statically (e.g. recurrent breaks). Overlapping dynamic checkouts will also block automatically.</p>
 
@@ -1021,7 +1021,7 @@ export default function MentorDashboard({ onShowToast }) {
                   </div>
 
                   {/* Profile Details */}
-                  <div className="glass-box" style={{ padding: '28px' }}>
+                  <div className="glass-box">
                     <h3 style={{ margin: '0 0 24px', fontSize: '18px', fontFamily: 'Outfit' }}>Profile Details</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                       <div className="profile-dossier-grid">
@@ -1103,10 +1103,10 @@ export default function MentorDashboard({ onShowToast }) {
                   </div>
 
                   {/* Submit buttons */}
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
+                  <div className="form-actions-row">
                     <button
                       type="submit"
-                      className="btn btn-primary"
+                      className="btn btn-primary form-submit-btn"
                       disabled={savingSettings}
                       style={{ padding: '14px 32px', borderRadius: '12px', border: 'none', background: 'linear-gradient(135deg, #EC4899 0%, #9333EA 100%)', color: '#fff', fontWeight: 'bold', fontSize: '15.5px', cursor: 'pointer', boxShadow: '0 8px 24px rgba(236,72,153,0.2)' }}
                     >
