@@ -2503,6 +2503,32 @@
                                     opacity: .85
                                 }
 
+                                .hero-search-btn__icon {
+                                    display: none;
+                                }
+
+                                .hero-search-btn__text {
+                                    display: inline;
+                                }
+
+                                @media (max-width: 768px) {
+                                    .hero-search-btn {
+                                        padding: 0 16px !important;
+                                        display: flex !important;
+                                        align-items: center !important;
+                                        justify-content: center !important;
+                                    }
+                                    .hero-search-btn__text {
+                                        display: none !important;
+                                    }
+                                    .hero-search-btn__icon {
+                                        display: block !important;
+                                        width: 18px !important;
+                                        height: 18px !important;
+                                        color: #fff !important;
+                                    }
+                                }
+
                                 .hero-hints {
                                     display: flex;
                                     gap: 7px;
@@ -5221,7 +5247,13 @@
                                                     </svg>
                                                 </span>
                                                 <input type="text" id="heroIn" autocomplete="off" placeholder="Search episodes, guests, topics…" oninput="heroSync(this.value)" onkeydown="if(event.key==='Enter')heroGo()">
-                                                <button class="hero-search-btn" onclick="heroGo()">Search</button>
+                                                <button class="hero-search-btn" onclick="heroGo()">
+                                                    <span class="hero-search-btn__text">Search</span>
+                                                    <svg class="hero-search-btn__icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                                        <circle cx="11" cy="11" r="8"></circle>
+                                                        <path d="m21 21-4.35-4.35"></path>
+                                                    </svg>
+                                                </button>
                                             </div>
                                             <div class="hero-hints">
                                                 <span class="hint-pill" onclick="heroSet('Entrepreneurship')">💼 Business</span>

@@ -1066,7 +1066,13 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
                   }}
                   onFocus={() => setHeroSuggestionsOpen(true)}
                 />
-                <button className="hero-search-btn">Search</button>
+                <button className="hero-search-btn">
+                  <span className="hero-search-btn__text">Search</span>
+                  <svg className="hero-search-btn__icon" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                  </svg>
+                </button>
               </div>
 
               {/* Suggestions overlay */}

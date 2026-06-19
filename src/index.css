@@ -7829,6 +7829,32 @@ textarea.ask-input {
     opacity: .85
   }
 
+  .hero-search-btn__icon {
+    display: none;
+  }
+
+  .hero-search-btn__text {
+    display: inline;
+  }
+
+  @media (max-width: 768px) {
+    .hero-search-btn {
+      padding: 0 16px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .hero-search-btn__text {
+      display: none !important;
+    }
+    .hero-search-btn__icon {
+      display: block !important;
+      width: 18px !important;
+      height: 18px !important;
+      color: #fff !important;
+    }
+  }
+
   .hero-hints {
     display: flex;
     gap: 7px;
