@@ -23,6 +23,7 @@ export default function MentorDashboard({ onShowToast }) {
   // Login Form State
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -46,6 +47,9 @@ export default function MentorDashboard({ onShowToast }) {
     busy: [],
     durs: []
   });
+
+  // Free session toggle
+  const [isFreeSession, setIsFreeSession] = useState(false);
 
   // Bookings list
   const [bookings, setBookings] = useState([]);
@@ -71,10 +75,13 @@ export default function MentorDashboard({ onShowToast }) {
   // Sync profile details when logged in
   useEffect(() => {
     if (mentorProfile) {
+      const rateVal = mentorProfile.rate || '$20';
+      const isCurrentlyFree = !rateVal || rateVal.toLowerCase().includes('free') || rateVal === '0' || rateVal === '$0';
+      setIsFreeSession(isCurrentlyFree);
       setProfileForm({
         bio: mentorProfile.bio || '',
         quote: mentorProfile.quote || '',
-        rate: mentorProfile.rate || '$20',
+        rate: isCurrentlyFree ? 'Free' : rateVal,
         role: mentorProfile.role || '',
         linkedin: mentorProfile.linkedin || '',
         expertise_areas: Array.isArray(mentorProfile.expertise_areas)
@@ -302,16 +309,29 @@ export default function MentorDashboard({ onShowToast }) {
               <div className="fld-focus-line"></div>
             </div>
 
-            <div className="auth-fld-g">
+            <div className="auth-fld-g" style={{ position: 'relative' }}>
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 required
                 placeholder=" "
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                style={{ paddingRight: '44px' }}
               />
               <label>Password</label>
               <div className="fld-focus-line"></div>
+              <button
+                type="button"
+                onClick={() => setShowPassword(p => !p)}
+                style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: '4px', display: 'flex', alignItems: 'center' }}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? (
+                  <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                ) : (
+                  <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                )}
+              </button>
             </div>
 
             <button type="submit" className="auth-btn" disabled={loading}>
@@ -767,18 +787,52 @@ export default function MentorDashboard({ onShowToast }) {
                   {/* Rate & Durations */}
                   <div className="glass-box" style={{ padding: '28px' }}>
                     <h3 style={{ margin: '0 0 20px', fontSize: '18px', fontFamily: 'Outfit' }}>Rates &amp; Durations</h3>
+
+                    {/* Free Session Toggle */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 20px', borderRadius: '12px', background: isFreeSession ? 'rgba(16,185,129,0.08)' : 'rgba(255,255,255,0.03)', border: isFreeSession ? '1px solid rgba(16,185,129,0.25)' : '1px solid rgba(255,255,255,0.07)', marginBottom: '24px', cursor: 'pointer' }} onClick={() => {
+                      const nowFree = !isFreeSession;
+                      setIsFreeSession(nowFree);
+                      setProfileForm(prev => ({ ...prev, rate: nowFree ? 'Free' : '$20' }));
+                    }}>
+                      {/* Toggle Switch */}
+                      <div style={{ position: 'relative', width: '44px', height: '24px', flexShrink: 0 }}>
+                        <div style={{ width: '44px', height: '24px', borderRadius: '12px', background: isFreeSession ? '#10B981' : 'rgba(255,255,255,0.12)', transition: 'background 0.25s' }}></div>
+                        <div style={{ position: 'absolute', top: '3px', left: isFreeSession ? '23px' : '3px', width: '18px', height: '18px', borderRadius: '50%', background: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.3)', transition: 'left 0.25s' }}></div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '14px', fontWeight: '700', color: isFreeSession ? '#10B981' : '#e5e7eb' }}>🎁 Offer Free Sessions</div>
+                        <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '2px' }}>
+                          {isFreeSession ? 'Your sessions are currently FREE — students can book at no cost.' : 'Toggle ON to make all your sessions completely free for students.'}
+                        </div>
+                      </div>
+                      {isFreeSession && (
+                        <span style={{ marginLeft: 'auto', fontSize: '11px', fontWeight: '700', color: '#10B981', background: 'rgba(16,185,129,0.12)', padding: '4px 10px', borderRadius: '20px', border: '1px solid rgba(16,185,129,0.25)' }}>FREE</span>
+                      )}
+                    </div>
+
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '28px' }}>
                       <div className="form-group">
-                        <label style={{ display: 'block', fontSize: '13px', color: '#9ca3af', marginBottom: '8px', fontWeight: 'bold' }}>Base Hourly Rate *</label>
-                        <input
-                          type="text"
-                          name="rate"
-                          required
-                          value={profileForm.rate}
-                          onChange={handleTextChange}
-                          style={{ width: '100%', padding: '12px 14px', background: 'rgba(11,8,25,0.6)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#fff' }}
-                        />
-                        <span style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px', display: 'block' }}>e.g. $25 (60m is auto calculated at 1.8x, 120m at 3.2x unless customized)</span>
+                        <label style={{ display: 'block', fontSize: '13px', color: '#9ca3af', marginBottom: '8px', fontWeight: 'bold' }}>
+                          {isFreeSession ? 'Session Rate' : 'Base Hourly Rate *'}
+                        </label>
+                        {isFreeSession ? (
+                          <div style={{ width: '100%', padding: '12px 14px', background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '10px', color: '#10B981', fontWeight: '700', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span>🎁</span> Free — No charge to students
+                          </div>
+                        ) : (
+                          <>
+                            <input
+                              type="text"
+                              name="rate"
+                              required
+                              value={profileForm.rate}
+                              onChange={handleTextChange}
+                              placeholder="e.g. $25"
+                              style={{ width: '100%', padding: '12px 14px', background: 'rgba(11,8,25,0.6)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#fff' }}
+                            />
+                            <span style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px', display: 'block' }}>e.g. $25 (60m auto-calculated at 1.8x, 120m at 3.2x)</span>
+                          </>
+                        )}
                       </div>
 
                       <div className="form-group">
