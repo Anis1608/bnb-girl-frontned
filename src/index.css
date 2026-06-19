@@ -10550,14 +10550,15 @@ textarea.ask-input {
    HERO
 ════════════════════════════════ */
   .hero {
-    min-height: 480px;
-    background: linear-gradient(160deg, #0A0414 0%, #1A0D35 40%, #2D1060 70%, #0A0414 100%);
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 100px 24px 60px;
+    min-height: 480px !important;
+    background: linear-gradient(160deg, #0A0414 0%, #1A0D35 40%, #2D1060 70%, #0A0414 100%) !important;
+    position: relative !important;
+    overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 100px 24px 60px !important;
   }
 
   .hero::before {
@@ -10578,54 +10579,61 @@ textarea.ask-input {
   }
 
   .hero__inner {
-    max-width: 900px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
-    text-align: center
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    position: relative !important;
+    z-index: 1 !important;
+    text-align: center !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
   }
 
   .hero__eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: .2em;
-    color: rgba(255, 215, 0, 0.8);
-    background: rgba(255, 215, 0, 0.08);
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    padding: 5px 16px;
-    border-radius: var(--r99);
-    margin-bottom: 20px
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .2em !important;
+    color: rgba(255, 215, 0, 0.8) !important;
+    background: rgba(255, 215, 0, 0.08) !important;
+    border: 1px solid rgba(255, 215, 0, 0.2) !important;
+    padding: 5px 16px !important;
+    border-radius: var(--r99) !important;
+    margin-bottom: 20px !important
   }
 
   .hero__h1 {
-    font-family: var(--font-d);
-    font-weight: 900;
-    font-size: clamp(2.4rem, 5vw, 4rem);
-    color: #fff;
-    margin-bottom: 14px;
-    line-height: 1.08;
-    letter-spacing: -0.03em
+    font-family: var(--font-d) !important;
+    font-weight: 900 !important;
+    font-size: clamp(2.4rem, 5vw, 4rem) !important;
+    color: #fff !important;
+    margin-bottom: 14px !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.03em !important;
+    text-align: center !important
   }
 
   .hero__h1 span {
-    background: linear-gradient(90deg, #FFE100, #F97316, #EC4899);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text
+    background: linear-gradient(90deg, #FFE100, #F97316, #EC4899) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important
   }
 
   .hero__sub {
-    font-size: clamp(15px, 2vw, 18px);
-    color: rgba(255, 255, 255, 0.5);
-    margin-bottom: 36px;
-    max-width: 580px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.7
+    font-size: clamp(15px, 2vw, 18px) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    margin: 0 auto 36px !important;
+    max-width: 580px !important;
+    line-height: 1.7 !important;
+    text-align: center !important
   }
 
   /* SEARCH */
