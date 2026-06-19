@@ -18,10 +18,6 @@ export default function MentorDashboard({ onShowToast }) {
 
   useEffect(() => {
     localStorage.setItem('bbg_mentor_theme', theme);
-    document.body.style.backgroundColor = theme === 'dark' ? '#070412' : '#f8fafc';
-    return () => {
-      document.body.style.backgroundColor = '';
-    };
   }, [theme]);
 
   // Login Form State
