@@ -169,7 +169,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
       revealElements.forEach((el) => observer.unobserve(el));
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [mentorsList]);
+  }, [mentorsList, loading]);
 
   // Control body scrolling when sheet is open
   useEffect(() => {
