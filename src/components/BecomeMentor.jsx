@@ -125,18 +125,40 @@ export default function BecomeMentor({ onShowToast }) {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'radial-gradient(circle at 10% 20%, #170d2e 0%, #0c061a 90%)',
-      color: '#fff',
-      padding: '120px 24px 80px',
-      fontFamily: "'DM Sans', sans-serif",
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      position: 'relative',
-      overflow: 'hidden'
-    }}>
+    <div className="become-mentor-wrap">
+      <style>{`
+        .become-mentor-wrap {
+          min-height: 100vh;
+          background: radial-gradient(circle at 10% 20%, #170d2e 0%, #0c061a 90%);
+          color: #fff;
+          padding: 120px 24px 80px;
+          font-family: 'DM Sans', sans-serif;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          position: relative;
+          overflow: hidden;
+        }
+        .become-mentor-card {
+          background: rgba(30, 20, 55, 0.45);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 24px;
+          padding: 40px 32px;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+          transition: all 0.3s ease;
+        }
+        @media (max-width: 600px) {
+          .become-mentor-wrap {
+            padding: 90px 10px 60px !important;
+          }
+          .become-mentor-card {
+            padding: 24px 16px !important;
+            border-radius: 16px !important;
+          }
+        }
+      `}</style>
       {/* Background Decorative Gradients */}
       <div style={{
         position: 'absolute',
@@ -279,16 +301,7 @@ export default function BecomeMentor({ onShowToast }) {
         )}
 
         {/* Main Form Area */}
-        <div style={{
-          background: 'rgba(30, 20, 55, 0.45)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: '24px',
-          padding: '40px 32px',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
-          transition: 'all 0.3s ease'
-        }}>
+        <div className="become-mentor-card">
           {submitted ? (
             /* Success View */
             <div style={{ textAlign: 'center', padding: '24px 0' }}>
