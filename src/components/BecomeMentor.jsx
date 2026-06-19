@@ -42,10 +42,62 @@ export default function BecomeMentor({ onShowToast }) {
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setPhotoFile(file);
+      if (!file.type.startsWith('image/')) {
+        if (onShowToast) {
+          onShowToast('⚠️', 'Invalid File Type', 'Only image files (JPG, PNG, WEBP, etc.) are allowed.');
+        } else {
+          alert('Only image files are allowed.');
+        }
+        e.target.value = ''; // Reset input
+        return;
+      }
+      
+      // Compress image client-side to prevent 413 Request Entity Too Large errors
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 800;
+          
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const compressedFile = new File([blob], file.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+              });
+              setPhotoFile(compressedFile);
+              
+              const previewReader = new FileReader();
+              previewReader.onloadend = () => {
+                setPhotoPreview(previewReader.result);
+              };
+              previewReader.readAsDataURL(compressedFile);
+            }
+          }, 'image/jpeg', 0.75);
+        };
+        img.src = event.target.result;
       };
       reader.readAsDataURL(file);
     }
@@ -368,6 +420,7 @@ export default function BecomeMentor({ onShowToast }) {
                       <input
                         type="text"
                         required
+                        maxLength={100}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="e.g. Sarah Jenkins"
@@ -383,6 +436,7 @@ export default function BecomeMentor({ onShowToast }) {
                       <input
                         type="email"
                         required
+                        maxLength={100}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="your@email.com"
@@ -400,6 +454,7 @@ export default function BecomeMentor({ onShowToast }) {
                       </label>
                       <input
                         type="text"
+                        maxLength={100}
                         value={role}
                         onChange={(e) => setRole(e.target.value)}
                         placeholder="e.g. Senior Software Architect"
@@ -414,6 +469,7 @@ export default function BecomeMentor({ onShowToast }) {
                       </label>
                       <input
                         type="text"
+                        maxLength={100}
                         value={organisation}
                         onChange={(e) => setOrganisation(e.target.value)}
                         placeholder="e.g. Google"
@@ -431,6 +487,7 @@ export default function BecomeMentor({ onShowToast }) {
                       </label>
                       <input
                         type="url"
+                        maxLength={150}
                         value={linkedin}
                         onChange={(e) => setLinkedin(e.target.value)}
                         placeholder="https://linkedin.com/in/username"
@@ -446,8 +503,14 @@ export default function BecomeMentor({ onShowToast }) {
                       <input
                         type="number"
                         min="0"
+                        max="100"
                         value={yearsExp}
-                        onChange={(e) => setYearsExp(e.target.value)}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === '' || (Number(val) >= 0 && Number(val) <= 100)) {
+                            setYearsExp(val);
+                          }
+                        }}
                         placeholder="e.g. 8"
                         style={inputStyle}
                       />
@@ -501,7 +564,7 @@ export default function BecomeMentor({ onShowToast }) {
                           Choose Photo
                         </label>
                         <p style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.4)', marginTop: '6px', margin: '6px 0 0' }}>
-                          JPG, PNG, or WEBP. Max 5MB. Cloudinary hosted.
+                          JPG, PNG, or WEBP. Max 5MB.
                         </p>
                       </div>
                     </div>
@@ -557,6 +620,7 @@ export default function BecomeMentor({ onShowToast }) {
                     </label>
                     <input
                       type="text"
+                      maxLength={100}
                       value={otherExpertise}
                       onChange={(e) => setOtherExpertise(e.target.value)}
                       placeholder="e.g. Cyber Security, Mobile Development"
@@ -578,6 +642,7 @@ export default function BecomeMentor({ onShowToast }) {
                     <textarea
                       required
                       rows="4"
+                      maxLength={1000}
                       value={bio}
                       onChange={(e) => setBio(e.target.value)}
                       placeholder="Share a brief overview of your journey and professional focus. This will be displayed on your profile (150-200 words recommended)."
@@ -593,6 +658,7 @@ export default function BecomeMentor({ onShowToast }) {
                     <textarea
                       required
                       rows="4"
+                      maxLength={1000}
                       value={motivation}
                       onChange={(e) => setMotivation(e.target.value)}
                       placeholder="Tell us what drives you to support women in technology and leadership, and what you hope to achieve with your mentees."
@@ -624,7 +690,12 @@ export default function BecomeMentor({ onShowToast }) {
                       fontSize: '0.85rem',
                       fontWeight: 600,
                       cursor: 'pointer',
-                      transition: 'all 0.2s'
+                      transition: 'all 0.2s',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      whiteSpace: 'nowrap'
                     }}
                   >
                     ← Back
@@ -647,7 +718,12 @@ export default function BecomeMentor({ onShowToast }) {
                       fontWeight: 700,
                       cursor: 'pointer',
                       transition: 'all 0.2s',
-                      boxShadow: '0 4px 12px rgba(147, 51, 234, 0.25)'
+                      boxShadow: '0 4px 12px rgba(147, 51, 234, 0.25)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      whiteSpace: 'nowrap'
                     }}
                   >
                     Next Step →
@@ -668,7 +744,12 @@ export default function BecomeMentor({ onShowToast }) {
                       fontWeight: 700,
                       cursor: submitting ? 'not-allowed' : 'pointer',
                       transition: 'all 0.2s',
-                      boxShadow: submitting ? 'none' : '0 4px 12px rgba(236, 72, 153, 0.3)'
+                      boxShadow: submitting ? 'none' : '0 4px 12px rgba(236, 72, 153, 0.3)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      whiteSpace: 'nowrap'
                     }}
                   >
                     {submitting ? 'Submitting...' : 'Submit Application 🎉'}
