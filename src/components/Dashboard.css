@@ -410,7 +410,7 @@
   border-right: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
-  padding: 32px 24px;
+  padding: 24px 18px;
   z-index: 10;
   box-sizing: border-box;
   flex-shrink: 0;
@@ -421,7 +421,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 36px;
+  margin-bottom: 24px;
 }
 
 .sb-logo {
@@ -461,11 +461,11 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 18px 16px;
+  padding: 12px 14px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 16px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .su-avatar {
@@ -606,7 +606,7 @@
    ==================================================================== */
 .portal-main {
   flex: 1;
-  padding: 48px 56px;
+  padding: 24px 32px;
   overflow-y: auto;
   box-sizing: border-box;
   position: relative;
@@ -675,7 +675,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 36px;
+  margin-bottom: 20px;
   gap: 24px;
 }
 
@@ -741,16 +741,16 @@
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-bottom: 36px;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
 .metric-c {
   background: var(--panel-bg);
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-light);
-  border-radius: 18px;
-  padding: 24px;
+  border-radius: 14px;
+  padding: 16px 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   transition: all 0.25s ease;
 }
@@ -802,7 +802,7 @@
 .overview-split-grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
-  gap: 28px;
+  gap: 20px;
 }
 
 .next-session-widget,
@@ -810,8 +810,8 @@
   background: var(--panel-bg);
   backdrop-filter: blur(16px);
   border: 1px solid var(--border-light);
-  border-radius: 20px;
-  padding: 28px;
+  border-radius: 16px;
+  padding: 20px;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
   box-sizing: border-box;
 }
@@ -820,9 +820,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  padding-bottom: 16px;
+  padding-bottom: 12px;
 }
 
 .widget-header h4 {
@@ -876,7 +876,7 @@
 .ns-content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
 }
 
 .ns-mentor-row {
