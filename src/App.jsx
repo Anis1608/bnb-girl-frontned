@@ -397,7 +397,7 @@ export default function App() {
       </div>
 
       {/* 15. Footer Links, Copyright and Back-to-top button */}
-      {!isMentorDashboard && <Footer />}
+      {activeNav !== 'dashboard' && activeNav !== 'mentor-dashboard' && <Footer />}
 
       {/* ══ MODALS PORTAL OVERLAYS ══ */}
       
