@@ -1694,22 +1694,18 @@ export default function JoinUs({ onShowToast, onNavChange }) {
             max-width: 100%;
           }
 
-          /* FORM STATS — swipe */
+          /* FORM STATS — stack vertically on mobile */
           .joinus-page-container .fe-stats {
-            flex-direction: row;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
+            flex-direction: column;
+            flex-wrap: wrap;
+            overflow-x: unset;
             gap: 8px;
-            padding-bottom: 2px;
-          }
-          .joinus-page-container .fe-stats::-webkit-scrollbar {
-            display: none;
+            padding-bottom: 0;
           }
           .joinus-page-container .fe-stat {
-            flex-shrink: 0;
-            min-width: 100px;
+            flex-shrink: unset;
+            min-width: unset;
+            width: 100%;
             padding: 11px 13px;
             border-radius: 10px;
           }

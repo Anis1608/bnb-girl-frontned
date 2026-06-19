@@ -5186,10 +5186,25 @@ textarea.ask-input {
   .stats-row {
     margin-bottom: 24px;
     border-radius: 14px;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .stat-item {
     padding: 20px 12px;
+  }
+
+  .stat-item:not(:last-child)::after {
+    display: none;
+  }
+
+  .stat-item:nth-child(1),
+  .stat-item:nth-child(2) {
+    border-bottom: 1px solid rgba(107, 33, 168, .07);
+  }
+
+  .stat-item:nth-child(1),
+  .stat-item:nth-child(3) {
+    border-right: 1px solid rgba(107, 33, 168, .07);
   }
 
   .stat-num {
