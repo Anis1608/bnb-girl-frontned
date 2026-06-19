@@ -229,7 +229,7 @@ export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
             </svg>
             <span className="bbg-bot-lbl">Episodes</span>
           </a>
-          <a href="/find-your-path" className={`bbg-bot-item ${activeNav === 'quiz' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'quiz')}>
+          <a href="/find-your-path" data-nav="quiz" className={`bbg-bot-item ${activeNav === 'quiz' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'quiz')}>
             <div className="bbg-eye-wrap">
               <svg viewBox="0 0 24 24">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="url(#eyeG)" fill="none" />
