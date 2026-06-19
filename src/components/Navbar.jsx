@@ -213,46 +213,48 @@ export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
       </div>
 
       {/* ══ MOBILE BOTTOM NAV ══ */}
-      <nav className="bbg-bot">
-        <div className="bbg-bot-inner">
-          <a href="/" className={`bbg-bot-item ${activeNav === 'home' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'home')}>
-            <svg className="bot-icon" viewBox="0 0 24 24">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-              <polyline points="9 22 9 12 15 12 15 22" />
-            </svg>
-            <span className="bbg-bot-lbl">Home</span>
-          </a>
-          <a href="/episodes" className={`bbg-bot-item ${activeNav === 'episodes' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'episodes')}>
-            <svg className="bot-icon" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10" />
-              <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none" />
-            </svg>
-            <span className="bbg-bot-lbl">Episodes</span>
-          </a>
-          <a href="/find-your-path" data-nav="quiz" className={`bbg-bot-item ${activeNav === 'quiz' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'quiz')}>
-            <div className="bbg-eye-wrap">
-              <svg viewBox="0 0 24 24">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="url(#eyeG)" fill="none" />
-                <circle cx="12" cy="12" r="3" stroke="url(#eyeG)" fill="none" />
+      {activeNav !== 'dashboard' && activeNav !== 'mentor-dashboard' && (
+        <nav className="bbg-bot">
+          <div className="bbg-bot-inner">
+            <a href="/" className={`bbg-bot-item ${activeNav === 'home' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'home')}>
+              <svg className="bot-icon" viewBox="0 0 24 24">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
               </svg>
-            </div>
-            <span className="bbg-bot-lbl">Find Path</span>
-          </a>
-          <a href="/dashboard" className={`bbg-bot-item ${activeNav === 'dashboard' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'dashboard')}>
-            <svg className="bot-icon" viewBox="0 0 24 24" style={{ fill: 'none', stroke: 'currentColor', strokeWidth: 2 }}>
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-            <span className="bbg-bot-lbl">{userToken ? 'Dashboard' : 'Login'}</span>
-          </a>
-          <a href="/mentorship" className={`bbg-bot-item ${activeNav === 'mentorship' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'mentorship')}>
-            <svg className="bot-icon" viewBox="0 0 24 24">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-            </svg>
-            <span className="bbg-bot-lbl">Apply</span>
-          </a>
-        </div>
-      </nav>
+              <span className="bbg-bot-lbl">Home</span>
+            </a>
+            <a href="/episodes" className={`bbg-bot-item ${activeNav === 'episodes' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'episodes')}>
+              <svg className="bot-icon" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none" />
+              </svg>
+              <span className="bbg-bot-lbl">Episodes</span>
+            </a>
+            <a href="/find-your-path" data-nav="quiz" className={`bbg-bot-item ${activeNav === 'quiz' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'quiz')}>
+              <div className="bbg-eye-wrap">
+                <svg viewBox="0 0 24 24">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="url(#eyeG)" fill="none" />
+                  <circle cx="12" cy="12" r="3" stroke="url(#eyeG)" fill="none" />
+                </svg>
+              </div>
+              <span className="bbg-bot-lbl">Find Path</span>
+            </a>
+            <a href="/dashboard" className={`bbg-bot-item ${activeNav === 'dashboard' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'dashboard')}>
+              <svg className="bot-icon" viewBox="0 0 24 24" style={{ fill: 'none', stroke: 'currentColor', strokeWidth: 2 }}>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span className="bbg-bot-lbl">{userToken ? 'Dashboard' : 'Login'}</span>
+            </a>
+            <a href="/mentorship" className={`bbg-bot-item ${activeNav === 'mentorship' ? 'bbg-on' : ''}`} onClick={(e) => handleLinkClick(e, 'mentorship')}>
+              <svg className="bot-icon" viewBox="0 0 24 24">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+              <span className="bbg-bot-lbl">Apply</span>
+            </a>
+          </div>
+        </nav>
+      )}
     </>
   );
 }

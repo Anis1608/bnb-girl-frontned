@@ -1423,14 +1423,15 @@
 @media (max-width: 900px) {
   .portal-layout {
     flex-direction: column;
-    min-height: calc(100vh - 80px);
+    margin-top: 60px;
+    min-height: calc(100vh - 60px);
     overflow: hidden;
   }
 
   /* Fixed Top Bar on Mobile */
   .portal-sidebar {
     position: fixed;
-    top: 80px;
+    top: 60px;
     left: 0;
     right: 0;
     width: 100%;
@@ -1571,7 +1572,7 @@
     margin-top: 64px;
     margin-bottom: 62px;
     padding: 20px 16px 36px;
-    height: calc(100vh - 80px - 64px - 62px);
+    height: calc(100vh - 60px - 64px - 62px);
     box-sizing: border-box;
   }
 
