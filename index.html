@@ -29,7 +29,7 @@
     <script>
       (function() {
         window.__CMS_DATA__ = null;
-        fetch('https://bnb-girl-backend.onrender.com/api/cms')
+        fetch('https://api.bnbgirl.com/api/cms')
           .then(function(r) { return r.json(); })
           .then(function(d) {
             window.__CMS_DATA__ = d;

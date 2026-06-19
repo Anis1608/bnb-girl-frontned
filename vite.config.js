@@ -7,11 +7,11 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://bnb-girl-backend.onrender.com',
+        target: 'https://api.bnbgirl.com',
         changeOrigin: true
       },
       '/uploads': {
-        target: 'https://bnb-girl-backend.onrender.com',
+        target: 'https://api.bnbgirl.com',
         changeOrigin: true
       }
     }
