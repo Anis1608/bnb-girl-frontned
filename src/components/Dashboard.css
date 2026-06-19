@@ -2165,3 +2165,71 @@
   border-color: #9333EA !important;
 }
 
+/* Auth Flow Mobile Optimizations */
+@media (max-width: 600px) {
+  .auth-page-wrap {
+    padding: 24px 12px !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .auth-card {
+    padding: 32px 20px !important;
+    border-radius: 16px !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  .auth-header {
+    margin-bottom: 24px !important;
+  }
+  .auth-header h2 {
+    font-size: 24px !important;
+  }
+  .auth-social-buttons {
+    margin-bottom: 16px !important;
+    gap: 10px !important;
+  }
+  .auth-divider {
+    margin: 16px 0 !important;
+  }
+  .auth-form {
+    gap: 16px !important;
+  }
+  .auth-fld-g input {
+    padding: 15px 12px 11px !important;
+    font-size: 14.5px !important;
+  }
+  .auth-fld-g label {
+    left: 12px !important;
+    font-size: 14px !important;
+  }
+  .auth-fld-g input:focus ~ label,
+  .auth-fld-g input:not(:placeholder-shown) ~ label {
+    top: 4px !important;
+  }
+  .auth-btn {
+    padding: 14px !important;
+    font-size: 14.5px !important;
+    margin-top: 6px !important;
+  }
+  .auth-footer {
+    margin-top: 20px !important;
+    gap: 8px !important;
+    font-size: 13px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .auth-page-wrap {
+    padding: 12px 8px !important;
+  }
+  .auth-card {
+    padding: 24px 16px !important;
+  }
+  .auth-header h2 {
+    font-size: 22px !important;
+  }
+}
+
+
