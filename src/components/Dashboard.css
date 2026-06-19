@@ -596,6 +596,13 @@
   width: 100%;
 }
 
+.back-to-website-item {
+  text-decoration: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
 .sidebar-logout:hover {
   color: #f87171;
   background: rgba(239, 68, 68, 0.08);
@@ -1099,6 +1106,33 @@
   background: rgba(236, 72, 153, 0.08);
 }
 
+/* Session Log Cards (Sessions view - inline grid layout) */
+.session-log-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 20px;
+}
+
+.session-log-card-left {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.session-log-card-left h4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.session-log-card-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+  align-items: center;
+}
+
 /* Stylized Calendar Booking Cards */
 .sessions-grid {
   display: grid;
@@ -1429,6 +1463,18 @@
   background: #4ade80;
 }
 
+.rates-durations-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 28px;
+}
+
+.profile-dossier-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
 /* ====================================================================
    RESPONSIVE OVERRIDES (MOBILE APP SHELL VIEWPORT)
    ==================================================================== */
@@ -1532,7 +1578,8 @@
     box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.3);
   }
 
-  .menu-item {
+  .menu-item,
+  a.menu-item {
     position: relative !important;
     flex: 1;
     flex-direction: column !important;
@@ -1549,12 +1596,15 @@
     box-shadow: none !important;
     width: auto;
     text-align: center;
+    box-sizing: border-box;
+    display: flex !important;
   }
 
   .menu-icon {
     width: 18px !important;
     height: 18px !important;
     stroke-width: 2 !important;
+    margin: 0 !important;
   }
 
   .menu-item.active {
@@ -1573,6 +1623,12 @@
     font-size: 8.5px;
     padding: 1px 5px;
     pointer-events: none;
+  }
+
+  .back-to-website-item {
+    border-top: none !important;
+    margin-top: 0 !important;
+    padding-top: 6px !important;
   }
 
   .sidebar-theme-toggle {
@@ -1682,6 +1738,29 @@
     font-size: 13px;
   }
 
+  /* Session Log Card Mobile: Stack vertically */
+  .session-log-card {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .session-log-card-left h4 {
+    white-space: normal;
+    font-size: 13.5px;
+  }
+
+  .session-log-card-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .session-log-card-actions a,
+  .session-log-card-actions button {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+
   /* Session card mobile layout adjustments */
   .sc-info-block {
     padding: 16px 20px;
@@ -1727,6 +1806,27 @@
     box-sizing: border-box !important;
   }
 
+  /* Checklist wrap improvements to prevent text overflow */
+  .checklist-widget div {
+    word-break: break-word;
+  }
+
+  /* Split overview items into single columns on mobile and fix launch meet flex */
+  .overview-split-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  .flex-btn-container {
+    flex-wrap: wrap !important;
+  }
+
+  .flex-btn-container a, 
+  .flex-btn-container button {
+    flex: 1 1 100% !important;
+    text-align: center;
+  }
+
   /* Profile settings mobile styling improvements */
   .pd-row {
     flex-direction: column;
@@ -1746,6 +1846,15 @@
     font-size: 15px;
     font-weight: 600;
     word-break: break-all;
+  }
+
+  .rates-durations-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .profile-dossier-grid {
+    grid-template-columns: 1fr;
   }
 }
 

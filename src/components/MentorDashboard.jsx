@@ -411,8 +411,7 @@ export default function MentorDashboard({ onShowToast }) {
 
           <a
             href="/"
-            className="menu-item"
-            style={{ textDecoration: 'none', borderTop: '1px solid rgba(255,255,255,0.05)', marginTop: '16px', paddingTop: '16px' }}
+            className="menu-item back-to-website-item"
           >
             <svg viewBox="0 0 24 24" className="menu-icon" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             Back to Website
@@ -578,7 +577,7 @@ export default function MentorDashboard({ onShowToast }) {
                           </div>
                         )}
 
-                        <div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
+                        <div className="flex-btn-container" style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
                           <a
                             href={nextSession.data.meet_link || 'https://meet.google.com'}
                             target="_blank"
@@ -598,7 +597,7 @@ export default function MentorDashboard({ onShowToast }) {
                         </div>
                       </div>
                     ) : (
-                      <div style={{ padding: '48px 0', textPosition: 'center', color: '#9ca3af' }}>
+                      <div style={{ padding: '48px 0', textAlign: 'center', color: '#9ca3af' }}>
                         No upcoming sessions scheduled. Relax and update your settings!
                       </div>
                     )}
@@ -684,17 +683,13 @@ export default function MentorDashboard({ onShowToast }) {
                       return (
                         <div
                           key={b._id}
-                          className="glass-box"
+                          className="glass-box session-log-card"
                           style={{
                             padding: '24px',
-                            display: 'grid',
-                            gridTemplateColumns: '1fr auto',
-                            alignItems: 'center',
-                            gap: '24px',
                             borderLeft: stat === 'upcoming' || stat === 'live' ? '4px solid var(--rose)' : '1px solid var(--border-light)'
                           }}
                         >
-                          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                          <div className="session-log-card-left" style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                             <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
                               {b.data.email.charAt(0).toUpperCase()}
                             </div>
@@ -745,7 +740,7 @@ export default function MentorDashboard({ onShowToast }) {
                             </div>
                           </div>
 
-                          <div style={{ display: 'flex', gap: '10px' }}>
+                          <div className="session-log-card-actions">
                             <button
                               className="btn btn-secondary btn-sm"
                               onClick={() => setSelectedBooking(b)}
@@ -810,7 +805,7 @@ export default function MentorDashboard({ onShowToast }) {
                       )}
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '28px' }}>
+                    <div className="rates-durations-grid">
                       <div className="form-group">
                         <label style={{ display: 'block', fontSize: '13px', color: '#9ca3af', marginBottom: '8px', fontWeight: 'bold' }}>
                           {isFreeSession ? 'Session Rate' : 'Base Hourly Rate *'}
@@ -837,7 +832,7 @@ export default function MentorDashboard({ onShowToast }) {
 
                       <div className="form-group">
                         <label style={{ display: 'block', fontSize: '13px', color: '#9ca3af', marginBottom: '8px', fontWeight: 'bold' }}>Allowed Duration Options</label>
-                        <div style={{ display: 'flex', gap: '12px', marginTop: '6px' }}>
+                        <div style={{ display: 'flex', gap: '12px', marginTop: '6px', flexWrap: 'wrap' }}>
                           {ALL_DURS.map(dur => {
                             const isChecked = profileForm.durs.includes(dur);
                             return (
@@ -935,7 +930,7 @@ export default function MentorDashboard({ onShowToast }) {
                   <div className="glass-box" style={{ padding: '28px' }}>
                     <h3 style={{ margin: '0 0 24px', fontSize: '18px', fontFamily: 'Outfit' }}>Profile Dossier Details</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                      <div className="profile-dossier-grid">
                         <div className="form-group">
                           <label style={{ display: 'block', fontSize: '13px', color: '#9ca3af', marginBottom: '8px' }}>Professional Role / Designation *</label>
                           <input
@@ -961,7 +956,7 @@ export default function MentorDashboard({ onShowToast }) {
                         </div>
                       </div>
 
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                      <div className="profile-dossier-grid">
                         <div className="form-group">
                           <label style={{ display: 'block', fontSize: '13px', color: '#9ca3af', marginBottom: '8px' }}>Profile Photo URL</label>
                           <input
