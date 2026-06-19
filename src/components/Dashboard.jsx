@@ -612,18 +612,23 @@ export default function Dashboard({ onShowToast, onNavChange }) {
                       </div>
                     ) : (
                       <div className="ra-list">
-                        {bookings.slice(0, 3).map(b => (
-                          <div key={b._id} className="ra-item">
-                            <div className="ra-meta">
-                              <strong>Mentorship with {b.data.mentor}</strong>
-                              <span>{new Date(b.created_at || b.data.submitted_at || Date.now()).toLocaleDateString()}</span>
+                        {bookings.slice(0, 3).map(b => {
+                          const isFree = b.data.amount && (b.data.amount.toLowerCase().includes('free') || b.data.amount.trim() === '$0');
+                          return (
+                            <div key={b._id} className="ra-item">
+                              <div className="ra-meta">
+                                <strong>Mentorship with {b.data.mentor}</strong>
+                                <span>{new Date(b.created_at || b.data.submitted_at || Date.now()).toLocaleDateString()}</span>
+                              </div>
+                              <div className="ra-value">
+                                <span className="ra-amount">{b.data.amount}</span>
+                                <span className={`ra-status ${isFree ? 'free' : 'paid'}`}>
+                                  {isFree ? 'Free' : 'Paid'}
+                                </span>
+                              </div>
                             </div>
-                            <div className="ra-value">
-                              <span className="ra-amount">{b.data.amount}</span>
-                              <span className="ra-status">Paid</span>
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     )}
                   </div>
@@ -768,25 +773,30 @@ export default function Dashboard({ onShowToast, onNavChange }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {bookings.map(b => (
-                          <tr key={b._id}>
-                            <td>{new Date(b.created_at || b.data.submitted_at || Date.now()).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
-                            <td>
-                              <div className="invoice-desc-col">
-                                <strong>Mentorship with {b.data.mentor}</strong>
-                                <span>Session Invoice</span>
-                              </div>
-                            </td>
-                            <td>{fmtDate(b.data.date)} at {b.data.time}</td>
-                            <td className="monospace-ref" title={b.data.stripe_session_id || 'mock_checkout_session_id'}>
-                              {b.data.stripe_session_id ? b.data.stripe_session_id.substring(0, 16) + '...' : 'mock_invoice_id'}
-                            </td>
-                            <td>
-                              <span className="status-pill paid">Paid</span>
-                            </td>
-                            <td className="amount-col">{b.data.amount}</td>
-                          </tr>
-                        ))}
+                        {bookings.map(b => {
+                          const isFree = b.data.amount && (b.data.amount.toLowerCase().includes('free') || b.data.amount.trim() === '$0');
+                          return (
+                            <tr key={b._id}>
+                              <td>{new Date(b.created_at || b.data.submitted_at || Date.now()).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
+                              <td>
+                                <div className="invoice-desc-col">
+                                  <strong>Mentorship with {b.data.mentor}</strong>
+                                  <span>Session Invoice</span>
+                                </div>
+                              </td>
+                              <td>{fmtDate(b.data.date)} at {b.data.time}</td>
+                              <td className="monospace-ref" title={b.data.stripe_session_id || 'mock_checkout_session_id'}>
+                                {b.data.stripe_session_id ? b.data.stripe_session_id.substring(0, 16) + '...' : 'mock_invoice_id'}
+                              </td>
+                              <td>
+                                <span className={`status-pill ${isFree ? 'free' : 'paid'}`}>
+                                  {isFree ? 'Free' : 'Paid'}
+                                </span>
+                              </td>
+                              <td className="amount-col">{b.data.amount}</td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -830,10 +840,6 @@ export default function Dashboard({ onShowToast, onNavChange }) {
                       <strong className="val" style={{ color: '#4ade80', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <span className="status-dot-green"></span> Approved
                       </strong>
-                    </div>
-                    <div className="pd-row">
-                      <span className="lbl">Linked Provider</span>
-                      <strong className="val">Social Sign-In (Firebase)</strong>
                     </div>
                   </div>
                 </div>

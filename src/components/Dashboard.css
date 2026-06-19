@@ -1052,10 +1052,18 @@
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  color: #4ade80;
-  background: rgba(74, 222, 128, 0.1);
   padding: 2px 6px;
   border-radius: 6px;
+}
+
+.ra-status.paid {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+}
+
+.ra-status.free {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
 }
 
 /* ====================================================================
@@ -1320,6 +1328,11 @@
   background: rgba(74, 222, 128, 0.1);
 }
 
+.status-pill.free {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+}
+
 .amount-col {
   font-weight: 700;
   color: #4ade80;
@@ -1428,7 +1441,7 @@
     overflow: hidden;
   }
 
-  /* Fixed Top Bar on Mobile */
+  /* Fixed Top Bar on Mobile - Premium Glassmorphism */
   .portal-sidebar {
     position: fixed;
     top: 60px;
@@ -1439,13 +1452,14 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 0 16px;
+    padding: 0 20px;
     border-right: none;
-    border-bottom: 1px solid var(--border-light);
-    background: rgba(13, 8, 30, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(11, 7, 28, 0.82);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
     z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 
   .portal-layout.full-screen .portal-sidebar {
@@ -1454,21 +1468,27 @@
 
   .sidebar-brand {
     margin-bottom: 0;
-    gap: 8px;
+    gap: 10px;
   }
 
   .sb-logo {
     width: 32px;
     height: 32px;
     font-size: 16px;
+    box-shadow: 0 0 12px rgba(236, 72, 153, 0.4);
   }
 
   .sb-meta h3 {
-    font-size: 14.5px;
+    font-size: 15px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #ffffff, #d8b4fe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .sb-meta span {
     font-size: 9px;
+    letter-spacing: 0.8px;
   }
 
   /* Hide sidebar-user profile widget from top bar */
@@ -1476,7 +1496,7 @@
     display: none;
   }
 
-  /* Logout button as a top-right action icon */
+  /* Logout button as a top-right action icon - Circular Glass Icon Button */
   .sidebar-logout {
     display: flex !important;
     position: absolute !important;
@@ -1484,40 +1504,52 @@
     top: 50% !important;
     transform: translateY(-50%) !important;
     margin-top: 0 !important;
-    padding: 8px !important;
+    padding: 0 !important;
     font-size: 0 !important; /* Hide "Sign Out" text on mobile */
-    color: rgba(255, 255, 255, 0.7) !important;
-    background: none !important;
-    border: none !important;
-    width: auto !important;
+    color: #f87171 !important;
+    background: rgba(248, 113, 113, 0.08) !important;
+    border: 1px solid rgba(248, 113, 113, 0.2) !important;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    align-items: center !important;
+    justify-content: center !important;
     cursor: pointer !important;
+    transition: all 0.25s ease !important;
+  }
+
+  .sidebar-logout:active {
+    background: rgba(248, 113, 113, 0.2) !important;
+    transform: translateY(-50%) scale(0.95) !important;
   }
 
   .sidebar-logout .menu-icon {
     margin-right: 0 !important;
-    width: 20px !important;
-    height: 20px !important;
+    width: 16px !important;
+    height: 16px !important;
     stroke: #f87171 !important;
   }
 
-  /* Fixed Bottom Nav Bar on Mobile */
+  /* Fixed Bottom Nav Bar on Mobile - Premium Floating Island Tab Bar */
   .sidebar-menu {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 62px;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    height: 64px;
     flex-direction: row !important;
     justify-content: space-around;
     align-items: center;
-    background: rgba(13, 8, 30, 0.96);
-    backdrop-filter: blur(24px) saturate(190%);
-    -webkit-backdrop-filter: blur(24px) saturate(190%);
-    border-top: 1px solid var(--border-light);
-    padding: 0 8px;
+    background: rgba(15, 9, 36, 0.82) !important;
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 24px;
+    padding: 0 12px;
     margin-bottom: 0;
     z-index: 1000;
-    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 
+                0 0 20px rgba(147, 51, 234, 0.08);
   }
 
   .menu-item {
@@ -1527,57 +1559,80 @@
     align-items: center !important;
     justify-content: center !important;
     gap: 4px !important;
-    padding: 6px 0 !important;
-    font-size: 10px !important;
+    padding: 8px 0 !important;
+    font-size: 9.5px !important;
     font-weight: 600 !important;
-    color: rgba(255, 255, 255, 0.5) !important;
+    color: rgba(255, 255, 255, 0.45) !important;
     height: 100% !important;
-    border-radius: 0;
+    border-radius: 16px;
     background: none !important;
     box-shadow: none !important;
     width: auto;
     text-align: center;
+    transition: all 0.2s ease !important;
+  }
+
+  .menu-item:active {
+    transform: scale(0.92);
   }
 
   .menu-icon {
     width: 18px !important;
     height: 18px !important;
     stroke-width: 2 !important;
+    transition: transform 0.2s ease, stroke 0.2s ease;
   }
 
   .menu-item.active {
-    color: var(--rose) !important;
+    color: #ffffff !important;
   }
 
   .menu-item.active .menu-icon {
     stroke: var(--rose) !important;
+    transform: translateY(-2px);
+  }
+
+  /* Active Dot Indicator */
+  .menu-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    width: 4px;
+    height: 4px;
+    background: var(--rose);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--rose);
   }
 
   .menu-badge {
     position: absolute;
-    top: 4px;
-    right: 25%;
+    top: 6px;
+    right: 20%;
     margin-left: 0;
-    font-size: 8.5px;
-    padding: 1px 5px;
+    font-size: 8px;
+    padding: 1px 4px;
     pointer-events: none;
+    background: var(--rose);
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 6px var(--rose);
   }
 
   .sidebar-theme-toggle {
     display: none !important;
   }
 
-  /* Main Workspace Mobile adjustments */
+  /* Main Workspace Mobile adjustments - Extra padding for Floating Island Menu */
   .portal-main {
     margin-top: 64px;
-    margin-bottom: 62px;
+    margin-bottom: 96px;
     padding: 20px 16px 36px;
-    height: calc(100vh - 60px - 64px - 62px);
+    height: calc(100vh - 60px - 64px - 96px);
     box-sizing: border-box;
   }
 
   .portal-layout.full-screen .portal-main {
-    height: calc(100vh - 64px - 62px);
+    height: calc(100vh - 64px - 96px);
   }
 
   .ws-title-row {
@@ -1668,6 +1723,72 @@
   .ledger-table td {
     padding: 12px;
     font-size: 13px;
+  }
+
+  /* Session card mobile layout adjustments */
+  .sc-info-block {
+    padding: 16px 20px;
+    gap: 12px;
+  }
+
+  .sc-params {
+    gap: 16px;
+    padding: 10px 12px;
+    flex-wrap: wrap;
+  }
+
+  .sc-footer-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .sc-footer-actions > div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sc-footer-actions > div > * {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Next session widget actions vertical stacking */
+  .ns-actions {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .ns-actions > * {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Profile settings mobile styling improvements */
+  .pd-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 16px 20px;
+  }
+  
+  .pd-row .lbl {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    opacity: 0.7;
+  }
+
+  .pd-row .val {
+    font-size: 15px;
+    font-weight: 600;
+    word-break: break-all;
   }
 }
 
