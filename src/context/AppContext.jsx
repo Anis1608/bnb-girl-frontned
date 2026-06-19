@@ -339,6 +339,23 @@ export default function AppContextProvider({ children }) {
     return data;
   };
 
+  const loginMentorWithGoogle = async (idToken, email) => {
+    const res = await fetch(`${API_BASE}/api/mentor/google-login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken, email })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Google Login failed');
+    }
+    setMentorToken(data.token);
+    setMentorProfile(data.mentor);
+    localStorage.setItem('bbg_mentor_token', data.token);
+    localStorage.setItem('bbg_mentor_profile', JSON.stringify(data.mentor));
+    return data;
+  };
+
   const logoutMentor = () => {
     setMentorToken('');
     setMentorProfile(null);
@@ -405,6 +422,7 @@ export default function AppContextProvider({ children }) {
       mentorToken,
       mentorProfile,
       loginMentor,
+      loginMentorWithGoogle,
       logoutMentor,
       fetchMentorBookings,
       updateMentorProfile,

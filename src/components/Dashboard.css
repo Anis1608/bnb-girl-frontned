@@ -425,7 +425,9 @@
 }
 
 .sb-logo {
-  width: 38px;
+  width: auto;
+  min-width: 38px;
+  padding: 0 10px;
   height: 38px;
   border-radius: 10px;
   background: linear-gradient(135deg, #EC4899, #9333EA);
@@ -1555,9 +1557,11 @@
   }
 
   .sb-logo {
-    width: 32px;
+    width: auto;
+    min-width: 32px;
+    padding: 0 8px;
     height: 32px;
-    font-size: 16px;
+    font-size: 13px;
   }
 
   .sb-meta h3 {
