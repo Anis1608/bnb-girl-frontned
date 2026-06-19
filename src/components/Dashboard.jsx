@@ -46,6 +46,14 @@ export default function Dashboard({ onShowToast, onNavChange }) {
     }
   }, [userToken, location.search, navigate]);
 
+  // Set body background to portal background on mount
+  useEffect(() => {
+    document.body.style.backgroundColor = '#070412';
+    return () => {
+      document.body.style.backgroundColor = '';
+    };
+  }, []);
+
   // Fetch live slot availability during rescheduling
   useEffect(() => {
     if (reschedulingSession && rescheduleDate) {
