@@ -30,6 +30,8 @@ export default function MentorDashboard({ onShowToast }) {
   // Dashboard Section Navigation
   const [activeSection, setActiveSection] = useState('overview'); // 'overview', 'sessions', 'settings'
   const [sessionFilter, setSessionFilter] = useState('upcoming'); // 'upcoming', 'completed', 'all'
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('date-asc');
 
   // Booking details modal
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -232,6 +234,25 @@ export default function MentorDashboard({ onShowToast }) {
     }
   };
 
+  const getDayNum = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+      return new Date(dateStr + 'T00:00:00').getDate();
+    } catch (e) {
+      return '';
+    }
+  };
+
+  const getMonthAbbr = (dateStr) => {
+    if (!dateStr) return '';
+    try {
+      const MONS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+      return MONS[new Date(dateStr + 'T00:00:00').getMonth()];
+    } catch (e) {
+      return '';
+    }
+  };
+
   // Filter logic
   const now = new Date();
   const getSessionStatus = (b) => {
@@ -257,12 +278,35 @@ export default function MentorDashboard({ onShowToast }) {
     }
   };
 
-  const filteredBookings = bookings.filter(b => {
-    const status = getSessionStatus(b);
-    if (sessionFilter === 'upcoming') return status === 'upcoming' || status === 'live';
-    if (sessionFilter === 'completed') return status === 'completed';
-    return true;
-  });
+  const filteredBookings = bookings
+    .filter(b => {
+      // 1. Status Filter
+      const status = getSessionStatus(b);
+      let matchStatus = true;
+      if (sessionFilter === 'upcoming') matchStatus = (status === 'upcoming' || status === 'live');
+      else if (sessionFilter === 'completed') matchStatus = (status === 'completed');
+
+      // 2. Search Filter (by student email)
+      const matchSearch = searchQuery 
+        ? b.data?.email?.toLowerCase().includes(searchQuery.toLowerCase()) 
+        : true;
+
+      return matchStatus && matchSearch;
+    })
+    .sort((a, b) => {
+      // 3. Sorting Logic
+      if (sortBy === 'date-asc' || sortBy === 'date-desc') {
+        const dateA = new Date(`${a.data.date}T${a.data.time}`);
+        const dateB = new Date(`${b.data.date}T${b.data.time}`);
+        return sortBy === 'date-asc' ? dateA - dateB : dateB - dateA;
+      }
+      if (sortBy === 'amount-asc' || sortBy === 'amount-desc') {
+        const valA = parseInt(a.data.amount?.replace(/[^0-9]/g, '') || '0', 10);
+        const valB = parseInt(b.data.amount?.replace(/[^0-9]/g, '') || '0', 10);
+        return sortBy === 'amount-asc' ? valA - valB : valB - valA;
+      }
+      return 0;
+    });
 
   const totalSessions = bookings.length;
   const upcomingCount = bookings.filter(b => getSessionStatus(b) === 'upcoming' || getSessionStatus(b) === 'live').length;
@@ -592,7 +636,7 @@ export default function MentorDashboard({ onShowToast }) {
                             onClick={() => setSelectedBooking(nextSession)}
                             style={{ padding: '12px 20px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}
                           >
-                            Full Dossier
+                            Full Profile
                           </button>
                         </div>
                       </div>
@@ -633,7 +677,7 @@ export default function MentorDashboard({ onShowToast }) {
                         </span>
                         <div>
                           <strong style={{ fontSize: '14px', display: 'block' }}>Biography Active</strong>
-                          <span style={{ fontSize: '12px', color: '#9ca3af' }}>Dossier details present for directory display</span>
+                          <span style={{ fontSize: '12px', color: '#9ca3af' }}>Profile details present for directory display</span>
                         </div>
                       </div>
                     </div>
@@ -670,6 +714,55 @@ export default function MentorDashboard({ onShowToast }) {
                   </div>
                 </div>
 
+                {/* Search & Sort Controls */}
+                <div className="rates-durations-grid" style={{ gap: '16px', marginBottom: '24px', alignItems: 'center', gridTemplateColumns: '1fr auto' }}>
+                  {/* Search Bar */}
+                  <div style={{ position: 'relative', width: '100%' }}>
+                    <input
+                      type="text"
+                      placeholder="Search by student email..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px 10px 38px',
+                        background: 'rgba(11,8,25,0.6)',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        borderRadius: '10px',
+                        color: '#fff',
+                        fontSize: '13.5px',
+                        outline: 'none',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                    <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af', fontSize: '14px' }}>🔍</span>
+                  </div>
+
+                  {/* Sort Dropdown */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '13px', color: '#9ca3af', whiteSpace: 'nowrap' }}>Sort by:</span>
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      style={{
+                        padding: '10px 14px',
+                        background: 'rgba(11,8,25,0.6)',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        borderRadius: '10px',
+                        color: '#fff',
+                        fontSize: '13.5px',
+                        cursor: 'pointer',
+                        outline: 'none'
+                      }}
+                    >
+                      <option value="date-asc">Date (Oldest First)</option>
+                      <option value="date-desc">Date (Newest First)</option>
+                      <option value="amount-desc">Fee (Highest First)</option>
+                      <option value="amount-asc">Fee (Lowest First)</option>
+                    </select>
+                  </div>
+                </div>
+
                 {filteredBookings.length === 0 ? (
                   <div style={{ background: 'rgba(255,255,255,0.02)', padding: '64px', borderRadius: '20px', border: '1px solid var(--border-light)', textAlign: 'center', color: '#9ca3af' }}>
                     <span style={{ fontSize: '36px', display: 'block', marginBottom: '16px' }}>📅</span>
@@ -681,84 +774,85 @@ export default function MentorDashboard({ onShowToast }) {
                     {filteredBookings.map(b => {
                       const stat = getSessionStatus(b);
                       return (
-                        <div
-                          key={b._id}
-                          className="glass-box session-log-card"
-                          style={{
-                            padding: '24px',
-                            borderLeft: stat === 'upcoming' || stat === 'live' ? '4px solid var(--rose)' : '1px solid var(--border-light)'
-                          }}
-                        >
-                          <div className="session-log-card-left" style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-                              {b.data.email.charAt(0).toUpperCase()}
-                            </div>
-                            <div>
-                              <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '4px' }}>
-                                <h4 style={{ margin: 0, fontSize: '15.5px' }}>{b.data.email}</h4>
-                                <span style={{
-                                  fontSize: '11px',
-                                  padding: '2px 8px',
-                                  borderRadius: '20px',
-                                  fontWeight: 'bold',
-                                  textTransform: 'uppercase',
-                                  background: stat === 'upcoming' ? 'rgba(59,130,246,0.1)' : stat === 'live' ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.05)',
-                                  color: stat === 'upcoming' ? '#60a5fa' : stat === 'live' ? '#4ade80' : '#9ca3af'
-                                }}>
-                                  {stat}
-                                </span>
-                              </div>
-                              <div style={{ fontSize: '12.5px', color: '#9ca3af' }}>
-                                {fmtDate(b.data.date)} · {b.data.time} ({b.data.duration} mins) · Fee: {b.data.amount || 'N/A'}
-                              </div>
-                              {b.data.reschedule_request && b.data.reschedule_request.status === 'pending' && (
-                                <div style={{ marginTop: '12px', background: 'rgba(234,179,8,0.06)', borderLeft: '3px solid #EAB308', padding: '10px 14px', borderRadius: '4px', fontSize: '13px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                  <span style={{ color: '#EAB308', fontWeight: 'bold' }}>⚠️ Reschedule Requested by Student</span>
-                                  <span style={{ color: '#e5e7eb' }}>
-                                    Proposed New Schedule: <strong>{fmtDate(b.data.reschedule_request.date)} at {b.data.reschedule_request.time}</strong>
-                                  </span>
-                                  <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
-                                    <button
-                                      type="button"
-                                      onClick={() => handleRescheduleDecision(b._id, 'accept')}
-                                      disabled={processingRescheduleId === b._id}
-                                      style={{ padding: '4px 10px', fontSize: '11px', borderRadius: '4px', background: '#22c55e', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
-                                    >
-                                      {processingRescheduleId === b._id ? 'Processing...' : 'Accept Request'}
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() => handleRescheduleDecision(b._id, 'decline')}
-                                      disabled={processingRescheduleId === b._id}
-                                      style={{ padding: '4px 10px', fontSize: '11px', borderRadius: '4px', background: '#ef4444', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
-                                    >
-                                      Decline
-                                    </button>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
+                        <div key={b._id} className={`session-card-p${stat === 'upcoming' || stat === 'live' ? ' upcoming' : ' completed'}`}>
+                          <div className="sc-date-block">
+                            <span className="sc-month">{getMonthAbbr(b.data.date)}</span>
+                            <span className="sc-day">{getDayNum(b.data.date)}</span>
                           </div>
 
-                          <div className="session-log-card-actions">
-                            <button
-                              className="btn btn-secondary btn-sm"
-                              onClick={() => setSelectedBooking(b)}
-                              style={{ padding: '8px 16px', borderRadius: '8px', background: 'rgba(255,255,255,0.03)', color: '#fff', border: '1px solid rgba(255,255,255,0.08)' }}
-                            >
-                              Dossier
-                            </button>
-                            {(stat === 'upcoming' || stat === 'live') && (
-                              <a
-                                href={b.data.meet_link || 'https://meet.google.com'}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn btn-primary btn-sm"
-                                style={{ padding: '8px 16px', borderRadius: '8px', background: 'linear-gradient(135deg, #EC4899 0%, #9333EA 100%)', border: 'none', color: '#fff', fontWeight: 'bold', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}
-                              >
-                                Join Meet
-                              </a>
+                          <div className="sc-info-block">
+                            <div className="sc-mentor-meta">
+                              <h4>{b.data.email}</h4>
+                              <span className="sc-title">Student Profile</span>
+                            </div>
+
+                            <div className="sc-params">
+                              <div className="scp-i">
+                                <span>Time Slot</span>
+                                <strong>{b.data.time}</strong>
+                              </div>
+                              <div className="scp-i">
+                                <span>Duration</span>
+                                <strong>{b.data.duration} mins</strong>
+                              </div>
+                              <div className="scp-i">
+                                <span>Earned Fee</span>
+                                <strong>{b.data.amount || 'Free'}</strong>
+                              </div>
+                            </div>
+
+                            {b.data.reschedule_request && b.data.reschedule_request.status === 'pending' && (
+                              <div style={{ background: 'rgba(234,179,8,0.06)', borderLeft: '3px solid #EAB308', padding: '12px 16px', borderRadius: '8px', fontSize: '13px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                <span style={{ color: '#EAB308', fontWeight: 'bold' }}>⚠️ Reschedule Requested by Student</span>
+                                <span style={{ color: '#e5e7eb' }}>
+                                  Proposed New Schedule: <strong>{fmtDate(b.data.reschedule_request.date)} at {b.data.reschedule_request.time}</strong>
+                                </span>
+                                <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRescheduleDecision(b._id, 'accept')}
+                                    disabled={processingRescheduleId === b._id}
+                                    style={{ padding: '6px 12px', fontSize: '11px', borderRadius: '6px', background: '#22c55e', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+                                  >
+                                    {processingRescheduleId === b._id ? 'Processing...' : 'Accept Request'}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRescheduleDecision(b._id, 'decline')}
+                                    disabled={processingRescheduleId === b._id}
+                                    style={{ padding: '6px 12px', fontSize: '11px', borderRadius: '6px', background: '#ef4444', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+                                  >
+                                    Decline
+                                  </button>
+                                </div>
+                              </div>
                             )}
+
+                            <div className="sc-footer-actions">
+                              <span className={`sc-status-badge ${stat === 'upcoming' || stat === 'live' ? 'scheduled' : 'completed'}`}>
+                                {stat}
+                              </span>
+                              <div style={{ display: 'flex', gap: '8px' }}>
+                                <button
+                                  className="btn btn-secondary btn-sm"
+                                  onClick={() => setSelectedBooking(b)}
+                                  style={{ padding: '6px 12px', fontSize: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.03)', color: '#fff', cursor: 'pointer' }}
+                                >
+                                  Details
+                                </button>
+                                {(stat === 'upcoming' || stat === 'live') && (
+                                  <a
+                                    href={b.data.meet_link || 'https://meet.google.com'}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="sc-meet-btn"
+                                    style={{ padding: '6px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                                  >
+                                    Join Call
+                                  </a>
+                                )}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       );
@@ -928,7 +1022,7 @@ export default function MentorDashboard({ onShowToast }) {
 
                   {/* Profile Details */}
                   <div className="glass-box" style={{ padding: '28px' }}>
-                    <h3 style={{ margin: '0 0 24px', fontSize: '18px', fontFamily: 'Outfit' }}>Profile Dossier Details</h3>
+                    <h3 style={{ margin: '0 0 24px', fontSize: '18px', fontFamily: 'Outfit' }}>Profile Details</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                       <div className="profile-dossier-grid">
                         <div className="form-group">
@@ -1031,7 +1125,7 @@ export default function MentorDashboard({ onShowToast }) {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '24px' }}>
           <div className="glass-box" style={{ maxWidth: '560px', width: '100%', padding: '32px', background: '#0e0a24', border: '1px solid var(--border-light)', borderRadius: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ margin: 0, fontSize: '20px', fontFamily: 'Outfit' }}>Booking Dossier</h3>
+              <h3 style={{ margin: 0, fontSize: '20px', fontFamily: 'Outfit' }}>Booking Details</h3>
               <button
                 onClick={() => setSelectedBooking(null)}
                 style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '24px', cursor: 'pointer', padding: 0 }}
@@ -1114,7 +1208,7 @@ export default function MentorDashboard({ onShowToast }) {
                 onClick={() => setSelectedBooking(null)}
                 style={{ padding: '10px 20px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}
               >
-                Close Dossier
+                Close
               </button>
               {selectedBooking.data.meet_link && (
                 <a
