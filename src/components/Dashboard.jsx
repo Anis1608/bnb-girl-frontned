@@ -202,7 +202,19 @@ export default function Dashboard({ onShowToast, onNavChange }) {
       }
     } catch (err) {
       console.error(err);
-      setError(err.message || 'Google authentication failed.');
+      let errMsg = err.message || 'Google authentication failed.';
+      if (errMsg.includes('auth/popup-closed-by-user')) {
+        errMsg = 'The login popup was closed before completing sign-in. Please try again.';
+      } else if (errMsg.includes('auth/cancelled-popup-request')) {
+        errMsg = 'The authentication request was cancelled. Please try again.';
+      } else if (errMsg.includes('auth/popup-blocked')) {
+        errMsg = 'The login popup was blocked by your browser. Please allow popups for this site.';
+      } else if (errMsg.includes('auth/network-request-failed')) {
+        errMsg = 'A network error occurred. Please check your internet connection.';
+      } else if (errMsg.toLowerCase().includes('firebase')) {
+        errMsg = 'Google sign-in failed. Please try again or use your password credentials.';
+      }
+      setError(errMsg);
     } finally {
       setLoading(false);
     }
@@ -437,12 +449,19 @@ export default function Dashboard({ onShowToast, onNavChange }) {
 
       {/* Left Navigation Sidebar */}
       <aside className="portal-sidebar">
-        <div className="sidebar-brand">
-          <div className="sb-logo">B</div>
-          <div className="sb-meta">
-            <h3>BBG Portal</h3>
-            <span>Client Desk</span>
-          </div>
+        <div className="sidebar-brand" style={{ padding: '0 20px', gap: '10px', display: 'flex', alignItems: 'center' }}>
+          <img src="/logo-192x192.png" alt="BBG Logo" style={{ height: '36px', width: '36px', objectFit: 'contain', filter: 'drop-shadow(0 2px 6px rgba(147,51,234,0.3))' }} />
+          <span style={{
+            fontFamily: "'Outfit', sans-serif",
+            fontWeight: '900',
+            fontSize: '22px',
+            background: 'linear-gradient(135deg, #6B21A8 0%, #9333EA 25%, #EC4899 55%, #F97316 80%, #EAB308 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            letterSpacing: '-0.5px'
+          }}>
+            BBG Portal
+          </span>
         </div>
 
         <div className="sidebar-user">
