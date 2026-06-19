@@ -9,142 +9,9 @@ const MONS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oc
 const STRIPE_PK = (import.meta.env && import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY) || 'pk_test_YOUR_KEY';
 const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE) || 'http://localhost:5002';
 
-// Hardcoded mentors matching the ones from final mentorship.txt
-const STATIC_MENTORS = [
-  {
-    id: 'priya',
-    name: 'Priya Sharma',
-    role: 'Senior Product Manager · Google',
-    photo: '',
-    bio: "Ex-startup PM, now Senior PM at Google. I help women break into product and negotiate offers they're proud of.",
-    quote: '',
-    availability: 'Tomorrow',
-    cat_name: 'Technology',
-    expertise_areas: ['Career pivots', 'PM interviews', 'Negotiation'],
-    city: 'Mumbai',
-    hook: 'Helped 40+ women break into product roles at Google, Meta and Amazon.',
-    durs: ['30', '60'],
-    slots: ["09:00", "09:30", "10:00", "11:00", "11:30", "14:00", "14:30", "15:00", "16:00", "16:30"],
-    busy: ["11:00", "15:00"],
-    p30: '$20',
-    p60: '$36',
-    rating: '4.9',
-    sessions: '128',
-    resp: "Usually replies in ~2h",
-    lang: "English · Hindi"
-  },
-  {
-    id: 'vanya',
-    name: 'Vanya Mehta',
-    role: 'Founder & CEO · FinTech',
-    photo: '',
-    bio: "Raised $2M and scaled a fintech to 50k users. I demystify fundraising and early growth for women founders.",
-    quote: '',
-    availability: 'Fri',
-    cat_name: 'Finance',
-    expertise_areas: ['Fundraising', 'Startups', 'Growth'],
-    city: 'London',
-    hook: 'Raised $2M seed and scaled to 50,000 users in 18 months.',
-    durs: ['60'],
-    slots: ["09:00", "09:30", "10:30", "13:00", "13:30", "16:00", "16:30", "17:00"],
-    busy: ["09:30", "16:30"],
-    p60: '$36',
-    rating: '5.0',
-    sessions: '86',
-    resp: "Usually replies in ~1 day",
-    lang: "English"
-  },
-  {
-    id: 'pehal',
-    name: 'Pehal Kaur',
-    role: 'Corporate Lawyer',
-    photo: '',
-    bio: "Corporate lawyer who's closed contracts north of $1M. I guide women into legal leadership and sharper negotiation.",
-    quote: '',
-    availability: 'Today',
-    cat_name: 'Law',
-    expertise_areas: ['Contracts', 'Negotiation', 'Legal careers'],
-    city: 'Toronto',
-    hook: 'Negotiated 6 corporate contracts exceeding $1M each.',
-    durs: ['30', '60'],
-    slots: ["08:30", "09:00", "09:30", "11:00", "11:30", "15:00", "15:30", "16:00", "16:30"],
-    busy: ["09:00", "15:30"],
-    p30: '$20',
-    p60: '$36',
-    rating: '4.8',
-    sessions: '154',
-    resp: "Usually replies in ~3h",
-    lang: "English · Punjabi"
-  },
-  {
-    id: 'jane',
-    name: 'Jane Williams',
-    role: 'Marketing Director · Agency',
-    photo: '',
-    bio: "Marketing Director who grew a brand from zero to 2M. I help you find positioning that actually converts.",
-    quote: '',
-    availability: 'Mon',
-    cat_name: 'Business',
-    expertise_areas: ['Brand strategy', 'Content', 'Positioning'],
-    city: 'New York',
-    hook: 'Grew a brand from zero to 2M followers in 18 months.',
-    durs: ['60', '120'],
-    slots: ["10:00", "10:30", "11:00", "11:30", "13:00", "13:30", "15:00", "15:30"],
-    busy: ["11:30", "13:00"],
-    p60: '$36',
-    p120: '$65',
-    rating: '4.9',
-    sessions: '201',
-    resp: "Usually replies in ~1 day",
-    lang: "English"
-  },
-  {
-    id: 'erica',
-    name: 'Erica Thompson',
-    role: 'Healthcare Administrator',
-    photo: '',
-    bio: "Led 120 clinicians across four hospitals. I coach women navigating healthcare operations and leadership.",
-    quote: '',
-    availability: 'Today',
-    cat_name: 'Healthcare',
-    expertise_areas: ['Leadership', 'Operations', 'Strategy'],
-    city: 'Sydney',
-    hook: 'Led a team of 120 clinicians across 4 hospitals.',
-    durs: ['30'],
-    slots: ["07:00", "07:30", "08:00", "08:30", "12:00", "12:30", "13:00", "13:30"],
-    busy: ["07:30", "13:00"],
-    p30: '$20',
-    rating: '5.0',
-    sessions: '63',
-    resp: "Usually replies in ~4h",
-    lang: "English"
-  },
-  {
-    id: 'lucy',
-    name: 'Lucy Chen',
-    role: 'Software Engineer · Spotify',
-    photo: '',
-    bio: "Went bootcamp-to-Spotify in 14 months. I help career changers land their first real engineering role.",
-    quote: '',
-    availability: 'Wed',
-    cat_name: 'Technology',
-    expertise_areas: ['Bootcamp to job', 'Frontend', 'Interviews'],
-    city: 'Berlin',
-    hook: 'Went from a coding bootcamp to Spotify engineer in 14 months.',
-    durs: ['30', '60'],
-    slots: ["09:30", "10:00", "10:30", "14:00", "14:30", "15:00", "17:00", "17:30"],
-    busy: ["10:00", "15:00"],
-    p30: '$20',
-    p60: '$36',
-    rating: '4.7',
-    sessions: '97',
-    resp: "Usually replies in ~2h",
-    lang: "English · Mandarin"
-  }
-];
 
 export default function Mentorship({ onShowToast, onNavChange }) {
-  const { mentors: backendMentors, submitForm, userToken, userProfile } = useApp();
+  const { mentors: backendMentors, loading, submitForm, userToken, userProfile } = useApp();
   const navigate = useNavigate();
   const [mentorsList, setMentorsList] = useState([]);
   
@@ -267,9 +134,10 @@ export default function Mentorship({ onShowToast, onNavChange }) {
     if (backendMentors && backendMentors.length > 0) {
       setMentorsList(backendMentors.map(normalizeMentor));
     } else {
-      setMentorsList(STATIC_MENTORS);
+      setMentorsList([]);
     }
   }, [backendMentors]);
+
 
   // Handle Scroll reveal and parallax effect
   useEffect(() => {
@@ -643,6 +511,17 @@ export default function Mentorship({ onShowToast, onNavChange }) {
 
   return (
     <div className="mentorship-page-wrap">
+      <style>{`
+        .skeleton-box {
+          background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 37%, rgba(255, 255, 255, 0.05) 63%) !important;
+          background-size: 400% 100% !important;
+          animation: skeleton-loading 1.4s ease infinite !important;
+        }
+        @keyframes skeleton-loading {
+          0% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+      `}</style>
       {/* ===== HERO ===== */}
       <section className="hero">
         <div className="hero-bgwrap">
@@ -766,58 +645,86 @@ export default function Mentorship({ onShowToast, onNavChange }) {
           <div className="wrap">
             <div className="mentors-head">
               <h2 className="mentors-t rev">Meet your <em>mentors.</em></h2>
-              <div className="mentors-c rev"><b>{filteredMentors.length}</b> women ready to help you move forward</div>
+              <div className="mentors-c rev">
+                {loading ? (
+                  <span>Loading our verified mentors...</span>
+                ) : (
+                  <span><b>{filteredMentors.length}</b> women ready to help you move forward</span>
+                )}
+              </div>
               <a className="match-nudge rev" href="/find-your-path" onClick={(e) => { e.preventDefault(); onNavChange('quiz'); }}><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>Not sure who fits? Take the 2-min match</a>
             </div>
 
             <div className="grid">
-              {filteredMentors.map((mentor) => (
-                <article id={`mentor-card-${mentor.id}`} key={mentor.id} className="card rev" onClick={() => openSheet(mentor)}>
-                  <div className="card-top">
-                    <div className="ava" style={mentor.photo ? { backgroundImage: `url(${mentor.photo})` } : null}>
-                      {mentor.photo ? '' : mentor.init}
+              {loading ? (
+                Array.from({ length: 4 }).map((_, idx) => (
+                  <article key={idx} className="card" style={{ opacity: 0.6, pointerEvents: 'none' }}>
+                    <div className="card-top" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div className="skeleton-box" style={{ width: '56px', height: '56px', borderRadius: '50%' }}></div>
+                      <div style={{ flex: 1 }}>
+                        <div className="skeleton-box" style={{ height: '18px', width: '70%', marginBottom: '8px', borderRadius: '4px' }}></div>
+                        <div className="skeleton-box" style={{ height: '12px', width: '50%', borderRadius: '4px' }}></div>
+                      </div>
                     </div>
-                    <div className="card-id">
-                      <div className="card-nm">{mentor.name}</div>
-                      <div className="card-rl">{mentor.role}</div>
+                    <div className="skeleton-box" style={{ height: '14px', width: '40%', margin: '14px 0 8px', borderRadius: '4px' }}></div>
+                    <div className="skeleton-box" style={{ height: '36px', width: '100%', marginBottom: '14px', borderRadius: '4px' }}></div>
+                    <div style={{ display: 'flex', gap: '6px', marginBottom: '20px' }}>
+                      <div className="skeleton-box" style={{ height: '24px', width: '60px', borderRadius: '12px' }}></div>
+                      <div className="skeleton-box" style={{ height: '24px', width: '80px', borderRadius: '12px' }}></div>
                     </div>
-                    <div className="card-rt">
-                      <svg viewBox="0 0 24 24" className="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2" /></svg>
-                      <b>{mentor.rating}</b>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div className="skeleton-box" style={{ height: '16px', width: '100px', borderRadius: '4px' }}></div>
+                      <div className="skeleton-box" style={{ height: '36px', width: '120px', borderRadius: '8px' }}></div>
                     </div>
-                  </div>
-                  <div className="card-cat">{mentor.cat_name} · {mentor.city}</div>
-                  <p className="card-hk">{mentor.hook}</p>
-                  <div className="card-tg">
-                    {mentor.expertise_areas.map((tag, i) => (
-                      <span key={i} className="ch">{tag}</span>
-                    ))}
-                  </div>
-                  <div className="card-ft">
-                    <div className="card-mt">
-                      <span className="av-dot"><i></i>{mentor.availability}</span>
-                      <span className="card-pr">
-                        {mentor.p30 && <span className="pp">30 min · {mentor.p30}</span>}
-                        {mentor.p60 && <span className="pp">60 min · {mentor.p60}</span>}
-                      </span>
+                  </article>
+                ))
+              ) : filteredMentors.length > 0 ? (
+                filteredMentors.map((mentor) => (
+                  <article id={`mentor-card-${mentor.id}`} key={mentor.id} className="card rev" onClick={() => openSheet(mentor)}>
+                    <div className="card-top">
+                      <div className="ava" style={mentor.photo ? { backgroundImage: `url(${mentor.photo})` } : null}>
+                        {mentor.photo ? '' : mentor.init}
+                      </div>
+                      <div className="card-id">
+                        <div className="card-nm">{mentor.name}</div>
+                        <div className="card-rl">{mentor.role}</div>
+                      </div>
+                      <div className="card-rt">
+                        <svg viewBox="0 0 24 24" className="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2" /></svg>
+                        <b>{mentor.rating}</b>
+                      </div>
                     </div>
-                    <button
-                      className="bk"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openSheet(mentor);
-                      }}
-                    >
-                      <svg className="bk-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
-                      Book session
-                      <svg className="bk-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-                    </button>
-                  </div>
-                </article>
-              ))}
-
-              {filteredMentors.length === 0 && (
-                <div className="empty" style={{ display: 'block' }}>
+                    <div className="card-cat">{mentor.cat_name} · {mentor.city}</div>
+                    <p className="card-hk">{mentor.hook}</p>
+                    <div className="card-tg">
+                      {mentor.expertise_areas.map((tag, i) => (
+                        <span key={i} className="ch">{tag}</span>
+                      ))}
+                    </div>
+                    <div className="card-ft">
+                      <div className="card-mt">
+                        <span className="av-dot"><i></i>{mentor.availability}</span>
+                        <span className="card-pr">
+                          {mentor.p30 && <span className="pp">30 min · {mentor.p30}</span>}
+                          {mentor.p60 && <span className="pp">60 min · {mentor.p60}</span>}
+                        </span>
+                      </div>
+                      <button
+                        className="bk"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openSheet(mentor);
+                        }}
+                      >
+                        <svg className="bk-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
+                        Book session
+                        <svg className="bk-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                      </button>
+                    </div>
+                  </article>
+                ))
+              ) : (
+                <div className="empty" style={{ display: 'block', gridColumn: '1 / -1' }}>
                   <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></svg>
                   <h3>No mentors match that yet</h3>
                   <p>Try a different field or clear your search.</p>

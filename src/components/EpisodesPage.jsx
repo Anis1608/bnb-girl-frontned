@@ -2,369 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
-// Unified episodes dataset from episode.html
-export const EPS = {
-  maha: {
-    key: 'maha',
-    epNum: '52',
-    title: 'Identity, Reinvention & Building Yourself From the Ground Up',
-    meta: 'Maha Abouelenein · EP.52 · 48 MIN · Leadership',
-    ytId: 'wFqMkA-BYIU',
-    ytUrl: 'https://www.youtube.com/watch?v=wFqMkA-BYIU',
-    yt: 'wFqMkA-BYIU',
-    av: 'MA',
-    grad: 'linear-gradient(135deg,#6B21A8,#EC4899)',
-    name: 'Maha Abouelenein',
-    role: 'Global Communications Strategist & Author',
-    tags: ['Leadership', 'Business', 'Branding', 'Author'],
-    bio: 'Maha Abouelenein is a globally recognised communications expert with 25+ years experience at Netflix, Google, and the Dubai government. She is the author of "7 Rules of Self-Reliance" and an inspiring voice for women in leadership worldwide.',
-    highlights: 'A masterclass in resilience. Maha breaks down the exact mental shifts required to reinvent yourself without losing who you are.',
-    facts: [
-      { l: 'Based in', v: 'Dubai, UAE' },
-      { l: 'Episode', v: 'EP. 52 · Mar 2026' },
-      { l: 'Duration', v: '48 Minutes' },
-      { l: 'Industry', v: 'Communications' }
-    ],
-    link: 'https://www.mahaabouelenein.com',
-    dur: '48 MIN',
-    isNew: true,
-    prog: 0,
-    cat: 'leadership',
-    catL: 'Leadership',
-    subtopic: 'Founders',
-    popularity: 98,
-    ins: {
-      quote: '"The bravest thing I ever did was choose myself over the version of me others needed me to be."',
-      takeaways: ['Your identity is not your job title — it evolves across every chapter.', 'Reinvention takes more courage than staying comfortable.', 'Build genuine relationships before you need them.', 'Clarity about your values is your compass.', 'Storytelling is the most underrated business skill.'],
-      themes: ['Identity', 'Reinvention', 'Leadership', 'Communication'],
-      summary: 'A masterclass in resilience and intentional living from one of the world\'s top communications strategists.'
-    }
-  },
-  sara: {
-    key: 'sara',
-    epNum: '51',
-    title: 'Letting Go of Toxic Love, Standing in Your Worth & Ego Healing',
-    meta: 'Dr Sara Al Madani · EP.51 · 54 MIN · Health',
-    ytId: 'D7Q9p5P4Ofo',
-    ytUrl: 'https://www.youtube.com/watch?v=D7Q9p5P4Ofo',
-    yt: 'D7Q9p5P4Ofo',
-    av: 'SA',
-    grad: 'linear-gradient(135deg,#831843,#DB2777)',
-    name: 'Dr Sara Al Madani',
-    role: 'Entrepreneur · Author · Public Figure',
-    tags: ['Wellness', 'Self-Love', 'Entrepreneurship'],
-    bio: 'Dr Sara Al Madani is a multi-award winning Emirati entrepreneur, author, and television personality. She has built multiple businesses and is known for her raw honesty about love, self-worth, and healing.',
-    highlights: 'Raw, honest conversation about choosing yourself, setting boundaries in love, and the real work of ego healing.',
-    facts: [
-      { l: 'Based in', v: 'UAE' },
-      { l: 'Episode', v: 'EP. 51 · Feb 2026' },
-      { l: 'Duration', v: '54 Minutes' },
-      { l: 'Industry', v: 'Wellness & Business' }
-    ],
-    link: 'https://www.youtube.com/@SheenGurrib',
-    dur: '54 MIN',
-    isNew: true,
-    prog: 100,
-    cat: 'health',
-    catL: 'Health & Wellness',
-    subtopic: 'Wellness',
-    popularity: 95,
-    ins: {
-      quote: '"You cannot love someone into treating you right."',
-      takeaways: ['Toxic love often masquerades as passion — learn to tell the difference.', 'Self-worth is not arrogance — it is your foundation.', 'Boundaries are doors you choose who enters.', 'Ego healing starts with radical honesty about your own patterns.'],
-      themes: ['Toxic Relationships', 'Self-Worth', 'Ego Healing'],
-      summary: 'Raw, honest conversation about choosing yourself when love has let you down.'
-    }
-  },
-  saliha: {
-    key: 'saliha',
-    epNum: '50',
-    title: 'Avoiding Burnout & Listening to Your Inner Guide in the Digital Age',
-    meta: 'Dr Saliha Afridi · EP.50 · 47 MIN · Mental Health',
-    ytId: 'hBsZiXb9r8M',
-    ytUrl: 'https://www.youtube.com/watch?v=hBsZiXb9r8M',
-    yt: 'hBsZiXb9r8M',
-    av: 'SA',
-    grad: 'linear-gradient(135deg,#1E3A5F,#2563EB)',
-    name: 'Dr Saliha Afridi',
-    role: 'Clinical Psychologist · 20+ Years',
-    tags: ['Mental Health', 'Burnout', 'Psychology'],
-    bio: 'Dr Saliha Afridi is one of the UAE\'s most trusted clinical psychologists. She is the founder of The LightHouse Arabia and has worked with thousands of clients across stress, burnout, trauma, and identity.',
-    highlights: 'Clinical yet deeply human — Dr Saliha gives practical, science-backed tools for recognising and recovering from burnout.',
-    facts: [
-      { l: 'Based in', v: 'Dubai, UAE' },
-      { l: 'Episode', v: 'EP. 50 · Jan 2026' },
-      { l: 'Duration', v: '47 Minutes' },
-      { l: 'Industry', v: 'Psychology' }
-    ],
-    link: 'https://www.lighthousearabia.com',
-    dur: '47 MIN',
-    isNew: false,
-    prog: 65,
-    cat: 'health',
-    catL: 'Mental Health',
-    subtopic: 'Mental Health',
-    popularity: 92,
-    ins: {
-      quote: '"Rest is not a reward. Rest is the foundation."',
-      takeaways: ['Burnout is depletion of meaning, energy, and identity simultaneously.', 'Your body gives warning signs months before total burnout.', 'Rest is the foundation of sustainable output — not the finish line.', 'The digital world is designed to keep you addicted to busy.'],
-      themes: ['Burnout', 'Mental Health', 'Digital Wellness'],
-      summary: 'Clinical yet deeply human perspective on burnout, recovery, and building sustainable wellbeing.'
-    }
-  },
-  mehreen: {
-    key: 'mehreen',
-    epNum: '49',
-    title: 'Dual Cultural Identity, Authenticity & Making It in Media',
-    meta: 'Mehreen · EP.49 · 39 MIN · Arts & Media',
-    ytId: 'D41xKKwNPDw',
-    ytUrl: 'https://www.youtube.com/watch?v=D41xKKwNPDw',
-    yt: 'D41xKKwNPDw',
-    av: 'ME',
-    grad: 'linear-gradient(135deg,#4C1D95,#7C3AED)',
-    name: 'Mehreen',
-    role: 'Content Creator · Media Personality',
-    tags: ['Arts', 'Media', 'Identity'],
-    bio: 'Mehreen is a British-Pakistani content creator who has carved her own space in the digital media world, navigating the expectations of two cultures while staying fiercely authentic.',
-    highlights: 'A conversation about carving your own lane when two worlds pull you in different directions — and why authenticity always wins.',
-    facts: [
-      { l: 'Based in', v: 'London, UK' },
-      { l: 'Episode', v: 'EP. 49 · Dec 2025' },
-      { l: 'Duration', v: '39 Minutes' },
-      { l: 'Industry', v: 'Media & Content' }
-    ],
-    link: 'https://www.youtube.com/@SheenGurrib',
-    dur: '39 MIN',
-    isNew: false,
-    prog: 0,
-    cat: 'arts',
-    catL: 'Arts & Media',
-    subtopic: 'Social Media',
-    popularity: 88,
-    ins: {
-      quote: '"I stopped trying to be a bridge and started being proud of being both."',
-      takeaways: ['Authenticity is the only sustainable media strategy.', 'Dual cultural identity is a superpower, not a burden.', 'The right audience will find you — stop shrinking for the wrong one.'],
-      themes: ['Cultural Identity', 'Authenticity', 'Representation'],
-      summary: 'Finding your voice while navigating expectations of two cultures.'
-    }
-  },
-  amy: {
-    key: 'amy',
-    epNum: '48',
-    title: 'From Zero to Brand: The Real Journey of Building an Empire',
-    meta: 'Amy Roko · EP.48 · 43 MIN · Business',
-    ytId: 'UlZts1AgYGE',
-    ytUrl: 'https://www.youtube.com/watch?v=UlZts1AgYGE',
-    yt: 'UlZts1AgYGE',
-    av: 'AR',
-    grad: 'linear-gradient(135deg,#92400E,#D97706)',
-    name: 'Amy Roko',
-    role: 'Founder · Brand Builder',
-    tags: ['Business', 'Branding', 'Entrepreneurship'],
-    bio: 'Amy Roko built her brand empire from nothing but a laptop and relentless work ethic. She now advises some of the fastest-growing consumer brands in the world.',
-    highlights: 'No filters, no success theatre — just the real unglamorous work of building a brand from scratch and the lessons paid in full.',
-    facts: [
-      { l: 'Based in', v: 'New York, USA' },
-      { l: 'Episode', v: 'EP. 48 · Nov 2025' },
-      { l: 'Duration', v: '43 Minutes' },
-      { l: 'Industry', v: 'Branding' }
-    ],
-    link: 'https://www.youtube.com/@SheenGurrib',
-    dur: '43 MIN',
-    isNew: false,
-    prog: 45,
-    cat: 'business',
-    catL: 'Business',
-    subtopic: 'Branding',
-    popularity: 91,
-    ins: {
-      quote: '"I didn\'t wait until I was ready. I got ready by starting."',
-      takeaways: ['A brand is a promise, a feeling, and a relationship — not a logo.', 'Revenue is vanity. Profit is sanity. Cash flow is reality.', 'The first version of your brand should embarrass you slightly.'],
-      themes: ['Branding', 'Business'],
-      summary: 'The real, unglamorous journey of building a brand from zero.'
-    }
-  },
-  liz: {
-    key: 'liz',
-    epNum: '47',
-    title: 'Navigating Your Soft Girl Era & Protecting Your Peace',
-    meta: 'TheWizardLiz · EP.47 · 52 MIN · Mindset',
-    ytId: 'q1I77BC0BeA',
-    ytUrl: 'https://www.youtube.com/watch?v=q1I77BC0BeA',
-    yt: 'q1I77BC0BeA',
-    av: 'TL',
-    grad: 'linear-gradient(135deg,#1E1035,#7C3AED)',
-    name: 'TheWizardLiz',
-    role: 'Mindset Coach · 5M+ Followers',
-    tags: ['Mindset', 'Peace', 'Boundaries'],
-    bio: 'TheWizardLiz is a viral mindset creator with over 5 million followers across platforms. She is known for her unflinching approach to self-love, boundaries, and manifesting the life you actually want.',
-    highlights: 'Being soft is a power move — not weakness. Liz explains the whole soft girl era and why inner peace is the hardest flex.',
-    facts: [
-      { l: 'Based in', v: 'Netherlands' },
-      { l: 'Episode', v: 'EP. 47 · Oct 2025' },
-      { l: 'Duration', v: '52 Minutes' },
-      { l: 'Industry', v: 'Self-Development' }
-    ],
-    link: 'https://www.instagram.com/thewizardliz',
-    dur: '52 MIN',
-    isNew: false,
-    prog: 80,
-    cat: 'health',
-    catL: 'Mindset',
-    subtopic: 'Wellness',
-    popularity: 99,
-    ins: {
-      quote: '"Being soft is a choice for the strong."',
-      takeaways: ['Your soft girl era is choosing yourself — unapologetically.', 'You are not responsible for others\' reactions to your boundaries.', 'Peace is not given to you — it is built, defended, and maintained.'],
-      themes: ['Soft Life', 'Peace', 'Self-Love'],
-      summary: 'What the soft girl era really means and how to build unshakeable inner peace.'
-    }
-  },
-  lamide: {
-    key: 'lamide',
-    epNum: '46',
-    title: 'Building a Music Career on Your Own Terms: No Compromise',
-    meta: 'Lamide Elizabeth · EP.46 · 36 MIN · Music',
-    ytId: '2TENulPeqY0',
-    ytUrl: 'https://www.youtube.com/watch?v=2TENulPeqY0',
-    yt: '2TENulPeqY0',
-    av: 'LE',
-    grad: 'linear-gradient(135deg,#C2410C,#EA580C)',
-    name: 'Lamide Elizabeth',
-    role: 'Recording Artist · Songwriter',
-    tags: ['Music', 'Arts', 'Independence'],
-    bio: 'Lamide Elizabeth is an independently signed recording artist navigating the music industry on her own terms. Her refusal to compromise has become her greatest creative and commercial asset.',
-    highlights: 'They told her to change her sound. She changed her team instead. This is the blueprint for artistic integrity in the streaming age.',
-    facts: [
-      { l: 'Based in', v: 'Lagos, Nigeria' },
-      { l: 'Episode', v: 'EP. 46 · Sep 2025' },
-      { l: 'Duration', v: '36 Minutes' },
-      { l: 'Industry', v: 'Music' }
-    ],
-    link: 'https://www.youtube.com/@SheenGurrib',
-    dur: '36 MIN',
-    isNew: false,
-    prog: 20,
-    cat: 'arts',
-    catL: 'Music & Arts',
-    subtopic: 'Music',
-    popularity: 84,
-    ins: {
-      quote: '"They told me to change my sound. I changed my team instead."',
-      takeaways: ['Independent does not mean small — it means free.', 'Your artistic integrity is your most bankable asset.', 'Build your audience before you need the industry to notice you.'],
-      themes: ['Music', 'Artistic Integrity'],
-      summary: 'Navigating the music industry while refusing to dilute your artistry.'
-    }
-  },
-  hasia: {
-    key: 'hasia',
-    epNum: '45',
-    title: 'Skincare: The Good, The Bad & The Impact of Beauty Culture',
-    meta: 'Dr Hasia · EP.45 · 41 MIN · Health',
-    ytId: '',
-    ytUrl: 'https://www.youtube.com/@SheenGurrib',
-    yt: '',
-    av: 'DH',
-    grad: 'linear-gradient(135deg,#1E3A5F,#2563EB)',
-    name: 'Dr Hasia',
-    role: 'Dermatologist · Beauty Educator',
-    tags: ['Skincare', 'Dermatology', 'Beauty'],
-    bio: 'Dr Hasia is a board-certified dermatologist and one of the most trusted skin health educators in the Arab world. She is known for cutting through the noise of beauty culture with evidence-based guidance.',
-    highlights: 'Skincare doesn\'t need to be expensive or complicated. Dr Hasia breaks down what actually works — and what beauty culture is selling you.',
-    facts: [
-      { l: 'Based in', v: 'Dubai, UAE' },
-      { l: 'Episode', v: 'EP. 45 · Aug 2025' },
-      { l: 'Duration', v: '41 Minutes' },
-      { l: 'Industry', v: 'Dermatology' }
-    ],
-    link: 'https://www.youtube.com/@SheenGurrib',
-    dur: '41 MIN',
-    isNew: false,
-    prog: 55,
-    cat: 'health',
-    catL: 'Health & Beauty',
-    subtopic: 'Beauty & Skincare',
-    popularity: 86,
-    ins: {
-      quote: '"Healthy skin is about feeling at home in your own face."',
-      takeaways: ['Skincare needs to be consistent, not expensive.', 'SPF daily is the single most effective anti-ageing step.', 'Beauty culture profits from your insecurity — recognise this.'],
-      themes: ['Skincare', 'Beauty Culture'],
-      summary: 'Busting skincare myths and calling out toxic beauty culture with clinical authority.'
-    }
-  },
-  djbliss: {
-    key: 'djbliss',
-    epNum: '44',
-    title: 'Virality, Journalism & Building a Platform That Matters',
-    meta: 'DJ Bliss · EP.44 · 45 MIN · Media',
-    ytId: 'BBwiBAWBGVM',
-    ytUrl: 'https://www.youtube.com/watch?v=BBwiBAWBGVM',
-    yt: 'BBwiBAWBGVM',
-    av: 'DB',
-    grad: 'linear-gradient(135deg,#0E7490,#06B6D4)',
-    name: 'DJ Bliss',
-    role: 'DJ · Media Personality · Radio Host',
-    tags: ['Media', 'Tech', 'Journalism'],
-    bio: 'DJ Bliss is one of the Middle East\'s most recognisable media personalities, with two decades of experience building platforms that cut through the noise.',
-    highlights: 'Two decades of media wisdom: the difference between going viral and building something that actually lasts.',
-    facts: [
-      { l: 'Based in', v: 'Dubai, UAE' },
-      { l: 'Episode', v: 'EP. 44 · Jul 2025' },
-      { l: 'Duration', v: '45 Minutes' },
-      { l: 'Industry', v: 'Media' }
-    ],
-    link: 'https://www.youtube.com/@SheenGurrib',
-    dur: '45 MIN',
-    isNew: false,
-    prog: 10,
-    cat: 'tech',
-    catL: 'Media & Tech',
-    subtopic: 'Social Media',
-    popularity: 85,
-    ins: {
-      quote: '"Anyone can get attention. The skill is keeping it with something worth their time."',
-      takeaways: ['Viral gets views. Meaningful builds a following.', 'Restraint in the attention economy is a superpower.', 'Authenticity always outlasts the algorithm.'],
-      themes: ['Virality', 'Journalism', 'Integrity'],
-      summary: 'Two decades of media wisdom on building a platform with integrity.'
-    }
-  },
-  jet: {
-    key: 'jet',
-    epNum: '43',
-    title: 'How to Build a Business That Survives Every Season of Your Life',
-    meta: 'Jet Van Wijk · EP.43 · 38 MIN · Entrepreneurship',
-    ytId: '21xLnDWxgzI',
-    ytUrl: 'https://www.youtube.com/watch?v=21xLnDWxgzI',
-    yt: '21xLnDWxgzI',
-    av: 'JV',
-    grad: 'linear-gradient(135deg,#065F46,#059669)',
-    name: 'Jet Van Wijk',
-    role: 'Serial Entrepreneur · Investor',
-    tags: ['Entrepreneurship', 'Business', 'Resilience'],
-    bio: 'Jet Van Wijk is a South African serial entrepreneur and investor who has built, sold, and restructured multiple companies. Her philosophy: your business should serve your life, not consume it.',
-    highlights: 'The unsexy framework for building businesses that are resilient across economic cycles and personal life seasons.',
-    facts: [
-      { l: 'Based in', v: 'Cape Town, SA' },
-      { l: 'Episode', v: 'EP. 43 · Jun 2025' },
-      { l: 'Duration', v: '38 Minutes' },
-      { l: 'Industry', v: 'Investment' }
-    ],
-    link: 'https://www.youtube.com/@SheenGurrib',
-    dur: '38 MIN',
-    isNew: false,
-    prog: 0,
-    cat: 'business',
-    catL: 'Entrepreneurship',
-    subtopic: 'Entrepreneurship',
-    popularity: 90,
-    ins: {
-      quote: '"Never confuse your business with your identity."',
-      takeaways: ['A business should serve your life — not consume it.', 'Investors fund people first, ideas second.', 'Build for resilience before you build for scale.'],
-      themes: ['Resilience', 'Entrepreneurship'],
-      summary: 'Framework for building businesses resilient across economic and personal seasons.'
-    }
-  }
-};
+export const EPS = {};
+
 
 const SUBTOPICS = {
   all: [],
@@ -689,7 +328,7 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
 
   // Filter & sort database items
   const getFilteredEpisodes = () => {
-    let list = dbEpisodes.length > 0 ? dbEpisodes : Object.values(EPS);
+    let list = dbEpisodes || [];
 
     // Filter by Category
     if (selectedCategory !== 'all') {
@@ -733,8 +372,8 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
   const filteredList = getFilteredEpisodes();
   const displayedList = filteredList.slice(0, visibleCount);
 
-  const latestEpisode = dbEpisodes.length > 0 ? dbEpisodes[0] : EPS.maha;
-  const featuredEpisode = dbEpisodes.length > 0 ? (dbEpisodes.find(ep => ep.is_featured) || dbEpisodes[0]) : EPS.maha;
+  const latestEpisode = dbEpisodes.length > 0 ? dbEpisodes[0] : { title: 'Loading...', name: 'Guest', guest: 'Guest', epNum: '', n: '', thumb: '', ytId: '', yt: '', dur: '' };
+  const featuredEpisode = dbEpisodes.length > 0 ? (dbEpisodes.find(ep => ep.is_featured) || dbEpisodes[0]) : { title: 'Loading...', name: 'Guest', guest: 'Guest', epNum: '', n: '', bio: '', highlights: '', role: '', tags: [], thumb: '', ytId: '', yt: '', dur: '' };
 
   const getInitials = (name) => {
     if (!name) return 'B';
@@ -1016,6 +655,15 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
           0%   { box-shadow: 0 0 8px 2px #EC4899, 0 0 24px 8px #9333EA; }
           50%  { box-shadow: 0 0 26px 10px #EC4899, 0 0 60px 22px #9333EA; }
           100% { box-shadow: 0 0 8px 2px #EC4899, 0 0 24px 8px #9333EA; }
+        }
+        .skeleton-box {
+          background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 37%, rgba(255, 255, 255, 0.05) 63%) !important;
+          background-size: 400% 100% !important;
+          animation: skeleton-loading 1.4s ease infinite !important;
+        }
+        @keyframes skeleton-loading {
+          0% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
         }
       `}</style>
       {/* ── TICKER ── */}
@@ -1436,49 +1084,75 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
       <section className="featured">
         <div className="featured-inner">
           <div className="sec-label">⭐ Featured This Week</div>
-          <div className="featured-grid fade-up visible">
-            <div className="vid-frame" onClick={() => onOpenGuestModal(featuredEpisode)}>
-              <img className="vid-thumb" src={featuredEpisode.thumb || `https://i.ytimg.com/vi/${featuredEpisode.yt || featuredEpisode.ytId}/hqdefault.jpg`} alt={featuredEpisode.guest || featuredEpisode.name} />
-              <div className="vid-overlay"></div>
-              <div className="play-btn">
-                <div className="play-tri"></div>
-              </div>
-              <div className="ep-tag">▶ EP.{featuredEpisode.epNum || featuredEpisode.n} · {featuredEpisode.dur}</div>
-              {featuredEpisode.isNew && <div className="new-badge">NEW</div>}
-            </div>
-            <div className="feat-details">
-              <div className="feat-ep-num">EP. {featuredEpisode.epNum || featuredEpisode.n} · {featuredEpisode.category_name || featuredEpisode.cat}</div>
-              <h2 className="feat-title">{featuredEpisode.title}</h2>
-              <div className="guest-row" style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '14px 0' }}>
-                <div className="g-avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', background: featuredEpisode.grad || 'linear-gradient(135deg,#6B21A8,#EC4899)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-d)', fontWeight: 800, fontSize: '.9rem' }}>{featuredEpisode.av || getInitials(featuredEpisode.name || featuredEpisode.guest)}</div>
-                <div>
-                  <div className="g-name" style={{ fontWeight: 700, fontSize: '.95rem' }}>{featuredEpisode.name || featuredEpisode.guest}</div>
-                  <div className="g-role" style={{ fontSize: '.76rem', color: 'var(--grey-text)' }}>{featuredEpisode.role}</div>
+          {loading ? (
+            <div className="featured-grid fade-up visible" style={{ opacity: 0.6, pointerEvents: 'none' }}>
+              <div className="vid-frame skeleton-box" style={{ minHeight: '340px', borderRadius: '16px' }}></div>
+              <div className="feat-details">
+                <div className="skeleton-box" style={{ height: '14px', width: '30%', marginBottom: '16px', borderRadius: '4px' }}></div>
+                <div className="skeleton-box" style={{ height: '32px', width: '80%', marginBottom: '20px', borderRadius: '4px' }}></div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '14px 0' }}>
+                  <div className="skeleton-box" style={{ width: '42px', height: '42px', borderRadius: '50%' }}></div>
+                  <div style={{ flex: 1 }}>
+                    <div className="skeleton-box" style={{ height: '16px', width: '50%', marginBottom: '6px', borderRadius: '4px' }}></div>
+                    <div className="skeleton-box" style={{ height: '12px', width: '30%', borderRadius: '4px' }}></div>
+                  </div>
+                </div>
+                <div className="skeleton-box" style={{ height: '60px', width: '100%', marginBottom: '20px', borderRadius: '4px' }}></div>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <div className="skeleton-box" style={{ height: '40px', width: '150px', borderRadius: '12px' }}></div>
+                  <div className="skeleton-box" style={{ height: '40px', width: '150px', borderRadius: '12px' }}></div>
                 </div>
               </div>
-              <div style={{ marginBottom: '14px' }}>
-                {featuredEpisode.tags && featuredEpisode.tags.slice(0, 3).map((tag, i) => (
-                  <span key={i} className="ind-pill" style={{ display: 'inline-block', background: 'rgba(147,51,234,.08)', color: 'var(--purple-deep)', padding: '4px 10px', borderRadius: '20px', fontSize: '.7rem', fontWeight: 600, marginRight: '6px', textTransform: 'capitalize' }}>{tag}</span>
-                ))}
+            </div>
+          ) : dbEpisodes.length > 0 ? (
+            <div className="featured-grid fade-up visible">
+              <div className="vid-frame" onClick={() => onOpenGuestModal(featuredEpisode)}>
+                <img className="vid-thumb" src={featuredEpisode.thumb || `https://i.ytimg.com/vi/${featuredEpisode.yt || featuredEpisode.ytId}/hqdefault.jpg`} alt={featuredEpisode.guest || featuredEpisode.name} />
+                <div className="vid-overlay"></div>
+                <div className="play-btn">
+                  <div className="play-tri"></div>
+                </div>
+                <div className="ep-tag">▶ EP.{featuredEpisode.epNum || featuredEpisode.n} · {featuredEpisode.dur}</div>
+                {featuredEpisode.isNew && <div className="new-badge">NEW</div>}
               </div>
-              <p className="feat-desc" style={{ fontSize: '.88rem', color: 'var(--grey-text)', lineHeight: 1.6, marginBottom: '20px' }}>{featuredEpisode.highlights || featuredEpisode.bio}</p>
-              <div className="feat-actions" style={{ display: 'flex', gap: '10px' }}>
-                <button className="btn-p" onClick={() => onOpenGuestModal(featuredEpisode)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--bk)', color: '#fff', padding: '12px 24px', borderRadius: '12px', fontSize: '.78rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', textTransform: 'uppercase', cursor: 'pointer' }}>
-                  <svg width="12" height="12" fill="white" viewBox="0 0 24 24">
-                    <polygon points="5 3 19 12 5 21" />
-                  </svg>
-                  Watch &amp; Listen
-                </button>
-                <button className="btn-audio" onClick={() => onOpenAudioPlayer(featuredEpisode)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', border: '1.5px solid rgba(0,0,0,.15)', background: '#fff', color: 'var(--bk)', padding: '12px 24px', borderRadius: '12px', fontSize: '.78rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', textTransform: 'uppercase', cursor: 'pointer' }}>
-                  <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
-                    <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
-                  </svg>
-                  Audio Only
-                </button>
+              <div className="feat-details">
+                <div className="feat-ep-num">EP. {featuredEpisode.epNum || featuredEpisode.n} · {featuredEpisode.category_name || featuredEpisode.cat}</div>
+                <h2 className="feat-title">{featuredEpisode.title}</h2>
+                <div className="guest-row" style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '14px 0' }}>
+                  <div className="g-avatar" style={{ width: '42px', height: '42px', borderRadius: '50%', background: featuredEpisode.grad || 'linear-gradient(135deg,#6B21A8,#EC4899)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-d)', fontWeight: 800, fontSize: '.9rem' }}>{featuredEpisode.av || getInitials(featuredEpisode.name || featuredEpisode.guest)}</div>
+                  <div>
+                    <div className="g-name" style={{ fontWeight: 700, fontSize: '.95rem' }}>{featuredEpisode.name || featuredEpisode.guest}</div>
+                    <div className="g-role" style={{ fontSize: '.76rem', color: 'var(--grey-text)' }}>{featuredEpisode.role}</div>
+                  </div>
+                </div>
+                <div style={{ marginBottom: '14px' }}>
+                  {featuredEpisode.tags && featuredEpisode.tags.slice(0, 3).map((tag, i) => (
+                    <span key={i} className="ind-pill" style={{ display: 'inline-block', background: 'rgba(147,51,234,.08)', color: 'var(--purple-deep)', padding: '4px 10px', borderRadius: '20px', fontSize: '.7rem', fontWeight: 600, marginRight: '6px', textTransform: 'capitalize' }}>{tag}</span>
+                  ))}
+                </div>
+                <p className="feat-desc" style={{ fontSize: '.88rem', color: 'var(--grey-text)', lineHeight: 1.6, marginBottom: '20px' }}>{featuredEpisode.highlights || featuredEpisode.bio}</p>
+                <div className="feat-actions" style={{ display: 'flex', gap: '10px' }}>
+                  <button className="btn-p" onClick={() => onOpenGuestModal(featuredEpisode)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--bk)', color: '#fff', padding: '12px 24px', borderRadius: '12px', fontSize: '.78rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', textTransform: 'uppercase', cursor: 'pointer' }}>
+                    <svg width="12" height="12" fill="white" viewBox="0 0 24 24">
+                      <polygon points="5 3 19 12 5 21" />
+                    </svg>
+                    Watch &amp; Listen
+                  </button>
+                  <button className="btn-audio" onClick={() => onOpenAudioPlayer(featuredEpisode)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', border: '1.5px solid rgba(0,0,0,.15)', background: '#fff', color: 'var(--bk)', padding: '12px 24px', borderRadius: '12px', fontSize: '.78rem', fontWeight: 700, fontFamily: 'Syne, sans-serif', textTransform: 'uppercase', cursor: 'pointer' }}>
+                    <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                      <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+                    </svg>
+                    Audio Only
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div style={{ padding: '40px 0', textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
+              No episodes available right now.
+            </div>
+          )}
         </div>
       </section>
 
@@ -1491,63 +1165,87 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
           </div>
 
           <div className="ep-grid">
-            {displayedList.map((ep) => {
-              const epKey = ep.key || ep.id || ep._id;
-              const isHighlighted = false; // highlight done via direct DOM style
-              return (
-              <div
-                key={epKey}
-                id={`ep-card-${epKey}`}
-                className="ep-card fade-up visible"
-              >
-                <div className="card-thumb" onClick={() => onOpenGuestModal(ep)}>
-                  <img src={ep.ytId ? `https://i.ytimg.com/vi/${ep.ytId}/hqdefault.jpg` : 'https://placehold.co/400x225/1E3A5F/ffffff?text=Podcast'} alt={ep.name} />
-                  <div className="thumb-ov"></div>
-                  <div className="thumb-play">
-                    <div className="thumb-play-tri"></div>
-                  </div>
-                  <div className="card-cat">{ep.catL}</div>
-                  {ep.isNew && <div className="card-new">NEW</div>}
-                  {isHighlighted && (
-                    <div style={{
-                      position: 'absolute', inset: 0, borderRadius: 'inherit',
-                      background: 'linear-gradient(135deg, rgba(147,51,234,0.18), rgba(236,72,153,0.12))',
-                      pointerEvents: 'none', zIndex: 3
-                    }} />
-                  )}
-                </div>
-                <span className="card-accent" style={{ background: ep.grad }}></span>
-                <div className="card-body">
-                  <div className="card-ep-meta">
-                    <span>EP. {ep.epNum}</span>
-                    <span>·</span>
-                    <span>{ep.dur}</span>
-                  </div>
-                  <div className="card-title">{ep.title}</div>
-                  <div className="card-guest">
-                    <div className="card-av" style={{ background: ep.grad }}>{ep.av}</div>
-                    <div>
-                      <div className="card-g-name">{ep.name}</div>
-                      <div className="card-g-role">{ep.role && ep.role.split('·')[0]}</div>
+            {loading ? (
+              Array.from({ length: 6 }).map((_, idx) => (
+                <div key={idx} className="ep-card" style={{ opacity: 0.6, pointerEvents: 'none' }}>
+                  <div className="card-thumb skeleton-box" style={{ height: '200px', width: '100%', borderRadius: '12px' }}></div>
+                  <div className="card-body" style={{ padding: '20px' }}>
+                    <div className="skeleton-box" style={{ height: '14px', width: '40%', marginBottom: '12px', borderRadius: '4px' }}></div>
+                    <div className="skeleton-box" style={{ height: '20px', width: '80%', marginBottom: '16px', borderRadius: '4px' }}></div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div className="skeleton-box" style={{ width: '32px', height: '32px', borderRadius: '50%' }}></div>
+                      <div style={{ flex: 1 }}>
+                        <div className="skeleton-box" style={{ height: '12px', width: '60%', marginBottom: '6px', borderRadius: '4px' }}></div>
+                        <div className="skeleton-box" style={{ height: '10px', width: '40%', borderRadius: '4px' }}></div>
+                      </div>
                     </div>
                   </div>
-                  {ep.prog > 0 && (
-                    <div className="card-prog-track">
-                      <div className="card-prog-fill" style={{ width: `${ep.prog}%` }}></div>
+                </div>
+              ))
+            ) : displayedList.length > 0 ? (
+              displayedList.map((ep) => {
+                const epKey = ep.key || ep.id || ep._id;
+                const isHighlighted = false; // highlight done via direct DOM style
+                return (
+                <div
+                  key={epKey}
+                  id={`ep-card-${epKey}`}
+                  className="ep-card fade-up visible"
+                >
+                  <div className="card-thumb" onClick={() => onOpenGuestModal(ep)}>
+                    <img src={ep.thumb || `https://i.ytimg.com/vi/${ep.ytId}/hqdefault.jpg`} alt={ep.name} />
+                    <div className="thumb-ov"></div>
+                    <div className="thumb-play">
+                      <div className="thumb-play-tri"></div>
                     </div>
-                  )}
-                  <div className="card-actions">
-                    <button className="cbtn cbtn-play" onClick={() => onOpenGuestModal(ep)}>▶ Play</button>
-                    <button className="cbtn cbtn-ins" onClick={() => onOpenGuestModal(ep)}>✦ Insights</button>
-                    <button className="cbtn cbtn-aud" onClick={() => onOpenAudioPlayer(ep)}>🎧</button>
+                    <div className="card-cat">{ep.catL}</div>
+                    {ep.isNew && <div className="card-new">NEW</div>}
+                    {isHighlighted && (
+                      <div style={{
+                        position: 'absolute', inset: 0, borderRadius: 'inherit',
+                        background: 'linear-gradient(135deg, rgba(147,51,234,0.18), rgba(236,72,153,0.12))',
+                        pointerEvents: 'none', zIndex: 3
+                      }} />
+                    )}
+                  </div>
+                  <span className="card-accent" style={{ background: ep.grad }}></span>
+                  <div className="card-body">
+                    <div className="card-ep-meta">
+                      <span>EP. {ep.epNum}</span>
+                      <span>·</span>
+                      <span>{ep.dur}</span>
+                    </div>
+                    <div className="card-title">{ep.title}</div>
+                    <div className="card-guest">
+                      <div className="card-av" style={{ background: ep.grad }}>{ep.av || getInitials(ep.name || ep.guest)}</div>
+                      <div>
+                        <div className="card-g-name">{ep.name}</div>
+                        <div className="card-g-role">{ep.role && ep.role.split('·')[0]}</div>
+                      </div>
+                    </div>
+                    {ep.prog > 0 && (
+                      <div className="card-prog-track">
+                        <div className="card-prog-fill" style={{ width: `${ep.prog}%` }}></div>
+                      </div>
+                    )}
+                    <div className="card-actions">
+                      <button className="cbtn cbtn-play" onClick={() => onOpenGuestModal(ep)}>▶ Play</button>
+                      <button className="cbtn cbtn-ins" onClick={() => onOpenGuestModal(ep)}>✦ Insights</button>
+                      <button className="cbtn cbtn-aud" onClick={() => onOpenAudioPlayer(ep)}>🎧</button>
+                    </div>
                   </div>
                 </div>
+                );
+              })
+            ) : (
+              <div style={{ gridColumn: '1 / -1', padding: '60px 20px', textAlign: 'center', color: 'rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px dashed rgba(255,255,255,0.1)' }}>
+                <h3>No episodes found</h3>
+                <p>Try resetting filters or searching another keyword.</p>
               </div>
-              );
-            })}
+            )}
 
             {/* Coming Soon cards */}
-            {selectedCategory === 'all' && (
+            {!loading && selectedCategory === 'all' && (
               <>
                 <div className="ep-card coming-soon-card">
                   <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>⚖️</div>

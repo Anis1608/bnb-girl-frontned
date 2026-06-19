@@ -1,92 +1,8 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 
-// Data from resources.html
-const FIELDS = [
-  {
-    id: 'stem', emoji: '🔬', name: 'Women in STEM', sub: 'Biology · Engineering · Computer Science · Data Science · Mathematics',
-    color: '#065F46', subfields: ['All', 'Biology', 'Engineering', 'Computer Science', 'Data Science', 'Mathematics'],
-    resources: [
-      { type: 'pdf', icon: '🎓', title: "Girls' Education Career Playbook", desc: 'Key insights, action steps and reflection prompts from EP. 01 with Dr. Sheen Gurrib.', pages: 12, ep: 'EP. 01', bg: 'linear-gradient(135deg,#3B0764,#7C3AED,#EC4899)', tags: ['education', 'stem', 'sheen', 'oxford'] },
-      { type: 'toolkit', icon: '💻', title: 'Women in Tech Interview Prep Kit', desc: '50 interview questions, STAR templates and confidence frameworks from our STEM guests.', pages: 18, ep: 'STEM Series', bg: 'linear-gradient(135deg,#022C22,#065F46,#34D399)', tags: ['tech', 'interview', 'coding', 'stem'] },
-      { type: 'guide', icon: '🔭', title: 'Breaking Into STEM — A Roadmap', desc: 'Step-by-step guide to entering science, technology, engineering or maths careers from scratch.', pages: 14, ep: 'STEM Series', bg: 'linear-gradient(135deg,#0C4A6E,#0369A1,#38BDF8)', tags: ['stem', 'career', 'guide', 'roadmap'] },
-      { type: 'template', icon: '📋', title: 'STEM Graduate CV Template', desc: 'ATS-friendly CV template designed for STEM graduates — with a guided example and tips.', pages: 4, ep: 'All Episodes', bg: 'linear-gradient(135deg,#1E1B4B,#4338CA,#818CF8)', tags: ['cv', 'resume', 'template', 'stem'] },
-      { type: 'reading', icon: '📖', title: 'STEM Reading List — Recommended by Guests', desc: 'Books, podcasts and online courses curated by every STEM guest who\'s appeared on BBG.', pages: 8, ep: 'All Episodes', bg: 'linear-gradient(135deg,#134E4A,#0F766E,#2DD4BF)', tags: ['books', 'reading', 'stem', 'learning'] },
-      { type: 'salary', icon: '📊', title: 'Women in Tech Salary Report 2025', desc: 'Real salary data for software, data, engineering and science roles across UK, US and India.', pages: 20, ep: 'Research', bg: 'linear-gradient(135deg,#082F49,#0369A1,#38BDF8)', tags: ['salary', 'tech', 'finance', 'data'] },
-    ]
-  },
-  {
-    id: 'business', emoji: '🚀', name: 'Entrepreneurship & Business', sub: 'Startups · Social Enterprise · Leadership · E-commerce · Branding',
-    color: '#92400E', subfields: ['All', 'Startups', 'Social Enterprise', 'Leadership', 'E-commerce', 'Branding'],
-    resources: [
-      { type: 'pdf', icon: '🚀', title: "Side Hustle to Global Brand — EP. 02 Insights", desc: 'Complete breakdown of Dr. Sheen\'s entrepreneurship episode: mindset shifts, key frameworks, and the 5 mistakes to avoid.', pages: 10, ep: 'EP. 02', bg: 'linear-gradient(135deg,#451A03,#B45309,#F59E0B)', tags: ['entrepreneurship', 'brand', 'startup', 'business'] },
-      { type: 'guide', icon: '💡', title: 'Starting From Zero — The Founder\'s Guide', desc: 'A practical step-by-step framework for validating your business idea before quitting your day job.', pages: 16, ep: 'Business Series', bg: 'linear-gradient(135deg,#78350F,#D97706,#FCD34D)', tags: ['founder', 'startup', 'idea', 'business'] },
-      { type: 'template', icon: '📊', title: 'Pitch Deck Template for Women Founders', desc: '10-slide investor pitch deck framework with a guided example, metrics guide, and storytelling tips.', pages: 22, ep: 'Entrepreneurship Series', bg: 'linear-gradient(135deg,#3F1505,#C2410C,#FB923C)', tags: ['pitch', 'investor', 'deck', 'template'] },
-      { type: 'worksheet', icon: '📓', title: 'Business Model Canvas — Fillable Workbook', desc: 'Interactive workbook version of the Business Model Canvas with reflection questions for each block.', pages: 8, ep: 'Business Series', bg: 'linear-gradient(135deg,#1C1917,#57534E,#D6D3D1)', tags: ['business model', 'canvas', 'workbook', 'planning'] },
-      { type: 'reading', icon: '📚', title: 'Entrepreneur Reading List — Books That Changed Our Guests\' Lives', desc: 'Books hand-picked by every entrepreneurial guest who has appeared on BBG — with a note on why each book mattered.', pages: 6, ep: 'All Episodes', bg: 'linear-gradient(135deg,#713F12,#CA8A04,#FEF08A)', tags: ['books', 'reading', 'entrepreneurship', 'founder'] },
-      { type: 'toolkit', icon: '🧰', title: 'The BBG Leadership Toolkit', desc: 'Self-assessment, values mapping, and communication style guide for aspiring leaders.', pages: 14, ep: 'Leadership Series', bg: 'linear-gradient(135deg,#312E81,#4338CA,#818CF8)', tags: ['leadership', 'toolkit', 'management', 'skills'] },
-    ]
-  },
-  {
-    id: 'law', emoji: '⚖️', name: 'Law & Justice', sub: 'Corporate Law · Criminal Law · Human Rights · International Law · Family Law',
-    color: '#312E81', subfields: ['All', 'Corporate', 'Criminal', 'Human Rights', 'International', 'Family'],
-    resources: [
-      { type: 'guide', icon: '⚖️', title: 'How to Become a Lawyer — The Complete Guide', desc: 'Law school applications, bar exam prep, and the different routes into practice across UK, US and India.', pages: 18, ep: 'Law Series', bg: 'linear-gradient(135deg,#1E1B4B,#3730A3,#6366F1)', tags: ['law', 'lawyer', 'guide', 'career'] },
-      { type: 'template', icon: '📝', title: 'Law School Personal Statement Template', desc: 'A structured template with prompts and real examples to help you write a compelling law school application.', pages: 6, ep: 'Law Series', bg: 'linear-gradient(135deg,#0D0B2A,#1E1B4B,#4338CA)', tags: ['law school', 'template', 'application', 'personal statement'] },
-      { type: 'worksheet', icon: '📓', title: 'Legal Career Self-Assessment Workbook', desc: 'Find which area of law suits your personality, strengths and values — with a guided 30-day action plan.', pages: 10, ep: 'Law Series', bg: 'linear-gradient(135deg,#2E1065,#6B21A8,#A855F7)', tags: ['law', 'self-assessment', 'career', 'workbook'] },
-      { type: 'reading', icon: '📚', title: 'Law Reading List — Recommended by Guests', desc: 'Essential law books, podcasts and documentaries curated by every legal professional who\'s appeared on BBG.', pages: 5, ep: 'All Episodes', bg: 'linear-gradient(135deg,#1E1B4B,#4338CA,#818CF8)', tags: ['law', 'books', 'reading', 'legal'] },
-    ]
-  },
-  {
-    id: 'mental', emoji: '🌸', name: 'Mental Health & Wellbeing', sub: 'Work-Life Balance · Burnout Prevention · Mindfulness · Self-Compassion',
-    color: '#831843', subfields: ['All', 'Burnout', 'Mindfulness', 'Work-Life Balance', 'Self-Compassion'],
-    resources: [
-      { type: 'pdf', icon: '🌸', title: 'Mental Health & Career — EP. 03 Insights', desc: 'Key insights on managing mental health while building a career, from our dedicated Mental Health & Career episode.', pages: 9, ep: 'EP. 03', bg: 'linear-gradient(135deg,#500724,#BE185D,#F472B6)', tags: ['mental health', 'wellbeing', 'career', 'burnout'] },
-      { type: 'worksheet', icon: '📓', title: 'Burnout Self-Assessment & Recovery Workbook', desc: 'A 30-question burnout assessment, a 4-week recovery plan, and daily check-in templates.', pages: 12, ep: 'Wellbeing Series', bg: 'linear-gradient(135deg,#831843,#DB2777,#F9A8D4)', tags: ['burnout', 'workbook', 'recovery', 'mental health'] },
-      { type: 'guide', icon: '🧘', title: 'Mindfulness for Ambitious Women — A Practical Guide', desc: 'Evidence-based mindfulness techniques adapted for women managing careers, study, and personal goals.', pages: 10, ep: 'Wellbeing Series', bg: 'linear-gradient(135deg,#4A044E,#9333EA,#E879F9)', tags: ['mindfulness', 'guide', 'wellbeing', 'stress'] },
-      { type: 'toolkit', icon: '🛡️', title: 'The Imposter Syndrome Toolkit', desc: 'Confidence audit, cognitive reframing exercises, and affirmations used by our guests to overcome imposter syndrome.', pages: 8, ep: 'All Episodes', bg: 'linear-gradient(135deg,#3B0764,#9333EA,#D8B4FE)', tags: ['imposter syndrome', 'confidence', 'toolkit', 'psychology'] },
-    ]
-  },
-  {
-    id: 'creative', emoji: '🎨', name: 'Creative Arts & Media', sub: 'Design · Writing · Film & TV · Music · Fashion · Journalism',
-    color: '#7C2D12', subfields: ['All', 'Design', 'Writing', 'Film & TV', 'Music', 'Fashion', 'Journalism'],
-    resources: [
-      { type: 'guide', icon: '🎨', title: 'Breaking Into the Creative Industry — A Realistic Guide', desc: 'The truth about creative careers: income, portfolios, pitching, and building a sustainable creative practice.', pages: 14, ep: 'Creative Series', bg: 'linear-gradient(135deg,#431407,#C2410C,#FB923C)', tags: ['creative', 'design', 'career', 'portfolio'] },
-      { type: 'template', icon: '🖼️', title: 'Creative Portfolio Template — What to Include', desc: 'A checklist and framework for building your first professional portfolio across design, writing, film, and more.', pages: 6, ep: 'Creative Series', bg: 'linear-gradient(135deg,#7C2D12,#EA580C,#FED7AA)', tags: ['portfolio', 'template', 'creative', 'design'] },
-      { type: 'reading', icon: '📖', title: 'Creative Reading List — Books Every Aspiring Artist Should Read', desc: 'From "Steal Like an Artist" to "Big Magic" — curated recommendations from BBG\'s creative guests.', pages: 5, ep: 'All Episodes', bg: 'linear-gradient(135deg,#292524,#78716C,#D6D3D1)', tags: ['books', 'reading', 'creative', 'art'] },
-      { type: 'script', icon: '✉️', title: 'Creative Freelance Rate-Setting & Pitch Script', desc: 'How to charge your worth: rate calculator, email scripts for negotiating freelance projects, and a pitch template.', pages: 8, ep: 'Creative Series', bg: 'linear-gradient(135deg,#831843,#EC4899,#FBCFE8)', tags: ['freelance', 'rates', 'script', 'creative', 'negotiation'] },
-    ]
-  },
-  {
-    id: 'finance', emoji: '💰', name: 'Finance & Wealth', sub: 'Personal Finance · Investment · Banking · Accounting · Fintech',
-    color: '#0C4A6E', subfields: ['All', 'Personal Finance', 'Investment', 'Banking', 'Accounting', 'Fintech'],
-    resources: [
-      { type: 'pdf', icon: '💰', title: 'Money Mindsets — EP. 04 Full Insight PDF', desc: 'Afnan Khalifa\'s complete framework for building wealth, key takeaways, and a personal finance action plan.', pages: 8, ep: 'EP. 04', bg: 'linear-gradient(135deg,#082F49,#0C4A6E,#0EA5E9)', tags: ['finance', 'money', 'wealth', 'afnan'] },
-      { type: 'salary', icon: '📊', title: 'Women in Finance Salary Report 2025', desc: 'Salary benchmarks across investment banking, accounting, fintech, and insurance — with negotiation tips.', pages: 24, ep: 'Research', bg: 'linear-gradient(135deg,#0C4A6E,#0284C7,#38BDF8)', tags: ['salary', 'finance', 'banking', 'investment'] },
-      { type: 'worksheet', icon: '📓', title: 'Personal Finance Starter Workbook', desc: 'Budgeting templates, debt tracker, savings goal calculator, and a step-by-step guide to your first investment.', pages: 16, ep: 'Finance Series', bg: 'linear-gradient(135deg,#134E4A,#0F766E,#2DD4BF)', tags: ['personal finance', 'budget', 'workbook', 'investment'] },
-      { type: 'guide', icon: '📈', title: 'How to Break Into Investment Banking — A Guide for Women', desc: 'The insider\'s guide to landing your first role in investment banking, with real advice from finance professionals.', pages: 18, ep: 'Finance Series', bg: 'linear-gradient(135deg,#082F49,#0369A1,#0EA5E9)', tags: ['investment banking', 'guide', 'career', 'finance'] },
-      { type: 'template', icon: '📋', title: 'Finance CV Template — Stand Out on the Trading Floor', desc: 'A sleek, recruiter-approved CV template for finance roles, with a real example and cover letter framework.', pages: 4, ep: 'Finance Series', bg: 'linear-gradient(135deg,#0F172A,#1E3A5F,#3B82F6)', tags: ['finance', 'cv', 'template', 'banking'] },
-    ]
-  },
-  {
-    id: 'health', emoji: '🏥', name: 'Healthcare & Medicine', sub: 'Medicine · Nursing · Public Health · Medical Research · Pharmacy',
-    color: '#064E3B', subfields: ['All', 'Medicine', 'Nursing', 'Public Health', 'Research', 'Pharmacy'],
-    resources: [
-      { type: 'guide', icon: '🩺', title: 'Medicine as a Career — What Nobody Tells You', desc: 'The full picture: medical school applications, junior doctor life, specialisation, and the realities women face in medicine.', pages: 16, ep: 'Healthcare Series', bg: 'linear-gradient(135deg,#022C22,#065F46,#34D399)', tags: ['medicine', 'doctor', 'guide', 'career', 'health'] },
-      { type: 'template', icon: '📝', title: 'Medical School Personal Statement Template', desc: 'A structured personal statement framework with prompts, word counts, and example openings for medical applications.', pages: 5, ep: 'Healthcare Series', bg: 'linear-gradient(135deg,#064E3B,#0F766E,#6EE7B7)', tags: ['medical school', 'template', 'application', 'statement'] },
-      { type: 'reading', icon: '📚', title: 'Healthcare Reading List — Curated by Our Medical Guests', desc: 'The books, journals and documentaries every aspiring healthcare professional should engage with.', pages: 6, ep: 'All Episodes', bg: 'linear-gradient(135deg,#022C22,#065F46,#10B981)', tags: ['healthcare', 'reading', 'books', 'medicine'] },
-    ]
-  },
-  {
-    id: 'education', emoji: '📚', name: 'Education & Teaching', sub: 'Teaching · Academic Research · EdTech · Higher Education · Tutoring',
-    color: '#4C1D95', subfields: ['All', 'Teaching', 'Research', 'EdTech', 'Higher Education'],
-    resources: [
-      { type: 'guide', icon: '🏫', title: 'A Career in Education — All Your Options', desc: 'From classroom teaching to EdTech, curriculum design and academia — a complete overview of education career paths.', pages: 12, ep: 'Education Series', bg: 'linear-gradient(135deg,#2E1065,#6B21A8,#A855F7)', tags: ['education', 'teaching', 'career', 'guide'] },
-      { type: 'worksheet', icon: '📓', title: 'Goal Setting Workbook for Students & Graduates', desc: 'A 90-day goal-setting framework with weekly check-ins, habit tracking, and reflection prompts.', pages: 14, ep: 'All Episodes', bg: 'linear-gradient(135deg,#3B0764,#7C3AED,#DDD6FE)', tags: ['goals', 'workbook', 'students', 'planning'] },
-      { type: 'script', icon: '✉️', title: 'Networking Email Templates for Students', desc: '7 done-for-you email templates: cold outreach, LinkedIn connection requests, mentorship asks, and follow-ups.', pages: 6, ep: 'All Episodes', bg: 'linear-gradient(135deg,#1E1B4B,#4338CA,#A5B4FC)', tags: ['networking', 'email', 'templates', 'students'] },
-    ]
-  },
-];
+const FIELDS = [];
+
 
 const TYPE_COLORS = {
   pdf: { bg: 'rgba(147,51,234,0.08)', color: '#7C3AED', label: 'Episode PDF' },
@@ -226,7 +142,7 @@ const getRelevanceScore = (r, fieldName, queryStr) => {
 
 export default function ResourcesPage({ onNavChange, onShowToast }) {
   const { resources: dbFields, loading, submitForm, cms } = useApp();
-  const fields = dbFields.length > 0 ? dbFields : FIELDS;
+  const fields = dbFields || [];
 
   const [activeType, setActiveType] = useState('all');
   const [activeField, setActiveField] = useState('all');
@@ -745,65 +661,99 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
             <div className="section-label__line"></div>
           </div>
           <div className="featured-grid">
-            {featuredResources.map((r, idx) => {
-              const t = TYPE_COLORS[r.type] || TYPE_COLORS.pdf;
-              if (idx === 0) {
-                return (
-                  <div key={r.uid} className="feat-card-big" onClick={() => handleDownload(r.title)}>
-                    <div className="feat-card-big__cover" style={{ background: r.bg || r.cover_color }}>
-                      <span className="feat-card-big__badge" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff' }}>{t.label}</span>
-                      <span className="feat-card-big__new">NEW</span>
-                      <svg viewBox="0 0 200 140" fill="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: .2 }}>
-                        <circle cx="160" cy="30" r="60" fill="white" />
-                        <circle cx="40" cy="110" r="40" fill="white" />
-                        <rect x="70" y="50" width="60" height="80" rx="8" fill="white" opacity=".3" />
-                        <rect x="80" y="30" width="40" height="10" rx="5" fill="white" opacity=".4" />
-                      </svg>
-                      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '6px' }}>
-                        <div style={{ fontSize: '52px', filter: 'drop-shadow(0 4px 20px rgba(0,0,0,0.3))' }}>{r.icon}</div>
-                        {r.pages > 0 && <div style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.15em', color: 'rgba(255,255,255,0.7)' }}>{r.pages}-Page Deep Dive</div>}
-                      </div>
-                    </div>
-                    <div className="feat-card-big__body" style={{ textAlign: 'left' }}>
-                      <div className="feat-card-big__field">{r.fieldName}</div>
-                      <div className="feat-card-big__title">{r.title}</div>
-                      <div className="feat-card-big__desc">{r.desc || r.description}</div>
-                      <div className="feat-card-big__footer">
-                        <span className="feat-card-big__ep">{r.ep}</span>
-                        <button className="dl-btn" onClick={(e) => { e.stopPropagation(); handleDownload(r.title); }}>
-                          <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                          </svg>
-                          Download Free
-                        </button>
-                      </div>
+            {loading ? (
+              <>
+                <div className="feat-card-big" style={{ opacity: 0.6, pointerEvents: 'none' }}>
+                  <div className="feat-card-big__cover skeleton-box" style={{ height: '240px' }}></div>
+                  <div className="feat-card-big__body" style={{ textAlign: 'left' }}>
+                    <div className="skeleton-box" style={{ height: '10px', width: '30%', marginBottom: '10px', borderRadius: '4px' }}></div>
+                    <div className="skeleton-box" style={{ height: '24px', width: '70%', marginBottom: '12px', borderRadius: '4px' }}></div>
+                    <div className="skeleton-box" style={{ height: '14px', width: '90%', marginBottom: '8px', borderRadius: '4px' }}></div>
+                    <div className="skeleton-box" style={{ height: '14px', width: '50%', marginBottom: '24px', borderRadius: '4px' }}></div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div className="skeleton-box" style={{ height: '14px', width: '80px', borderRadius: '4px' }}></div>
+                      <div className="skeleton-box" style={{ height: '36px', width: '120px', borderRadius: '8px' }}></div>
                     </div>
                   </div>
-                );
-              } else {
-                return (
-                  <div key={r.uid} className="feat-card-sm" onClick={() => handleDownload(r.title)}>
-                    <div className="feat-card-sm__cover" style={{ background: r.bg || r.cover_color }}>
-                      <div className="feat-card-sm__icon">{r.icon}</div>
-                    </div>
-                    <div className="feat-card-sm__body" style={{ textAlign: 'left' }}>
-                      <div className="feat-card-sm__type">{t.label} · {r.fieldName}</div>
-                      <div className="feat-card-sm__title">{r.title}</div>
-                      <div className="feat-card-sm__desc">{r.desc || r.description}</div>
-                      <div className="feat-card-sm__footer">
-                        {r.pages > 0 && <span className="feat-card-sm__pages">{r.pages} pages</span>}
-                        <button className="dl-btn" style={{ fontSize: '11px', height: '32px', padding: '0 12px' }} onClick={(e) => { e.stopPropagation(); handleDownload(r.title); }}>
-                          <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                          </svg>
-                          Free PDF
-                        </button>
-                      </div>
+                </div>
+                <div className="feat-card-sm" style={{ opacity: 0.6, pointerEvents: 'none' }}>
+                  <div className="feat-card-sm__cover skeleton-box" style={{ height: '100%' }}></div>
+                  <div className="feat-card-sm__body" style={{ textAlign: 'left' }}>
+                    <div className="skeleton-box" style={{ height: '10px', width: '30%', marginBottom: '10px', borderRadius: '4px' }}></div>
+                    <div className="skeleton-box" style={{ height: '20px', width: '80%', marginBottom: '12px', borderRadius: '4px' }}></div>
+                    <div className="skeleton-box" style={{ height: '14px', width: '90%', marginBottom: '24px', borderRadius: '4px' }}></div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div className="skeleton-box" style={{ height: '14px', width: '60px', borderRadius: '4px' }}></div>
+                      <div className="skeleton-box" style={{ height: '32px', width: '100px', borderRadius: '8px' }}></div>
                     </div>
                   </div>
-                );
-              }
-            })}
+                </div>
+              </>
+            ) : featuredResources.length > 0 ? (
+              featuredResources.map((r, idx) => {
+                const t = TYPE_COLORS[r.type] || TYPE_COLORS.pdf;
+                if (idx === 0) {
+                  return (
+                    <div key={r.uid} className="feat-card-big" onClick={() => handleDownload(r.title)}>
+                      <div className="feat-card-big__cover" style={{ background: r.bg || r.cover_color }}>
+                        <span className="feat-card-big__badge" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff' }}>{t.label}</span>
+                        <span className="feat-card-big__new">NEW</span>
+                        <svg viewBox="0 0 200 140" fill="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: .2 }}>
+                          <circle cx="160" cy="30" r="60" fill="white" />
+                          <circle cx="40" cy="110" r="40" fill="white" />
+                          <rect x="70" y="50" width="60" height="80" rx="8" fill="white" opacity=".3" />
+                          <rect x="80" y="30" width="40" height="10" rx="5" fill="white" opacity=".4" />
+                        </svg>
+                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '6px' }}>
+                          <div style={{ fontSize: '52px', filter: 'drop-shadow(0 4px 20px rgba(0,0,0,0.3))' }}>{r.icon}</div>
+                          {r.pages > 0 && <div style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.15em', color: 'rgba(255,255,255,0.7)' }}>{r.pages}-Page Deep Dive</div>}
+                        </div>
+                      </div>
+                      <div className="feat-card-big__body" style={{ textAlign: 'left' }}>
+                        <div className="feat-card-big__field">{r.fieldName}</div>
+                        <div className="feat-card-big__title">{r.title}</div>
+                        <div className="feat-card-big__desc">{r.desc || r.description}</div>
+                        <div className="feat-card-big__footer">
+                          <span className="feat-card-big__ep">{r.ep}</span>
+                          <button className="dl-btn" onClick={(e) => { e.stopPropagation(); handleDownload(r.title); }}>
+                            <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                            </svg>
+                            Download Free
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div key={r.uid} className="feat-card-sm" onClick={() => handleDownload(r.title)}>
+                      <div className="feat-card-sm__cover" style={{ background: r.bg || r.cover_color }}>
+                        <div className="feat-card-sm__icon">{r.icon}</div>
+                      </div>
+                      <div className="feat-card-sm__body" style={{ textAlign: 'left' }}>
+                        <div className="feat-card-sm__type">{t.label} · {r.fieldName}</div>
+                        <div className="feat-card-sm__title">{r.title}</div>
+                        <div className="feat-card-sm__desc">{r.desc || r.description}</div>
+                        <div className="feat-card-sm__footer">
+                          {r.pages > 0 && <span className="feat-card-sm__pages">{r.pages} pages</span>}
+                          <button className="dl-btn" style={{ fontSize: '11px', height: '32px', padding: '0 12px' }} onClick={(e) => { e.stopPropagation(); handleDownload(r.title); }}>
+                            <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                            </svg>
+                            Free PDF
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+              })
+            ) : (
+              <div style={{ gridColumn: '1 / -1', padding: '40px 0', textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
+                No featured resources available this week.
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -811,6 +761,20 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
       {/* ── MAIN RESOURCES GRID BY FIELDS ── */}
       <div className="page-body" style={{ background: '#F7F3FF', minHeight: '60vh' }}>
         <style>{`
+          .skeleton-box {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 37%, rgba(255, 255, 255, 0.05) 63%) !important;
+            background-size: 400% 100% !important;
+            animation: skeleton-loading 1.4s ease infinite !important;
+          }
+          .page-body .skeleton-box {
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.03) 25%, rgba(0, 0, 0, 0.08) 37%, rgba(0, 0, 0, 0.03) 63%) !important;
+            background-size: 400% 100% !important;
+            animation: skeleton-loading 1.4s ease infinite !important;
+          }
+          @keyframes skeleton-loading {
+            0% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
           /* Card body definitions */
           .feat-card-big__body {
             padding: 20px;
@@ -1011,7 +975,33 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
           }
         `}</style>
         <div className="resources-section">
-          {fields.map((f) => {
+          {loading ? (
+            <div className="field-section" style={{ textAlign: 'left' }}>
+              <div className="field-section__head" style={{ opacity: 0.6, pointerEvents: 'none' }}>
+                <div className="skeleton-box" style={{ width: '36px', height: '36px', borderRadius: '8px' }}></div>
+                <div className="field-section__info">
+                  <div className="skeleton-box" style={{ height: '20px', width: '200px', marginBottom: '6px', borderRadius: '4px' }}></div>
+                  <div className="skeleton-box" style={{ height: '12px', width: '320px', borderRadius: '4px' }}></div>
+                </div>
+              </div>
+              <div className="resources-grid" style={{ marginTop: '24px' }}>
+                {Array.from({ length: 4 }).map((_, idx) => (
+                  <div key={idx} className="rc" style={{ opacity: 0.6, pointerEvents: 'none' }}>
+                    <div className="rc__cover skeleton-box" style={{ height: '120px' }}></div>
+                    <div className="rc__body">
+                      <div className="skeleton-box" style={{ height: '10px', width: '40%', marginBottom: '10px', borderRadius: '4px' }}></div>
+                      <div className="skeleton-box" style={{ height: '18px', width: '80%', marginBottom: '12px', borderRadius: '4px' }}></div>
+                      <div className="skeleton-box" style={{ height: '12px', width: '90%', marginBottom: '20px', borderRadius: '4px' }}></div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div className="skeleton-box" style={{ height: '12px', width: '60px', borderRadius: '4px' }}></div>
+                        <div className="skeleton-box" style={{ height: '28px', width: '80px', borderRadius: '6px' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : fields.map((f) => {
             const showField = activeField === 'all' || activeField === f.id;
 
             // Filter and sort resources of this category by search relevance
