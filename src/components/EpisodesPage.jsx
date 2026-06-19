@@ -641,6 +641,10 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
     setSelectedCategory(cat);
     setSelectedSubtopic('All');
     setVisibleCount(9);
+    setTimeout(() => {
+      const el = document.getElementById('filterBar');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
   const handleSubtopicSelect = (sub) => {

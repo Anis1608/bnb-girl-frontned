@@ -719,7 +719,13 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
               All Fields
             </button>
             {fields.map(f => (
-              <button key={f.id} className={`field-chip ${activeField === f.id ? 'active' : ''}`} data-field={f.id} onClick={() => setActiveField(f.id)}>
+              <button key={f.id} className={`field-chip ${activeField === f.id ? 'active' : ''}`} data-field={f.id} onClick={() => {
+                setActiveField(f.id);
+                setTimeout(() => {
+                  const el = document.getElementById(`field-${f.id}`);
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+              }}>
                 {f.emoji} {f.name}
               </button>
             ))}
