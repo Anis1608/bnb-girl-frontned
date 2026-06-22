@@ -508,6 +508,8 @@ export default function Mentorship({ onShowToast, onNavChange }) {
   };
 
   const isBookingReady = selectedDuration && selectedDate && selectedTime;
+  const currentPrice = selectedDuration ? priceOf(selectedDuration) : '';
+  const isFree = !currentPrice || currentPrice.toLowerCase().includes('free') || currentPrice.replace(/[^0-9]/g, '') === '0';
 
   return (
     <div className="mentorship-page-wrap">
@@ -1091,7 +1093,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
                     <div className="sum-r"><span className="k">Time</span><span class="v">{selectedTime}</span></div>
                     <div className="sum-r"><span className="k">Session</span><span class="v">{durLabel(selectedDuration)}</span></div>
                     {priceOf(selectedDuration) && (
-                      <div className="sum-r"><span className="k">Total</span><span className="v" style={{ color: 'var(--rose)' }}>{priceOf(selectedDuration)}</span></div>
+                      <div className="sum-r"><span className="k">{isFree ? 'Price' : 'Total'}</span><span className="v" style={{ color: 'var(--rose)' }}>{priceOf(selectedDuration)}</span></div>
                     )}
                   </div>
 
@@ -1136,7 +1138,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
                     <div className="sum-r"><span className="k">Time</span><span className="v">{selectedTime}</span></div>
                     <div className="sum-r"><span className="k">Duration</span><span className="v">{durLabel(selectedDuration)}</span></div>
                     {priceOf(selectedDuration) && (
-                      <div className="sum-r"><span className="k">Paid</span><span className="v">{priceOf(selectedDuration)}</span></div>
+                      <div className="sum-r"><span className="k">{isFree ? 'Price' : 'Paid'}</span><span className="v">{priceOf(selectedDuration)}</span></div>
                     )}
                   </div>
 
@@ -1190,11 +1192,11 @@ export default function Mentorship({ onShowToast, onNavChange }) {
                     {isProcessing ? (
                       <>
                         <svg className="spin" viewBox="0 0 24 24" style={{ width: '17px', height: '17px', fill: 'none', stroke: '#fff', strokeWidth: 2.4, display: 'inline', marginRight: '6px' }}><path d="M21 12a9 9 0 11-6.2-8.6" /></svg>
-                        Redirecting to Stripe…
+                        {isFree ? 'Booking session...' : 'Redirecting to Stripe…'}
                       </>
                     ) : (
                       <>
-                        Pay {priceOf(selectedDuration)} Securely
+                        {isFree ? 'Book Free Session' : `Pay ${priceOf(selectedDuration)} Securely`}
                       </>
                     )}
                   </span>
@@ -1221,7 +1223,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
               {bookingStep !== 'success' && (
                 <div className="s-sec">
                   <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" /></svg>
-                  Secured by Stripe · cancel free up to 24h · 100% confidential
+                  {isFree ? '100% Free Session · cancel up to 24h · 100% confidential' : 'Secured by Stripe · cancel free up to 24h · 100% confidential'}
                 </div>
               )}
             </div>

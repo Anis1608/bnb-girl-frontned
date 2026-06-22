@@ -28,6 +28,7 @@ import Mentorship from './components/Mentorship';
 import Dashboard from './components/Dashboard';
 import MinorDisclaimer from './components/MinorDisclaimer';
 import BecomeMentor from './components/BecomeMentor';
+import BecomeGuest from './components/BecomeGuest';
 import MentorDashboard from './components/MentorDashboard';
 import UnsubscribePage from './components/UnsubscribePage';
 import './App.css';
@@ -53,6 +54,7 @@ export default function App() {
       case '/mentorship': return 'mentorship';
       case '/dashboard': return 'dashboard';
       case '/become-a-mentor': return 'become-mentor';
+      case '/become-a-guest': return 'become-guest';
       case '/mentor-dashboard': return 'mentor-dashboard';
       case '/unsubscribe': return 'unsubscribe';
       case '/home':
@@ -78,6 +80,7 @@ export default function App() {
       mentorship: '/mentorship',
       dashboard: '/dashboard',
       'become-mentor': '/become-a-mentor',
+      'become-guest': '/become-a-guest',
       'mentor-dashboard': '/mentor-dashboard',
       unsubscribe: '/unsubscribe',
       home: '/'
@@ -147,6 +150,10 @@ export default function App() {
       'become-mentor': {
         title: "Become a Mentor — Empower Young Female Minds",
         description: "Share your professional expertise and inspire the next generation of ambitious leaders. Join the Bold & Brilliant Girls mentor program."
+      },
+      'become-guest': {
+        title: "Become a Guest — Speak on the Bold & Brilliant Girls Podcast",
+        description: "Apply to be a guest on the Bold & Brilliant Girls Podcast. Share your career journey and industry insights to inspire our listeners."
       },
       'mentor-dashboard': {
         title: "Mentor Portal — Manage Bookings & Availability",
@@ -313,6 +320,10 @@ export default function App() {
           />
         ) : activeNav === 'become-mentor' ? (
           <BecomeMentor
+            onShowToast={showToast}
+          />
+        ) : activeNav === 'become-guest' ? (
+          <BecomeGuest
             onShowToast={showToast}
           />
         ) : activeNav === 'mentor-dashboard' ? (

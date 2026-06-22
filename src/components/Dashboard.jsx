@@ -807,7 +807,7 @@ export default function Dashboard({ onShowToast, onNavChange }) {
                       </thead>
                       <tbody>
                         {bookings.map(b => {
-                          const isFree = b.data.amount && (b.data.amount.toLowerCase().includes('free') || b.data.amount.trim() === '$0');
+                          const isFree = b.data.amount && (b.data.amount.toLowerCase().includes('free') || b.data.amount.trim() === '$0' || b.data.amount.trim() === '0');
                           return (
                             <tr key={b._id}>
                               <td>{new Date(b.created_at || b.data.submitted_at || Date.now()).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
@@ -818,8 +818,8 @@ export default function Dashboard({ onShowToast, onNavChange }) {
                                 </div>
                               </td>
                               <td>{fmtDate(b.data.date)} at {b.data.time}</td>
-                              <td className="monospace-ref" title={b.data.stripe_session_id || 'mock_checkout_session_id'}>
-                                {b.data.stripe_session_id ? b.data.stripe_session_id.substring(0, 16) + '...' : 'mock_invoice_id'}
+                              <td className="monospace-ref" title={isFree ? 'Free Session' : (b.data.stripe_session_id || 'mock_checkout_session_id')}>
+                                {isFree ? 'Free Session (No Bill)' : (b.data.stripe_session_id ? b.data.stripe_session_id.substring(0, 16) + '...' : 'mock_invoice_id')}
                               </td>
                               <td>
                                 <span className={`status-pill ${isFree ? 'free' : 'paid'}`}>

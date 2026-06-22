@@ -28,3 +28,7 @@ admin_side
 .env.development
 .env.local
 
+# Credentials
+bnbgirl-43daf-4e72678359e6.json
+admin_side/backend/*.json
+
