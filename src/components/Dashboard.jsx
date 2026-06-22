@@ -651,7 +651,7 @@ export default function Dashboard({ onShowToast, onNavChange }) {
                             <div key={b._id} className="ra-item">
                               <div className="ra-meta">
                                 <strong>Mentorship with {b.data.mentor}</strong>
-                                <span>{new Date(b.created_at || b.data.submitted_at || Date.now()).toLocaleDateString()}</span>
+                                <span>Session: {b.data.date ? fmtDate(b.data.date) : new Date(b.created_at || Date.now()).toLocaleDateString()}</span>
                               </div>
                               <div className="ra-value">
                                 <span className="ra-amount">{b.data.amount}</span>
