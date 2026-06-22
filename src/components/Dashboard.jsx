@@ -931,7 +931,10 @@ export default function Dashboard({ onShowToast, onNavChange }) {
                   <label style={{ display: 'block', fontSize: '12px', color: '#9ca3af', textTransform: 'uppercase', fontWeight: 'bold', marginBottom: '8px' }}>Select Date</label>
                   <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px' }}>
                     {getRescheduleDates().map(dt => {
-                      const iso = dt.toISOString().slice(0, 10);
+                      const year = dt.getFullYear();
+                      const month = String(dt.getMonth() + 1).padStart(2, '0');
+                      const day = String(dt.getDate()).padStart(2, '0');
+                      const iso = `${year}-${month}-${day}`;
                       const isSelected = rescheduleDate === iso;
                       return (
                         <button

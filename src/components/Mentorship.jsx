@@ -1039,7 +1039,10 @@ export default function Mentorship({ onShowToast, onNavChange }) {
                     <div className="fl">Pick a date</div>
                     <div className="dates">
                       {getDates().map((dt) => {
-                        const iso = dt.toISOString().slice(0, 10);
+                        const year = dt.getFullYear();
+                        const month = String(dt.getMonth() + 1).padStart(2, '0');
+                        const day = String(dt.getDate()).padStart(2, '0');
+                        const iso = `${year}-${month}-${day}`;
                         const openCount = selectedMentor.slots.filter(t => !selectedMentor.busy.includes(t)).length;
                         return (
                           <button
