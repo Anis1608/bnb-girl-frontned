@@ -13,21 +13,77 @@ export const useApp = () => {
 };
 
 export default function AppContextProvider({ children }) {
-  const [stats, setStats] = useState({
-    episodes: 0,
-    mentors: 0,
-    community: 0,
-    downloads: 0,
-    countries: 0,
-    views: 0,
-    views_unit: 'M+'
+  const [stats, setStats] = useState(() => {
+    try {
+      const cached = localStorage.getItem('bbg_stats');
+      return cached ? JSON.parse(cached) : {
+        episodes: 0,
+        mentors: 0,
+        community: 0,
+        downloads: 0,
+        countries: 0,
+        views: 0,
+        views_unit: 'M+'
+      };
+    } catch (e) {
+      return {
+        episodes: 0,
+        mentors: 0,
+        community: 0,
+        downloads: 0,
+        countries: 0,
+        views: 0,
+        views_unit: 'M+'
+      };
+    }
   });
-  const [episodes, setEpisodes] = useState([]);
-  const [featuredEpisodes, setFeaturedEpisodes] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [mentors, setMentors] = useState([]);
-  const [resources, setResources] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [episodes, setEpisodes] = useState(() => {
+    try {
+      const cached = localStorage.getItem('bbg_episodes');
+      return cached ? JSON.parse(cached) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+  const [featuredEpisodes, setFeaturedEpisodes] = useState(() => {
+    try {
+      const cached = localStorage.getItem('bbg_featured_episodes');
+      return cached ? JSON.parse(cached) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+  const [categories, setCategories] = useState(() => {
+    try {
+      const cached = localStorage.getItem('bbg_categories');
+      return cached ? JSON.parse(cached) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+  const [mentors, setMentors] = useState(() => {
+    try {
+      const cached = localStorage.getItem('bbg_mentors');
+      return cached ? JSON.parse(cached) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+  const [resources, setResources] = useState(() => {
+    try {
+      const cached = localStorage.getItem('bbg_resources');
+      return cached ? JSON.parse(cached) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+  const [loading, setLoading] = useState(() => {
+    try {
+      return !localStorage.getItem('bbg_mentors');
+    } catch (e) {
+      return true;
+    }
+  });
   const [cms, setCms] = useState(() => {
     if (window.__CMS_DATA__) {
       return window.__CMS_DATA__;
@@ -126,7 +182,7 @@ export default function AppContextProvider({ children }) {
       const statsRes = await fetch(`${API_BASE}/api/stats`);
       if (statsRes.ok) {
         const statsData = await statsRes.json();
-        setStats({
+        const formattedStats = {
           episodes: parseInt(statsData.episodes) || 0,
           mentors: parseInt(statsData.mentors) || 0,
           community: parseInt(statsData.community) || 0,
@@ -134,7 +190,11 @@ export default function AppContextProvider({ children }) {
           countries: parseInt(statsData.countries) || 0,
           views: parseInt(statsData.views) || 0,
           views_unit: statsData.views_unit || 'M+'
-        });
+        };
+        setStats(formattedStats);
+        try {
+          localStorage.setItem('bbg_stats', JSON.stringify(formattedStats));
+        } catch (e) {}
       }
 
       // 2. Fetch Categories
@@ -143,6 +203,9 @@ export default function AppContextProvider({ children }) {
       if (catsRes.ok) {
         catsData = await catsRes.json();
         setCategories(catsData);
+        try {
+          localStorage.setItem('bbg_categories', JSON.stringify(catsData));
+        } catch (e) {}
       }
 
       // 3. Fetch Episodes
@@ -151,11 +214,17 @@ export default function AppContextProvider({ children }) {
         const epsData = await epsRes.json();
         const formatted = epsData.rows.map(formatDbEpisode);
         setEpisodes(formatted);
+        try {
+          localStorage.setItem('bbg_episodes', JSON.stringify(formatted));
+        } catch (e) {}
         
         // Featured ones (Editor's Picks)
         const featured = formatted.filter(ep => ep.is_featured || ep.n === '01');
-        // Fallback to first few if none marked featured
-        setFeaturedEpisodes(featured.length > 0 ? featured : formatted.slice(0, 4));
+        const featuredList = featured.length > 0 ? featured : formatted.slice(0, 4);
+        setFeaturedEpisodes(featuredList);
+        try {
+          localStorage.setItem('bbg_featured_episodes', JSON.stringify(featuredList));
+        } catch (e) {}
       }
 
       // 4. Fetch Mentors
@@ -163,6 +232,9 @@ export default function AppContextProvider({ children }) {
       if (mentorsRes.ok) {
         const mentorsData = await mentorsRes.json();
         setMentors(mentorsData);
+        try {
+          localStorage.setItem('bbg_mentors', JSON.stringify(mentorsData));
+        } catch (e) {}
       }
 
       // 5. Fetch Resources
@@ -171,6 +243,9 @@ export default function AppContextProvider({ children }) {
         const resData = await resRes.json();
         const grouped = groupResourcesByCategories(catsData, resData.rows);
         setResources(grouped);
+        try {
+          localStorage.setItem('bbg_resources', JSON.stringify(grouped));
+        } catch (e) {}
       }
     } catch (err) {
       console.error('Error fetching dynamic platform data:', err);
