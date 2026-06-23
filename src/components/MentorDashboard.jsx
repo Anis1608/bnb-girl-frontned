@@ -91,7 +91,8 @@ export default function MentorDashboard({ onShowToast }) {
         photo: mentorProfile.photo || '',
         slots: mentorProfile.slots || [],
         busy: mentorProfile.busy || [],
-        durs: mentorProfile.durs || ['30', '60']
+        durs: mentorProfile.durs || ['30', '60'],
+        meeting_link: mentorProfile.meeting_link || ''
       });
     }
   }, [mentorProfile]);
@@ -1098,6 +1099,21 @@ export default function MentorDashboard({ onShowToast }) {
                             style={{ width: '100%', padding: '12px 14px', background: 'rgba(11,8,25,0.6)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#fff' }}
                           />
                         </div>
+                      </div>
+
+                      <div className="form-group">
+                        <label style={{ display: 'block', fontSize: '13px', color: '#9ca3af', marginBottom: '8px' }}>Personal Meeting Link (Google Meet / Zoom / Calendly / Teams)</label>
+                        <input
+                          type="url"
+                          name="meeting_link"
+                          value={profileForm.meeting_link || ''}
+                          onChange={handleTextChange}
+                          placeholder="e.g. https://meet.google.com/abc-defg-hij or https://zoom.us/j/1234567"
+                          style={{ width: '100%', padding: '12px 14px', background: 'rgba(11,8,25,0.6)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#fff' }}
+                        />
+                        <span style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px', display: 'block' }}>
+                          If provided, sessions booked with you will use this link. You will be the host/owner of the meeting!
+                        </span>
                       </div>
 
                       <div className="profile-dossier-grid">

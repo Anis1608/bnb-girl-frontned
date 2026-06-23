@@ -11,7 +11,8 @@ const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE) || 'http://l
 
 
 export default function Mentorship({ onShowToast, onNavChange }) {
-  const { mentors: backendMentors, loading, submitForm, userToken, userProfile } = useApp();
+  const { mentors: backendMentors, loading, submitForm, userToken, userProfile, cms } = useApp();
+  const safeCms = cms || {};
   const navigate = useNavigate();
   const [mentorsList, setMentorsList] = useState([]);
   
@@ -169,7 +170,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
       revealElements.forEach((el) => observer.unobserve(el));
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [mentorsList, loading]);
+  }, [mentorsList, loading, selectedCategory, searchQuery]);
 
   // Control body scrolling when sheet is open
   useEffect(() => {
@@ -549,36 +550,36 @@ export default function Mentorship({ onShowToast, onNavChange }) {
                   <path d="M12 2L4 6v6c0 5.5 3.5 10.7 8 12 4.5-1.3 8-6.5 8-12V6L12 2z" fill="rgba(232,117,106,.14)" stroke="#E8756A" strokeWidth="1.5" strokeLinejoin="round" />
                   <polyline points="8.5,12 11,14.5 15.5,9.5" stroke="#E8756A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <span>Verified women mentors · 100% confidential</span>
+                <span>{safeCms.cms_mentor_hero_badge || 'Verified women mentors · 100% confidential'}</span>
               </div>
-              <h1 className="hero-h rev rev-d1">The gap between where you are and where you want to be is<br /><em>one right mentor.</em></h1>
-              <p className="hero-lede rev rev-d2">Most women stay stuck not because they lack talent or drive — nobody ever showed them the door.</p>
-              <p className="hero-line rev rev-d2">Every mentor here has walked the road you're on.</p>
+              <h1 className="hero-h rev rev-d1" dangerouslySetInnerHTML={{ __html: safeCms.cms_mentor_hero_title || 'The gap between where you are and where you want to be is<br /><em>one right mentor.</em>' }} />
+              <p className="hero-lede rev rev-d2">{safeCms.cms_mentor_hero_subtitle1 || 'Most women stay stuck not because they lack talent or drive — nobody ever showed them the door.'}</p>
+              <p className="hero-line rev rev-d2">{safeCms.cms_mentor_hero_subtitle2 || "Every mentor here has walked the road you're on."}</p>
               <div className="hero-pod rev rev-d2">
                 <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8" /></svg>
-                As heard on the <b>Bold &amp; Brilliant Girls</b> podcast
+                <span dangerouslySetInnerHTML={{ __html: safeCms.cms_mentor_hero_podcast_text || 'As heard on the <b>Bold &amp; Brilliant Girls</b> podcast' }} />
               </div>
               
               <div className="hero-metrics rev rev-d3">
                 <div className="hm">
                   <div className="hm-ic"><svg viewBox="0 0 24 24"><polygon points="12 3 14.1 8.3 19.8 8.7 15.4 12.4 16.8 18 12 14.9 7.2 18 8.6 12.4 4.2 8.7 9.9 8.3 12 3" /></svg></div>
-                  <span className="hm-n">87%</span>
-                  <span className="hm-l">feel more confident within 6 months</span>
+                  <span className="hm-n">{safeCms.cms_mentor_hero_metric1_val || '87%'}</span>
+                  <span className="hm-l">{safeCms.cms_mentor_hero_metric1_lbl || 'feel more confident within 6 months'}</span>
                 </div>
                 <div className="hm">
                   <div className="hm-ic"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg></div>
-                  <span className="hm-n">3×</span>
-                  <span className="hm-l">more likely to get promoted</span>
+                  <span className="hm-n">{safeCms.cms_mentor_hero_metric2_val || '3×'}</span>
+                  <span className="hm-l">{safeCms.cms_mentor_hero_metric2_lbl || 'more likely to get promoted'}</span>
                 </div>
                 <div className="hm">
                   <div className="hm-ic"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg></div>
-                  <span className="hm-n">$85K</span>
-                  <span className="hm-l">average salary jump in 2 years</span>
+                  <span className="hm-n">{safeCms.cms_mentor_hero_metric3_val || '$85K'}</span>
+                  <span className="hm-l">{safeCms.cms_mentor_hero_metric3_lbl || 'average salary jump in 2 years'}</span>
                 </div>
                 <div className="hm">
                   <div className="hm-ic"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg></div>
-                  <span className="hm-n">500+</span>
-                  <span className="hm-l">verified mentors across fields</span>
+                  <span className="hm-n">{safeCms.cms_mentor_hero_metric4_val || '500+'}</span>
+                  <span className="hm-l">{safeCms.cms_mentor_hero_metric4_lbl || 'verified mentors across fields'}</span>
                 </div>
               </div>
             </div>
@@ -589,17 +590,24 @@ export default function Mentorship({ onShowToast, onNavChange }) {
       {/* ===== TICKER ===== */}
       <div className="ticker" aria-hidden="true">
         <div className="tk-track">
-          <div className="tk-i"><b>✦</b><span>A mentor doesn't make you smarter — they make your path shorter.</span></div>
-          <div className="tk-i"><b>✦</b><span>The right introduction opens doors a hundred cold emails never could.</span></div>
-          <div className="tk-i"><b>✦</b><span>What took someone ten years to learn, they can teach you in one hour.</span></div>
-          <div className="tk-i"><b>✦</b><span>Clarity is the rarest career resource. A great mentor gives you exactly that.</span></div>
-          <div className="tk-i"><b>✦</b><span>The highest performers had someone who believed in them first.</span></div>
-          {/* Double content for seamless looping */}
-          <div className="tk-i"><b>✦</b><span>A mentor doesn't make you smarter — they make your path shorter.</span></div>
-          <div className="tk-i"><b>✦</b><span>The right introduction opens doors a hundred cold emails never could.</span></div>
-          <div className="tk-i"><b>✦</b><span>What took someone ten years to learn, they can teach you in one hour.</span></div>
-          <div className="tk-i"><b>✦</b><span>Clarity is the rarest career resource. A great mentor gives you exactly that.</span></div>
-          <div className="tk-i"><b>✦</b><span>The highest performers had someone who believed in them first.</span></div>
+          {(() => {
+            const defaultTicker = [
+              "A mentor doesn't make you smarter — they make your path shorter.",
+              "The right introduction opens doors a hundred cold emails never could.",
+              "What took someone ten years to learn, they can teach you in one hour.",
+              "Clarity is the rarest career resource. A great mentor gives you exactly that.",
+              "The highest performers had someone who believed in them first."
+            ];
+            const items = safeCms.cms_mentor_ticker
+              ? safeCms.cms_mentor_ticker.split(';').map(s => s.trim()).filter(Boolean)
+              : defaultTicker;
+            const doubledItems = [...items, ...items];
+            return doubledItems.map((item, idx) => (
+              <div key={idx} className="tk-i">
+                <b>✦</b><span>{item}</span>
+              </div>
+            ));
+          })()}
         </div>
       </div>
 
@@ -646,7 +654,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
         <section className="mentors" id="mentors">
           <div className="wrap">
             <div className="mentors-head">
-              <h2 className="mentors-t rev">Meet your <em>mentors.</em></h2>
+              <h2 className="mentors-t rev" dangerouslySetInnerHTML={{ __html: safeCms.cms_mentor_list_title || 'Meet your <em>mentors.</em>' }} />
               <div className="mentors-c rev">
                 {loading ? (
                   <span>Loading our verified mentors...</span>
@@ -654,7 +662,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
                   <span><b>{filteredMentors.length}</b> women ready to help you move forward</span>
                 )}
               </div>
-              <a className="match-nudge rev" href="/find-your-path" onClick={(e) => { e.preventDefault(); onNavChange('quiz'); }}><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>Not sure who fits? Take the 2-min match</a>
+              <a className="match-nudge rev" href="/find-your-path" onClick={(e) => { e.preventDefault(); onNavChange('quiz'); }}><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>{safeCms.cms_mentor_list_quiz_lbl || 'Not sure who fits? Take the 2-min match'}</a>
             </div>
 
             <div className="grid">
@@ -741,102 +749,115 @@ export default function Mentorship({ onShowToast, onNavChange }) {
       {/* ===== REAL STORIES ===== */}
       <section className="stories" id="stories">
         <div className="wrap stories-head rev">
-          <span className="eyebrow">Real stories</span>
-          <h2 className="stories-h">Women who took the leap — <em>and landed.</em></h2>
-          <p className="stories-sub">Real names, real roles, real outcomes. Every story started with one conversation.</p>
+          <span className="eyebrow">{safeCms.cms_mentor_stories_eyebrow || 'Real stories'}</span>
+          <h2 className="stories-h" dangerouslySetInnerHTML={{ __html: safeCms.cms_mentor_stories_title || 'Women who took the leap — <em>and landed.</em>' }} />
+          <p className="stories-sub">{safeCms.cms_mentor_stories_subtitle || 'Real names, real roles, real outcomes. Every story started with one conversation.'}</p>
         </div>
         <div className="wrap">
           <div className="st-trust rev">
             <div className="st-trust-i">
               <svg viewBox="0 0 24 24" className="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2" /></svg>
-              <span className="st-trust-n">4.9</span>
-              <span className="st-trust-l">average session rating</span>
+              <span className="st-trust-n">{safeCms.cms_mentor_stories_trust1_val || '4.9'}</span>
+              <span className="st-trust-l">{safeCms.cms_mentor_stories_trust1_lbl || 'average session rating'}</span>
             </div>
             <div className="st-trust-sep"></div>
             <div className="st-trust-i">
-              <span className="st-trust-n">2,400+</span>
-              <span className="st-trust-l">sessions booked</span>
+              <span className="st-trust-n">{safeCms.cms_mentor_stories_trust2_val || '2,400+'}</span>
+              <span className="st-trust-l">{safeCms.cms_mentor_stories_trust2_lbl || 'sessions booked'}</span>
             </div>
             <div className="st-trust-sep"></div>
             <div className="st-trust-i">
-              <span className="st-trust-n">98%</span>
-              <span className="st-trust-l">would recommend</span>
+              <span className="st-trust-n">{safeCms.cms_mentor_stories_trust3_val || '98%'}</span>
+              <span className="st-trust-l">{safeCms.cms_mentor_stories_trust3_lbl || 'would recommend'}</span>
             </div>
           </div>
 
           <div className="st-grid">
+            {/* Story 1 */}
             <div className="st rev">
               <div className="st-stars">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <svg key={i} viewBox="0 0 24 24" className="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2" /></svg>
                 ))}
               </div>
-              <p className="st-q">&ldquo;She helped me see I was ready for a role I had talked myself out of for a year.&rdquo;</p>
-              <div className="st-o"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>Promoted to Senior PM</div>
+              <p className="st-q">&ldquo;{safeCms.cms_mentor_story1_quote || 'She helped me see I was ready for a role I had talked myself out of for a year.'}&rdquo;</p>
+              <div className="st-o"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>{safeCms.cms_mentor_story1_outcome || 'Promoted to Senior PM'}</div>
               <div className="st-a">
-                <div className="st-av">AN</div>
+                <div className="st-av">
+                  {(safeCms.cms_mentor_story1_author || 'Aarti N.').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                </div>
                 <div>
-                  <div className="st-nm">Aarti N.</div>
-                  <div className="st-mt">Product Manager · Bengaluru</div>
+                  <div className="st-nm">{safeCms.cms_mentor_story1_author || 'Aarti N.'}</div>
+                  <div className="st-mt">{safeCms.cms_mentor_story1_title || 'Product Manager · Bengaluru'}</div>
                 </div>
               </div>
               <div className="st-via">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg>
-                Mentored by <b>Priya Sharma</b>
+                {safeCms.cms_mentor_story1_via || 'Mentored by Priya Sharma'}
               </div>
             </div>
 
+            {/* Story 2 */}
             <div className="st rev rev-d1">
               <div className="st-stars">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <svg key={i} viewBox="0 0 24 24" className="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2" /></svg>
                 ))}
               </div>
-              <p className="st-q">&ldquo;I walked in unsure and left with a 90-day plan and a warm intro to a hiring manager.&rdquo;</p>
-              <div className="st-o"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>Landed a tech role</div>
+              <p className="st-q">&ldquo;{safeCms.cms_mentor_story2_quote || 'I walked in unsure and left with a 90-day plan and a warm intro to a hiring manager.'}&rdquo;</p>
+              <div className="st-o"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>{safeCms.cms_mentor_story2_outcome || 'Landed a tech role'}</div>
               <div className="st-a">
-                <div className="st-av">SR</div>
+                <div className="st-av">
+                  {(safeCms.cms_mentor_story2_author || 'Sneha R.').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                </div>
                 <div>
-                  <div className="st-nm">Sneha R.</div>
-                  <div className="st-mt">Software Engineer · Hyderabad</div>
+                  <div className="st-nm">{safeCms.cms_mentor_story2_author || 'Sneha R.'}</div>
+                  <div className="st-mt">{safeCms.cms_mentor_story2_title || 'Software Engineer · Hyderabad'}</div>
                 </div>
               </div>
               <div className="st-via">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg>
-                Mentored by <b>Lucy Chen</b>
+                {safeCms.cms_mentor_story2_via || 'Mentored by Lucy Chen'}
               </div>
             </div>
 
+            {/* Story 3 */}
             <div className="st rev rev-d2">
               <div className="st-stars">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <svg key={i} viewBox="0 0 24 24" className="sf"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2" /></svg>
                 ))}
               </div>
-              <p className="st-q">&ldquo;My mentor had raised the exact round I was terrified of. One hour saved me months.&rdquo;</p>
-              <div className="st-o"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>Closed $500K pre-seed</div>
+              <p className="st-q">&ldquo;{safeCms.cms_mentor_story3_quote || 'My mentor had raised the exact round I was terrified of. One hour saved me months.'}&rdquo;</p>
+              <div className="st-o"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>{safeCms.cms_mentor_story3_outcome || 'Closed $500K pre-seed'}</div>
               <div className="st-a">
-                <div className="st-av">PM</div>
+                <div className="st-av">
+                  {(safeCms.cms_mentor_story3_author || 'Preethi M.').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                </div>
                 <div>
-                  <div className="st-nm">Preethi M.</div>
-                  <div className="st-mt">Founder · Mumbai</div>
+                  <div className="st-nm">{safeCms.cms_mentor_story3_author || 'Preethi M.'}</div>
+                  <div className="st-mt">{safeCms.cms_mentor_story3_title || 'Founder · Mumbai'}</div>
                 </div>
               </div>
               <div className="st-via">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg>
-                Mentored by <b>Vanya Mehta</b>
+                {safeCms.cms_mentor_story3_via || 'Mentored by Vanya Mehta'}
               </div>
             </div>
           </div>
 
           <div className="st-from rev">
-            <div className="st-from-l">Our mentors come from</div>
+            <div className="st-from-l">{safeCms.cms_mentor_companies_title || 'Our mentors come from'}</div>
             <div className="st-from-row">
-              <span className="st-co">Google</span>
-              <span className="st-co">Meta</span>
-              <span className="st-co">Amazon</span>
-              <span className="st-co">Spotify</span>
-              <span className="st-co">&amp; more</span>
+              {(() => {
+                const defaultCos = ["Google", "Meta", "Amazon", "Spotify", "& more"];
+                const cos = safeCms.cms_mentor_companies_list
+                  ? safeCms.cms_mentor_companies_list.split(';').map(c => c.trim()).filter(Boolean)
+                  : defaultCos;
+                return cos.map((co, idx) => (
+                  <span key={idx} className="st-co">{co}</span>
+                ));
+              })()}
             </div>
           </div>
         </div>
@@ -846,44 +867,44 @@ export default function Mentorship({ onShowToast, onNavChange }) {
       <section className="why" id="why">
         <div className="wrap">
           <div className="why-head rev">
-            <span className="eyebrow">Why it works</span>
-            <h2 className="why-h">Career growth isn't luck.<br />It's <em>guided.</em></h2>
-            <p className="why-sub">The biggest predictor of advancement isn't talent — it's access to someone who's already solved the problem in front of you.</p>
+            <span className="eyebrow">{safeCms.cms_mentor_why_eyebrow || 'Why it works'}</span>
+            <h2 className="why-h" dangerouslySetInnerHTML={{ __html: safeCms.cms_mentor_why_title || 'Career growth isn\'t luck.<br />It\'s <em>guided.</em>' }} />
+            <p className="why-sub">{safeCms.cms_mentor_why_subtitle || 'The biggest predictor of advancement isn\'t talent — it\'s access to someone who\'s already solved the problem in front of you.'}</p>
           </div>
           
           <div className="why-stats">
             <div className="wstat rev">
               <div className="wstat-ic"><svg viewBox="0 0 24 24"><polygon points="12 3 14.1 8.3 19.8 8.7 15.4 12.4 16.8 18 12 14.9 7.2 18 8.6 12.4 4.2 8.7 9.9 8.3 12 3" /></svg></div>
-              <div className="wstat-n">87%</div>
+              <div className="wstat-n">{safeCms.cms_mentor_why_stat1_val || '87%'}</div>
               <div className="wstat-rule"></div>
-              <div className="wstat-l">Feel more confident</div>
-              <div className="wstat-s">within 6 months · HBR</div>
+              <div className="wstat-l">{safeCms.cms_mentor_why_stat1_lbl || 'Feel more confident'}</div>
+              <div className="wstat-s">{safeCms.cms_mentor_why_stat1_sub || 'within 6 months · HBR'}</div>
             </div>
             <div className="wstat rev rev-d1">
               <div className="wstat-ic"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg></div>
-              <div className="wstat-n">3×</div>
+              <div className="wstat-n">{safeCms.cms_mentor_why_stat2_val || '3×'}</div>
               <div className="wstat-rule"></div>
-              <div className="wstat-l">More likely promoted</div>
-              <div className="wstat-s">vs. non-mentored · McKinsey</div>
+              <div className="wstat-l">{safeCms.cms_mentor_why_stat2_lbl || 'More likely promoted'}</div>
+              <div className="wstat-s">{safeCms.cms_mentor_why_stat2_sub || 'vs. non-mentored · McKinsey'}</div>
             </div>
             <div className="wstat rev rev-d1">
               <div className="wstat-ic"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8z" /></svg></div>
-              <div className="wstat-n">94%</div>
+              <div className="wstat-n">{safeCms.cms_mentor_why_stat3_val || '94%'}</div>
               <div className="wstat-rule"></div>
-              <div className="wstat-l">Session satisfaction</div>
-              <div className="wstat-s">across 2,400+ sessions</div>
+              <div className="wstat-l">{safeCms.cms_mentor_why_stat3_lbl || 'Session satisfaction'}</div>
+              <div className="wstat-s">{safeCms.cms_mentor_why_stat3_sub || 'across 2,400+ sessions'}</div>
             </div>
             <div className="wstat rev rev-d2">
               <div className="wstat-ic"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg></div>
-              <div className="wstat-n">$85K</div>
+              <div className="wstat-n">{safeCms.cms_mentor_why_stat4_val || '$85K'}</div>
               <div className="wstat-rule"></div>
-              <div className="wstat-l">Avg. salary jump</div>
-              <div className="wstat-s">within 2 years · Mentoring.org</div>
+              <div className="wstat-l">{safeCms.cms_mentor_why_stat4_lbl || 'Avg. salary jump'}</div>
+              <div className="wstat-s">{safeCms.cms_mentor_why_stat4_sub || 'within 2 years · Mentoring.org'}</div>
             </div>
           </div>
 
           <div className="why-foot rev">
-            <p>One conversation can change the trajectory of your <em>whole career.</em></p>
+            <p dangerouslySetInnerHTML={{ __html: safeCms.cms_mentor_why_foot_text || 'One conversation can change the trajectory of your <em>whole career.</em>' }} />
             <button
               className="btn-p"
               onClick={() => {
@@ -892,7 +913,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
               }}
             >
               <svg viewBox="0 0 24 24" style={{ width: '18px', height: '18px', fill: 'none', stroke: '#fff', strokeWidth: 2, strokeLinecap: 'round' }}><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg>
-              Book a session
+              {safeCms.cms_mentor_why_foot_btn || 'Book a session'}
             </button>
           </div>
         </div>
@@ -903,36 +924,36 @@ export default function Mentorship({ onShowToast, onNavChange }) {
         <div className="wrap">
           <div className="faq-grid">
             <div className="faq-side rev">
-              <span className="eyebrow">Questions</span>
-              <h2 className="faq-h">Everything you<br />need to <em>know.</em></h2>
-              <p>Browse the mentors above — you can read every profile before booking a thing.</p>
+              <span className="eyebrow">{safeCms.cms_mentor_faq_eyebrow || 'Questions'}</span>
+              <h2 className="faq-h" dangerouslySetInnerHTML={{ __html: safeCms.cms_mentor_faq_title || 'Everything you<br />need to <em>know.</em>' }} />
+              <p>{safeCms.cms_mentor_faq_subtitle || 'Browse the mentors above — you can read every profile before booking a thing.'}</p>
             </div>
             
             <div className="faq-list rev rev-d1">
               {[
                 {
-                  q: "How are mentors verified?",
-                  a: "Every mentor completes identity verification and a background check, and we confirm their professional history before they can take a session."
+                  q: safeCms.cms_mentor_faq_q1 || "How are mentors verified?",
+                  a: safeCms.cms_mentor_faq_a1 || "Every mentor completes identity verification and a background check, and we confirm their professional history before they can take a session."
                 },
                 {
-                  q: "What happens in a session?",
-                  a: "A private one-to-one video call. You bring a question or a goal; your mentor brings lived experience. Most people leave with a clear next step."
+                  q: safeCms.cms_mentor_faq_q2 || "What happens in a session?",
+                  a: safeCms.cms_mentor_faq_a2 || "A private one-to-one video call. You bring a question or a goal; your mentor brings lived experience. Most people leave with a clear next step."
                 },
                 {
-                  q: "What does it cost?",
-                  a: "Sessions start at $20 for a focused 30-minute conversation. Longer sessions are priced by each mentor and shown upfront. No subscriptions."
+                  q: safeCms.cms_mentor_faq_q3 || "What does it cost?",
+                  a: safeCms.cms_mentor_faq_a3 || "Sessions start at $20 for a focused 30-minute conversation. Longer sessions are priced by each mentor and shown upfront. No subscriptions."
                 },
                 {
-                  q: "Is it really confidential?",
-                  a: "Yes. What you discuss stays between you and your mentor. We never share session content, and your booking details stay private."
+                  q: safeCms.cms_mentor_faq_q4 || "Is it really confidential?",
+                  a: safeCms.cms_mentor_faq_a4 || "Yes. What you discuss stays between you and your mentor. We never share session content, and your booking details stay private."
                 },
                 {
-                  q: "What if I need to reschedule?",
-                  a: "You can reschedule or cancel up to 24 hours before your session at no cost, directly from your confirmation email."
+                  q: safeCms.cms_mentor_faq_q5 || "What if I need to reschedule?",
+                  a: safeCms.cms_mentor_faq_a5 || "You can reschedule or cancel up to 24 hours before your session at no cost, directly from your confirmation email."
                 },
                 {
-                  q: "Do I have to commit to a package?",
-                  a: "No. Book one session, see how it feels, and come back when you need to. There is no commitment beyond the session you book."
+                  q: safeCms.cms_mentor_faq_q6 || "Do I have to commit to a package?",
+                  a: safeCms.cms_mentor_faq_a6 || "No. Book one session, see how it feels, and come back when you need to. There is no commitment beyond the session you book."
                 }
               ].map((faq, index) => {
                 const isOpen = activeFaqIndex === index;
