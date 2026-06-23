@@ -40,7 +40,7 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -48,7 +48,7 @@ body {
   background: var(--page-bg);
   color: var(--page-text);
   line-height: 1.7;
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -8095,9 +8095,10 @@ textarea.ask-input {
 
   /* ─── FILTER BAR ─────────────────────────────────────────────── */
   .filter-bar {
-    position: sticky;
-    top: 80px;
-    z-index: 900;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 80px !important;
+    z-index: 900 !important;
     background: #fff;
     border-bottom: 1px solid rgba(0, 0, 0, .07);
     box-shadow: 0 2px 16px rgba(0, 0, 0, .06);
@@ -10419,7 +10420,7 @@ textarea.ask-input {
 
   @media(max-width: 768px) {
     .filter-bar {
-      top: 60px;
+      top: 60px !important;
     }
 
     .ep-grid {
@@ -10910,9 +10911,10 @@ textarea.ask-input {
    STICKY FILTER BAR
 ════════════════════════════════ */
   .filter-bar {
-    position: sticky;
-    top: 80px;
-    z-index: 90;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 80px !important;
+    z-index: 90 !important;
     background: rgba(10, 4, 20, 0.92);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -10922,7 +10924,7 @@ textarea.ask-input {
 
   @media (max-width: 768px) {
     .filter-bar {
-      top: 60px;
+      top: 60px !important;
     }
   }
 
