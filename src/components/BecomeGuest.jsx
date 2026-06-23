@@ -41,7 +41,8 @@ export default function BecomeGuest({ onShowToast }) {
           organisation,
           linkedin,
           pitch,
-          motivation
+          motivation,
+          mentor_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York'
         })
       });
 

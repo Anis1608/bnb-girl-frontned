@@ -142,6 +142,7 @@ export default function BecomeMentor({ onShowToast }) {
       formData.append('years_exp', yearsExp);
       formData.append('bio', bio);
       formData.append('motivation', motivation);
+      formData.append('timezone', Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York');
 
       // Consolidate expertise options
       const selectedExpertise = [...expertise];

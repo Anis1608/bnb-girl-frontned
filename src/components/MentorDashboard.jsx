@@ -44,7 +44,7 @@ export default function MentorDashboard({ onShowToast }) {
     busy: [],
     durs: [],
     meeting_link: '',
-    timezone: 'America/New_York'
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York'
   });
 
   // Free session toggle
@@ -95,7 +95,7 @@ export default function MentorDashboard({ onShowToast }) {
         busy: mentorProfile.busy || [],
         durs: mentorProfile.durs || ['30', '60'],
         meeting_link: mentorProfile.meeting_link || '',
-        timezone: mentorProfile.timezone || 'America/New_York'
+        timezone: mentorProfile.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York'
       });
     }
   }, [mentorProfile]);
@@ -1183,26 +1183,11 @@ export default function MentorDashboard({ onShowToast }) {
                       </div>
 
                       <div className="form-group">
-                        <label style={{ display: 'block', fontSize: '13px', color: '#9ca3af', marginBottom: '8px', fontWeight: 'bold' }}>Your Local Timezone *</label>
-                        <select
-                          name="timezone"
-                          required
-                          value={profileForm.timezone}
-                          onChange={handleTextChange}
-                          style={{ width: '100%', padding: '12px 14px', background: 'rgba(11,8,25,0.6)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#fff', outline: 'none' }}
-                        >
-                          <option value="America/New_York">America/New_York (EST/EDT)</option>
-                          <option value="America/Chicago">America/Chicago (CST/CDT)</option>
-                          <option value="America/Denver">America/Denver (MST/MDT)</option>
-                          <option value="America/Los_Angeles">America/Los_Angeles (PST/PDT)</option>
-                          <option value="Europe/London">Europe/London (GMT/BST)</option>
-                          <option value="Europe/Paris">Europe/Paris (CET/CEST)</option>
-                          <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
-                          <option value="Asia/Singapore">Asia/Singapore (SGT)</option>
-                          <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
-                          <option value="Australia/Sydney">Australia/Sydney (AEST/AEDT)</option>
-                        </select>
-                        <span style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px', display: 'block' }}>Crucial for calculating accurate scheduling differences for international students.</span>
+                        <label style={{ display: 'block', fontSize: '13px', color: '#9ca3af', marginBottom: '8px', fontWeight: 'bold' }}>Your Local Timezone (Auto-detected)</label>
+                        <div style={{ padding: '12px 14px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', color: '#4ade80', fontSize: '14.5px', fontWeight: 'bold' }}>
+                          🌐 {profileForm.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York'}
+                        </div>
+                        <span style={{ fontSize: '11px', color: '#6b7280', marginTop: '6px', display: 'block' }}>Crucial for calculating scheduling differences. Resolved dynamically from your browser context.</span>
                       </div>
                     </div>
                   </div>
