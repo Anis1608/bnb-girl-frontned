@@ -99,6 +99,78 @@ export default function MentorDashboard({ onShowToast }) {
 
   // Rescheduling states
   const [processingRescheduleId, setProcessingRescheduleId] = useState(null);
+  const [reschedulingSession, setReschedulingSession] = useState(null);
+  const [rescheduleDate, setRescheduleDate] = useState(null);
+  const [rescheduleTime, setRescheduleTime] = useState(null);
+  const [loadingRescheduleAvailability, setLoadingRescheduleAvailability] = useState(false);
+  const [submittingReschedule, setSubmittingReschedule] = useState(false);
+  const [rescheduleSuccess, setRescheduleSuccess] = useState(false);
+  const [mentorBusySlots, setMentorBusySlots] = useState([]);
+
+  useEffect(() => {
+    if (reschedulingSession && rescheduleDate && mentorProfile) {
+      setLoadingRescheduleAvailability(true);
+      fetch(`${API_BASE}/api/mentors/${mentorProfile.id || mentorProfile._id}/availability?date=${rescheduleDate}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            setMentorBusySlots(data.bookedSlots || []);
+          }
+        })
+        .catch(err => console.error('Error fetching reschedule availability:', err))
+        .finally(() => setLoadingRescheduleAvailability(false));
+    } else {
+      setMentorBusySlots([]);
+    }
+  }, [reschedulingSession, rescheduleDate, mentorProfile, API_BASE]);
+
+  const openRescheduleModal = (session) => {
+    setReschedulingSession(session);
+    setRescheduleDate(null);
+    setRescheduleTime(null);
+    setRescheduleSuccess(false);
+  };
+
+  const handleRescheduleSubmit = async () => {
+    if (!rescheduleDate || !rescheduleTime || !reschedulingSession) return;
+    setSubmittingReschedule(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/mentor/bookings/${reschedulingSession._id}/reschedule`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${mentorToken}`
+        },
+        body: JSON.stringify({ date: rescheduleDate, time: rescheduleTime })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setRescheduleSuccess(true);
+        if (onShowToast) {
+          onShowToast('📅', 'Rescheduled', 'Mentorship session rescheduled successfully and student notified.');
+        }
+        loadBookings();
+      } else {
+        alert(data.message || 'Failed to reschedule session.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error submitting reschedule.');
+    } finally {
+      setSubmittingReschedule(false);
+    }
+  };
+
+  const getRescheduleDates = () => {
+    const dates = [];
+    const today = new Date();
+    for (let i = 1; i <= 14; i++) {
+      const dt = new Date(today);
+      dt.setDate(today.getDate() + i);
+      dates.push(dt);
+    }
+    return dates;
+  };
 
   const handleRescheduleDecision = async (bookingId, action) => {
     setProcessingRescheduleId(bookingId);
@@ -682,10 +754,17 @@ export default function MentorDashboard({ onShowToast }) {
                           >
                             🚀 Launch Google Meet
                           </a>
+                           <button
+                            className="btn btn-secondary"
+                            onClick={() => openRescheduleModal(nextSession)}
+                            style={{ padding: '12px 20px', borderRadius: '12px', background: 'rgba(236, 72, 153, 0.08)', color: 'var(--rose)', border: '1px solid rgba(236, 72, 153, 0.2)', fontWeight: 'bold', cursor: 'pointer' }}
+                          >
+                            📅 Reschedule
+                          </button>
                           <button
                             className="btn btn-secondary"
                             onClick={() => setSelectedBooking(nextSession)}
-                            style={{ padding: '12px 20px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}
+                            style={{ padding: '12px 20px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer' }}
                           >
                             Full Profile
                           </button>
@@ -891,6 +970,15 @@ export default function MentorDashboard({ onShowToast }) {
                                 >
                                   Details
                                 </button>
+                                {(stat === 'upcoming' || stat === 'live') && (
+                                  <button
+                                    className="btn btn-secondary btn-sm"
+                                    onClick={() => openRescheduleModal(b)}
+                                    style={{ padding: '6px 12px', fontSize: '12px', borderRadius: '8px', border: '1px solid rgba(236,72,153,0.2)', background: 'rgba(236,72,153,0.05)', color: 'var(--rose)', cursor: 'pointer', fontWeight: 'bold' }}
+                                  >
+                                    Reschedule
+                                  </button>
+                                )}
                                 {(stat === 'upcoming' || stat === 'live') && (
                                   <a
                                     href={b.data.meet_link || 'https://meet.google.com'}
@@ -1318,6 +1406,164 @@ export default function MentorDashboard({ onShowToast }) {
                 </a>
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reschedule Modal */}
+      {reschedulingSession && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '24px' }}>
+          <div className="glass-box" style={{ maxWidth: '560px', width: '100%', padding: '32px', background: '#0e0a24', border: '1px solid var(--border-light)', borderRadius: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, fontSize: '20px', fontFamily: 'Outfit' }}>Reschedule Session</h3>
+              <button
+                onClick={() => setReschedulingSession(null)}
+                style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '24px', cursor: 'pointer', padding: 0 }}
+              >
+                ×
+              </button>
+            </div>
+
+            {rescheduleSuccess ? (
+              <div style={{ textAlign: 'center', padding: '16px 0' }}>
+                <span style={{ fontSize: '48px', display: 'block', marginBottom: '16px' }}>📅</span>
+                <h3 style={{ color: '#4ade80', fontSize: '18px', marginBottom: '8px', fontWeight: 'bold' }}>Session Rescheduled</h3>
+                <p style={{ color: '#9ca3af', fontSize: '14px', lineHeight: '1.5', margin: '0 0 24px' }}>
+                  The session with <strong>{reschedulingSession.data.email}</strong> has been successfully rescheduled to <strong>{fmtDate(rescheduleDate)} at {rescheduleTime}</strong>. The student has been notified by email.
+                </p>
+                <button 
+                  className="btn btn-primary" 
+                  onClick={() => {
+                    setReschedulingSession(null);
+                    setRescheduleSuccess(false);
+                    setRescheduleDate(null);
+                    setRescheduleTime(null);
+                  }}
+                  style={{ width: '100%', height: '44px', background: 'linear-gradient(135deg, #EC4899, #9333EA)', border: 'none', color: '#fff', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold' }}
+                >
+                  Return to Dashboard
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <p style={{ color: '#9ca3af', fontSize: '13.5px', margin: 0, lineHeight: '1.4' }}>
+                  Select a new date and time from your available slots. Rescheduling will directly update the booking and notify the student.
+                </p>
+
+                {/* 1. Date Selector */}
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', color: '#9ca3af', textTransform: 'uppercase', fontWeight: 'bold', marginBottom: '8px' }}>Select Date</label>
+                  <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px' }}>
+                    {getRescheduleDates().map(dt => {
+                      const year = dt.getFullYear();
+                      const month = String(dt.getMonth() + 1).padStart(2, '0');
+                      const day = String(dt.getDate()).padStart(2, '0');
+                      const iso = `${year}-${month}-${day}`;
+                      const isSelected = rescheduleDate === iso;
+                      
+                      const daysList = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                      const monsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                      
+                      return (
+                        <button
+                          key={iso}
+                          type="button"
+                          onClick={() => { setRescheduleDate(iso); setRescheduleTime(null); }}
+                          style={{
+                            flexShrink: 0,
+                            padding: '10px 12px',
+                            borderRadius: '8px',
+                            border: isSelected ? '1px solid var(--rose)' : '1px solid rgba(255,255,255,0.08)',
+                            background: isSelected ? 'rgba(236,72,153,0.1)' : 'rgba(255,255,255,0.02)',
+                            color: isSelected ? 'var(--rose)' : '#9ca3af',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            textAlign: 'center',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            minWidth: '70px',
+                            outline: 'none'
+                          }}
+                        >
+                          <span style={{ fontSize: '9px', textTransform: 'uppercase', opacity: 0.8 }}>{daysList[dt.getDay()]}</span>
+                          <strong style={{ fontSize: '15px', display: 'block', margin: '2px 0', color: isSelected ? '#fff' : '#e5e7eb' }}>{dt.getDate()}</strong>
+                          <span style={{ fontSize: '9px', opacity: 0.8 }}>{monsList[dt.getMonth()]}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Time Selector */}
+                {rescheduleDate && (
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', color: '#9ca3af', textTransform: 'uppercase', fontWeight: 'bold', marginBottom: '8px' }}>
+                      Available Times
+                      {loadingRescheduleAvailability && <span style={{ float: 'right', fontSize: '11px', color: 'var(--rose)', textTransform: 'none' }}>Checking slots...</span>}
+                    </label>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', opacity: loadingRescheduleAvailability ? 0.5 : 1 }}>
+                      {(() => {
+                        const slots = mentorProfile?.slots || ["09:00", "09:30", "10:00", "11:00", "11:30", "14:00", "14:30", "15:00", "16:00", "16:30"];
+                        return slots.map(t => {
+                          const isBusySlot = mentorBusySlots.includes(t) || (mentorProfile?.busy && mentorProfile.busy.includes(t));
+                          const isSelected = rescheduleTime === t;
+                          return (
+                            <button
+                              key={t}
+                              type="button"
+                              disabled={isBusySlot}
+                              onClick={() => setRescheduleTime(t)}
+                              style={{
+                                padding: '8px 4px',
+                                borderRadius: '6px',
+                                border: isSelected ? '1px solid #9333EA' : isBusySlot ? '1px solid rgba(239,68,68,0.1)' : '1px solid rgba(255,255,255,0.05)',
+                                background: isSelected ? 'rgba(147,51,234,0.15)' : isBusySlot ? 'rgba(239,68,68,0.05)' : 'rgba(255,255,255,0.02)',
+                                color: isSelected ? '#d8b4fe' : isBusySlot ? '#ff7878' : '#e5e7eb',
+                                cursor: isBusySlot ? 'not-allowed' : 'pointer',
+                                fontSize: '12px',
+                                fontWeight: 'bold',
+                                textDecoration: isBusySlot ? 'line-through' : 'none',
+                                outline: 'none'
+                              }}
+                            >
+                              {t}
+                            </button>
+                          );
+                        });
+                      })()}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Actions */}
+                <div style={{ display: 'flex', gap: '12px', marginTop: '12px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '16px' }}>
+                  <button 
+                    type="button"
+                    className="btn btn-secondary" 
+                    onClick={() => setReschedulingSession(null)}
+                    disabled={submittingReschedule}
+                    style={{ flex: 1, height: '44px', background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', cursor: 'pointer' }}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="button"
+                    className="btn btn-primary" 
+                    disabled={!rescheduleDate || !rescheduleTime || submittingReschedule}
+                    onClick={handleRescheduleSubmit}
+                    style={{ flex: 1, height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'linear-gradient(135deg, #EC4899, #9333EA)', border: 'none', color: '#fff', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold' }}
+                  >
+                    {submittingReschedule ? (
+                      <>
+                        <svg className="spin" viewBox="0 0 24 24" style={{ width: '18px', height: '18px', fill: 'none', stroke: '#fff', strokeWidth: 3 }}><path d="M21 12a9 9 0 11-6.2-8.6" /></svg>
+                        Rescheduling...
+                      </>
+                    ) : 'Reschedule'}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
