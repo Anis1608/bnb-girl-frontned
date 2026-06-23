@@ -77,13 +77,34 @@ export default function AppContextProvider({ children }) {
       return [];
     }
   });
-  const [loading, setLoading] = useState(() => {
+  const checkHasCache = () => {
     try {
-      return !localStorage.getItem('bbg_mentors');
+      const mentorsCached = localStorage.getItem('bbg_mentors');
+      const episodesCached = localStorage.getItem('bbg_episodes');
+      const categoriesCached = localStorage.getItem('bbg_categories');
+      const resourcesCached = localStorage.getItem('bbg_resources');
+
+      if (!mentorsCached || !episodesCached || !categoriesCached || !resourcesCached) {
+        return false;
+      }
+
+      const parsedMentors = JSON.parse(mentorsCached);
+      const parsedEpisodes = JSON.parse(episodesCached);
+      const parsedCategories = JSON.parse(categoriesCached);
+      const parsedResources = JSON.parse(resourcesCached);
+
+      return (
+        Array.isArray(parsedMentors) && parsedMentors.length > 0 &&
+        Array.isArray(parsedEpisodes) && parsedEpisodes.length > 0 &&
+        Array.isArray(parsedCategories) && parsedCategories.length > 0 &&
+        Array.isArray(parsedResources) && parsedResources.length > 0
+      );
     } catch (e) {
-      return true;
+      return false;
     }
-  });
+  };
+
+  const [loading, setLoading] = useState(() => !checkHasCache());
   const [cms, setCms] = useState(() => {
     if (window.__CMS_DATA__) {
       return window.__CMS_DATA__;
@@ -159,7 +180,9 @@ export default function AppContextProvider({ children }) {
   };
 
   const loadData = async () => {
-    setLoading(true);
+    if (!checkHasCache()) {
+      setLoading(true);
+    }
     try {
       // 0. Fetch CMS — always fetch fresh so admin changes reflect immediately
       try {
