@@ -8096,7 +8096,7 @@ textarea.ask-input {
   /* ─── FILTER BAR ─────────────────────────────────────────────── */
   .filter-bar {
     position: sticky;
-    top: 0;
+    top: 80px;
     z-index: 900;
     background: #fff;
     border-bottom: 1px solid rgba(0, 0, 0, .07);
@@ -10418,6 +10418,10 @@ textarea.ask-input {
   }
 
   @media(max-width: 768px) {
+    .filter-bar {
+      top: 60px;
+    }
+
     .ep-grid {
       grid-template-columns: 1fr;
       gap: 20px
@@ -10907,12 +10911,19 @@ textarea.ask-input {
 ════════════════════════════════ */
   .filter-bar {
     position: sticky;
-    top: 0;
+    top: 80px;
     z-index: 90;
     background: rgba(10, 4, 20, 0.92);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    padding: 0 24px
+    padding: 0 24px;
+    transition: all .3s
+  }
+
+  @media (max-width: 768px) {
+    .filter-bar {
+      top: 60px;
+    }
   }
 
   .filter-bar__inner {
