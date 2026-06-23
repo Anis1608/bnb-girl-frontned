@@ -42,7 +42,9 @@ export default function MentorDashboard({ onShowToast }) {
     photo: '',
     slots: [],
     busy: [],
-    durs: []
+    durs: [],
+    meeting_link: '',
+    timezone: 'America/New_York'
   });
 
   // Free session toggle
@@ -92,7 +94,8 @@ export default function MentorDashboard({ onShowToast }) {
         slots: mentorProfile.slots || [],
         busy: mentorProfile.busy || [],
         durs: mentorProfile.durs || ['30', '60'],
-        meeting_link: mentorProfile.meeting_link || ''
+        meeting_link: mentorProfile.meeting_link || '',
+        timezone: mentorProfile.timezone || 'America/New_York'
       });
     }
   }, [mentorProfile]);
@@ -110,7 +113,8 @@ export default function MentorDashboard({ onShowToast }) {
   useEffect(() => {
     if (reschedulingSession && rescheduleDate && mentorProfile) {
       setLoadingRescheduleAvailability(true);
-      fetch(`${API_BASE}/api/mentors/${mentorProfile.id || mentorProfile._id}/availability?date=${rescheduleDate}`)
+      const tz = mentorProfile.timezone || 'America/New_York';
+      fetch(`${API_BASE}/api/mentors/${mentorProfile.id || mentorProfile._id}/availability?date=${rescheduleDate}&student_tz=${encodeURIComponent(tz)}`)
         .then(res => res.json())
         .then(data => {
           if (data.success) {
@@ -373,20 +377,91 @@ export default function MentorDashboard({ onShowToast }) {
     }
   };
 
+  const getSessionTimeForMentor = (b) => {
+    const tz = mentorProfile?.timezone || 'America/New_York';
+    if (b.data.utc_start) {
+      const date = new Date(b.data.utc_start);
+      try {
+        const formatter = new Intl.DateTimeFormat('en-US', {
+          timeZone: tz,
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+        const parts = formatter.formatToParts(date);
+        const map = {};
+        parts.forEach(p => map[p.type] = p.value);
+        return {
+          date: `${map.year}-${map.month}-${map.day}`,
+          time: `${map.hour}:${map.minute}`
+        };
+      } catch (err) {
+        console.error('Intl formatting failed', err);
+      }
+    }
+    return {
+      date: b.data.date,
+      time: b.data.time
+    };
+  };
+
+  const getRescheduleTimeForMentor = (b) => {
+    const tz = mentorProfile?.timezone || 'America/New_York';
+    const req = b.data.reschedule_request;
+    if (req) {
+      if (req.utc_start) {
+        const date = new Date(req.utc_start);
+        try {
+          const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: tz,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          });
+          const parts = formatter.formatToParts(date);
+          const map = {};
+          parts.forEach(p => map[p.type] = p.value);
+          return {
+            date: `${map.year}-${map.month}-${map.day}`,
+            time: `${map.hour}:${map.minute}`
+          };
+        } catch (err) {
+          console.error('Intl formatting failed', err);
+        }
+      }
+      return {
+        date: req.date,
+        time: req.time
+      };
+    }
+    return null;
+  };
+
   // Filter logic
   const now = new Date();
   const getSessionStatus = (b) => {
     try {
-      const dateParts = b.data.date.split('-');
-      const timeParts = b.data.time.split(':');
-      const sessionStart = new Date(
-        parseInt(dateParts[0]),
-        parseInt(dateParts[1]) - 1,
-        parseInt(dateParts[2]),
-        parseInt(timeParts[0]),
-        parseInt(timeParts[1]),
-        0
-      );
+      let sessionStart;
+      if (b.data.utc_start) {
+        sessionStart = new Date(b.data.utc_start);
+      } else {
+        const dateParts = b.data.date.split('-');
+        const timeParts = b.data.time.split(':');
+        sessionStart = new Date(
+          parseInt(dateParts[0]),
+          parseInt(dateParts[1]) - 1,
+          parseInt(dateParts[2]),
+          parseInt(timeParts[0]),
+          parseInt(timeParts[1]),
+          0
+        );
+      }
       const duration = parseInt(b.data.duration) || 30;
       const sessionEnd = new Date(sessionStart.getTime() + duration * 60 * 1000);
 
@@ -416,8 +491,8 @@ export default function MentorDashboard({ onShowToast }) {
     .sort((a, b) => {
       // 3. Sorting Logic
       if (sortBy === 'date-asc' || sortBy === 'date-desc') {
-        const dateA = new Date(`${a.data.date}T${a.data.time}`);
-        const dateB = new Date(`${b.data.date}T${b.data.time}`);
+        const dateA = a.data.utc_start ? new Date(a.data.utc_start) : new Date(`${a.data.date}T${a.data.time}`);
+        const dateB = b.data.utc_start ? new Date(b.data.utc_start) : new Date(`${b.data.date}T${b.data.time}`);
         return sortBy === 'date-asc' ? dateA - dateB : dateB - dateA;
       }
       if (sortBy === 'amount-asc' || sortBy === 'amount-desc') {
@@ -441,7 +516,11 @@ export default function MentorDashboard({ onShowToast }) {
   // Next session finder
   const nextSession = bookings
     .filter(b => getSessionStatus(b) === 'upcoming' || getSessionStatus(b) === 'live')
-    .sort((a, b) => new Date(`${a.data.date}T${a.data.time}`) - new Date(`${b.data.date}T${b.data.time}`))[0];
+    .sort((a, b) => {
+      const dateA = a.data.utc_start ? new Date(a.data.utc_start) : new Date(`${a.data.date}T${a.data.time}`);
+      const dateB = b.data.utc_start ? new Date(b.data.utc_start) : new Date(`${b.data.date}T${b.data.time}`);
+      return dateA - dateB;
+    })[0];
 
   // Render Login state
   if (!mentorToken) {
@@ -695,54 +774,63 @@ export default function MentorDashboard({ onShowToast }) {
                           </div>
                         </div>
 
-                        <div className="ns-details-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.03)', padding: '16px', borderRadius: '12px' }}>
-                          <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', marginBottom: '4px' }}>Date</span>
-                            <span style={{ fontWeight: '600', fontSize: '14px' }}>{fmtDate(nextSession.data.date)}</span>
-                          </div>
-                          <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', marginBottom: '4px' }}>Time Slot</span>
-                            <span style={{ fontWeight: '600', fontSize: '14px' }}>{nextSession.data.time}</span>
-                          </div>
-                          <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', marginBottom: '4px' }}>Duration</span>
-                            <span style={{ fontWeight: '600', fontSize: '14px' }}>{nextSession.data.duration} Mins</span>
-                          </div>
-                        </div>
+                        {(() => {
+                          const nsTime = getSessionTimeForMentor(nextSession);
+                          const nsReschedTime = getRescheduleTimeForMentor(nextSession);
+                          const tz = mentorProfile?.timezone || 'America/New_York';
+                          return (
+                            <>
+                              <div className="ns-details-list" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.03)', padding: '16px', borderRadius: '12px' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                  <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', marginBottom: '4px' }}>Date</span>
+                                  <span style={{ fontWeight: '600', fontSize: '14px' }}>{fmtDate(nsTime.date)}</span>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                  <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', marginBottom: '4px' }}>Time Slot</span>
+                                  <span style={{ fontWeight: '600', fontSize: '14px' }}>{nsTime.time} ({tz})</span>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                  <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', marginBottom: '4px' }}>Duration</span>
+                                  <span style={{ fontWeight: '600', fontSize: '14px' }}>{nextSession.data.duration} Mins</span>
+                                </div>
+                              </div>
 
-                        {nextSession.data.goals && (
-                          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '12px', fontSize: '13.5px', borderLeft: '3px solid var(--rose)' }}>
-                            <strong style={{ display: 'block', marginBottom: '4px', fontSize: '12px', color: '#e5e7eb' }}>Goals / Topics:</strong>
-                            <p style={{ margin: 0, color: '#9ca3af', lineHeight: '1.4' }}>"{nextSession.data.goals}"</p>
-                          </div>
-                        )}
+                              {nextSession.data.goals && (
+                                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '12px', fontSize: '13.5px', borderLeft: '3px solid var(--rose)' }}>
+                                  <strong style={{ display: 'block', marginBottom: '4px', fontSize: '12px', color: '#e5e7eb' }}>Goals / Topics:</strong>
+                                  <p style={{ margin: 0, color: '#9ca3af', lineHeight: '1.4' }}>"{nextSession.data.goals}"</p>
+                                </div>
+                              )}
 
-                        {nextSession.data.reschedule_request && nextSession.data.reschedule_request.status === 'pending' && (
-                          <div style={{ background: 'rgba(234,179,8,0.06)', borderLeft: '3px solid #EAB308', padding: '14px', borderRadius: '12px', fontSize: '13.5px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                            <strong style={{ display: 'block', color: '#EAB308' }}>⚠️ Reschedule Request Pending:</strong>
-                            <p style={{ margin: 0, color: '#e5e7eb', lineHeight: '1.4' }}>
-                              Student requested to move this session to <strong>{fmtDate(nextSession.data.reschedule_request.date)} at {nextSession.data.reschedule_request.time}</strong>.
-                            </p>
-                            <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
-                              <button
-                                type="button"
-                                onClick={() => handleRescheduleDecision(nextSession._id, 'accept')}
-                                disabled={processingRescheduleId === nextSession._id}
-                                style={{ padding: '6px 12px', fontSize: '12px', borderRadius: '6px', background: '#22c55e', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
-                              >
-                                {processingRescheduleId === nextSession._id ? 'Processing...' : 'Accept Request'}
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleRescheduleDecision(nextSession._id, 'decline')}
-                                disabled={processingRescheduleId === nextSession._id}
-                                style={{ padding: '6px 12px', fontSize: '12px', borderRadius: '6px', background: '#ef4444', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
-                              >
-                                Decline
-                              </button>
-                            </div>
-                          </div>
-                        )}
+                              {nextSession.data.reschedule_request && nextSession.data.reschedule_request.status === 'pending' && (
+                                <div style={{ background: 'rgba(234,179,8,0.06)', borderLeft: '3px solid #EAB308', padding: '14px', borderRadius: '12px', fontSize: '13.5px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                  <strong style={{ display: 'block', color: '#EAB308' }}>⚠️ Reschedule Request Pending:</strong>
+                                  <p style={{ margin: 0, color: '#e5e7eb', lineHeight: '1.4' }}>
+                                    Student requested to move this session to <strong>{nsReschedTime ? `${fmtDate(nsReschedTime.date)} at ${nsReschedTime.time} (${tz})` : `${fmtDate(nextSession.data.reschedule_request.date)} at ${nextSession.data.reschedule_request.time}`}</strong>.
+                                  </p>
+                                  <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRescheduleDecision(nextSession._id, 'accept')}
+                                      disabled={processingRescheduleId === nextSession._id}
+                                      style={{ padding: '6px 12px', fontSize: '12px', borderRadius: '6px', background: '#22c55e', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+                                    >
+                                      {processingRescheduleId === nextSession._id ? 'Processing...' : 'Accept Request'}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRescheduleDecision(nextSession._id, 'decline')}
+                                      disabled={processingRescheduleId === nextSession._id}
+                                      style={{ padding: '6px 12px', fontSize: '12px', borderRadius: '6px', background: '#ef4444', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+                                    >
+                                      Decline
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          );
+                        })()}
 
                         <div className="flex-btn-container" style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
                           <a
@@ -903,11 +991,14 @@ export default function MentorDashboard({ onShowToast }) {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     {filteredBookings.map(b => {
                       const stat = getSessionStatus(b);
+                      const bTime = getSessionTimeForMentor(b);
+                      const bReschedTime = getRescheduleTimeForMentor(b);
+                      const tz = mentorProfile?.timezone || 'America/New_York';
                       return (
                         <div key={b._id} className={`session-card-p${stat === 'upcoming' || stat === 'live' ? ' upcoming' : ' completed'}`}>
                           <div className="sc-date-block">
-                            <span className="sc-month">{getMonthAbbr(b.data.date)}</span>
-                            <span className="sc-day">{getDayNum(b.data.date)}</span>
+                            <span className="sc-month">{getMonthAbbr(bTime.date)}</span>
+                            <span className="sc-day">{getDayNum(bTime.date)}</span>
                           </div>
 
                           <div className="sc-info-block">
@@ -919,7 +1010,7 @@ export default function MentorDashboard({ onShowToast }) {
                             <div className="sc-params">
                               <div className="scp-i">
                                 <span>Time Slot</span>
-                                <strong>{b.data.time}</strong>
+                                <strong>{bTime.time} ({tz})</strong>
                               </div>
                               <div className="scp-i">
                                 <span>Duration</span>
@@ -935,7 +1026,7 @@ export default function MentorDashboard({ onShowToast }) {
                               <div style={{ background: 'rgba(234,179,8,0.06)', borderLeft: '3px solid #EAB308', padding: '12px 16px', borderRadius: '8px', fontSize: '13px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                                 <span style={{ color: '#EAB308', fontWeight: 'bold' }}>⚠️ Reschedule Requested by Student</span>
                                 <span style={{ color: '#e5e7eb' }}>
-                                  Proposed New Schedule: <strong>{fmtDate(b.data.reschedule_request.date)} at {b.data.reschedule_request.time}</strong>
+                                  Proposed New Schedule: <strong>{bReschedTime ? `${fmtDate(bReschedTime.date)} at ${bReschedTime.time} (${tz})` : `${fmtDate(b.data.reschedule_request.date)} at ${b.data.reschedule_request.time}`}</strong>
                                 </span>
                                 <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
                                   <button
@@ -1089,6 +1180,29 @@ export default function MentorDashboard({ onShowToast }) {
                             );
                           })}
                         </div>
+                      </div>
+
+                      <div className="form-group">
+                        <label style={{ display: 'block', fontSize: '13px', color: '#9ca3af', marginBottom: '8px', fontWeight: 'bold' }}>Your Local Timezone *</label>
+                        <select
+                          name="timezone"
+                          required
+                          value={profileForm.timezone}
+                          onChange={handleTextChange}
+                          style={{ width: '100%', padding: '12px 14px', background: 'rgba(11,8,25,0.6)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#fff', outline: 'none' }}
+                        >
+                          <option value="America/New_York">America/New_York (EST/EDT)</option>
+                          <option value="America/Chicago">America/Chicago (CST/CDT)</option>
+                          <option value="America/Denver">America/Denver (MST/MDT)</option>
+                          <option value="America/Los_Angeles">America/Los_Angeles (PST/PDT)</option>
+                          <option value="Europe/London">Europe/London (GMT/BST)</option>
+                          <option value="Europe/Paris">Europe/Paris (CET/CEST)</option>
+                          <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
+                          <option value="Asia/Singapore">Asia/Singapore (SGT)</option>
+                          <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
+                          <option value="Australia/Sydney">Australia/Sydney (AEST/AEDT)</option>
+                        </select>
+                        <span style={{ fontSize: '11px', color: '#6b7280', marginTop: '4px', display: 'block' }}>Crucial for calculating accurate scheduling differences for international students.</span>
                       </div>
                     </div>
                   </div>
@@ -1305,110 +1419,114 @@ export default function MentorDashboard({ onShowToast }) {
       </main>
 
       {/* Booking dossier details modal */}
-      {selectedBooking && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '24px' }}>
-          <div className="glass-box" style={{ maxWidth: '560px', width: '100%', padding: '32px', background: '#0e0a24', border: '1px solid var(--border-light)', borderRadius: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ margin: 0, fontSize: '20px', fontFamily: 'Outfit' }}>Booking Details</h3>
-              <button
-                onClick={() => setSelectedBooking(null)}
-                style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '24px', cursor: 'pointer', padding: 0 }}
-              >
-                ×
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '16px' }}>
-              <div>
-                <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>Student Email</span>
-                <a href={`mailto:${selectedBooking.data.email}`} style={{ color: 'var(--rose)', fontWeight: 'bold', textDecoration: 'none' }}>
-                  {selectedBooking.data.email}
-                </a>
+      {selectedBooking && (() => {
+        const bTime = getSessionTimeForMentor(selectedBooking);
+        const tz = mentorProfile?.timezone || 'America/New_York';
+        return (
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(5px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '24px' }}>
+            <div className="glass-box" style={{ maxWidth: '560px', width: '100%', padding: '32px', background: '#0e0a24', border: '1px solid var(--border-light)', borderRadius: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ margin: 0, fontSize: '20px', fontFamily: 'Outfit' }}>Booking Details</h3>
+                <button
+                  onClick={() => setSelectedBooking(null)}
+                  style={{ background: 'none', border: 'none', color: '#9ca3af', fontSize: '24px', cursor: 'pointer', padding: 0 }}
+                >
+                  ×
+                </button>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '16px' }}>
                 <div>
-                  <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>Date</span>
-                  <span style={{ fontWeight: '600' }}>{fmtDate(selectedBooking.data.date)}</span>
+                  <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>Student Email</span>
+                  <a href={`mailto:${selectedBooking.data.email}`} style={{ color: 'var(--rose)', fontWeight: 'bold', textDecoration: 'none' }}>
+                    {selectedBooking.data.email}
+                  </a>
                 </div>
-                <div>
-                  <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>Time</span>
-                  <span style={{ fontWeight: '600' }}>{selectedBooking.data.time}</span>
-                </div>
-              </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div>
-                  <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>Duration</span>
-                  <span style={{ fontWeight: '600' }}>{selectedBooking.data.duration} Minutes</span>
-                </div>
-                <div>
-                  <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>Amount Paid</span>
-                  <span style={{ fontWeight: '600', color: '#EAB308' }}>{selectedBooking.data.amount || 'N/A'}</span>
-                </div>
-              </div>
-
-              {selectedBooking.data.field && (
-                <div>
-                  <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>Student Domain</span>
-                  <span style={{ fontWeight: '600' }}>{selectedBooking.data.field}</span>
-                </div>
-              )}
-
-              {selectedBooking.data.goals && (
-                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '12px', borderLeft: '3px solid var(--rose)' }}>
-                  <span style={{ fontSize: '11px', color: '#e5e7eb', textTransform: 'uppercase', display: 'block', marginBottom: '4px', fontWeight: 'bold' }}>Goals / Topics:</span>
-                  <p style={{ margin: 0, color: '#9ca3af', fontSize: '13.5px', lineHeight: '1.5' }}>"{selectedBooking.data.goals}"</p>
-                </div>
-              )}
-
-              {selectedBooking.data.meet_link && (
-                <div>
-                  <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Google Meet Link</span>
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    <input
-                      type="text"
-                      readOnly
-                      value={selectedBooking.data.meet_link}
-                      style={{ flex: 1, padding: '10px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', fontSize: '12.5px', color: '#d8b4fe' }}
-                    />
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(selectedBooking.data.meet_link);
-                        alert('Meet link copied to clipboard!');
-                      }}
-                      style={{ padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff', fontSize: '12px', cursor: 'pointer' }}
-                    >
-                      Copy
-                    </button>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div>
+                    <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>Date</span>
+                    <span style={{ fontWeight: '600' }}>{fmtDate(bTime.date)}</span>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>Time</span>
+                    <span style={{ fontWeight: '600' }}>{bTime.time} ({tz})</span>
                   </div>
                 </div>
-              )}
-            </div>
 
-            <div style={{ display: 'flex', gap: '12px', marginTop: '12px', justifyContent: 'flex-end' }}>
-              <button
-                className="btn btn-secondary"
-                onClick={() => setSelectedBooking(null)}
-                style={{ padding: '10px 20px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}
-              >
-                Close
-              </button>
-              {selectedBooking.data.meet_link && (
-                <a
-                  href={selectedBooking.data.meet_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-primary"
-                  style={{ padding: '10px 20px', borderRadius: '10px', background: 'linear-gradient(135deg, #EC4899 0%, #9333EA 100%)', color: '#fff', textDecoration: 'none', fontWeight: 'bold' }}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div>
+                    <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>Duration</span>
+                    <span style={{ fontWeight: '600' }}>{selectedBooking.data.duration} Minutes</span>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>Amount Paid</span>
+                    <span style={{ fontWeight: '600', color: '#EAB308' }}>{selectedBooking.data.amount || 'N/A'}</span>
+                  </div>
+                </div>
+
+                {selectedBooking.data.field && (
+                  <div>
+                    <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>Student Domain</span>
+                    <span style={{ fontWeight: '600' }}>{selectedBooking.data.field}</span>
+                  </div>
+                )}
+
+                {selectedBooking.data.goals && (
+                  <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '12px', borderLeft: '3px solid var(--rose)' }}>
+                    <span style={{ fontSize: '11px', color: '#e5e7eb', textTransform: 'uppercase', display: 'block', marginBottom: '4px', fontWeight: 'bold' }}>Goals / Topics:</span>
+                    <p style={{ margin: 0, color: '#9ca3af', fontSize: '13.5px', lineHeight: '1.5' }}>"{selectedBooking.data.goals}"</p>
+                  </div>
+                )}
+
+                {selectedBooking.data.meet_link && (
+                  <div>
+                    <span style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Google Meet Link</span>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      <input
+                        type="text"
+                        readOnly
+                        value={selectedBooking.data.meet_link}
+                        style={{ flex: 1, padding: '10px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', fontSize: '12.5px', color: '#d8b4fe' }}
+                      />
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(selectedBooking.data.meet_link);
+                          alert('Meet link copied to clipboard!');
+                        }}
+                        style={{ padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff', fontSize: '12px', cursor: 'pointer' }}
+                      >
+                        Copy
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', marginTop: '12px', justifyContent: 'flex-end' }}>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setSelectedBooking(null)}
+                  style={{ padding: '10px 20px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }}
                 >
-                  Join Google Meet
-                </a>
-              )}
+                  Close
+                </button>
+                {selectedBooking.data.meet_link && (
+                  <a
+                    href={selectedBooking.data.meet_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary"
+                    style={{ padding: '10px 20px', borderRadius: '10px', background: 'linear-gradient(135deg, #EC4899 0%, #9333EA 100%)', color: '#fff', textDecoration: 'none', fontWeight: 'bold' }}
+                  >
+                    Join Google Meet
+                  </a>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Reschedule Modal */}
       {reschedulingSession && (

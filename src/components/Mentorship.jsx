@@ -28,15 +28,18 @@ export default function Mentorship({ onShowToast, onNavChange }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [bookedSlots, setBookedSlots] = useState([]);
+  const [availableSlots, setAvailableSlots] = useState([]);
   const [loadingAvailability, setLoadingAvailability] = useState(false);
 
   useEffect(() => {
     if (selectedMentor && selectedDate) {
       setLoadingAvailability(true);
-      fetch(`${API_BASE}/api/mentors/${selectedMentor.id}/availability?date=${selectedDate}`)
+      const student_tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata';
+      fetch(`${API_BASE}/api/mentors/${selectedMentor.id}/availability?date=${selectedDate}&student_tz=${encodeURIComponent(student_tz)}`)
         .then(res => res.json())
         .then(data => {
           if (data.success) {
+            setAvailableSlots(data.slots || []);
             setBookedSlots(data.bookedSlots || []);
           }
         })
@@ -47,6 +50,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
           setLoadingAvailability(false);
         });
     } else {
+      setAvailableSlots([]);
       setBookedSlots([]);
     }
   }, [selectedMentor, selectedDate]);
@@ -400,6 +404,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
   const handleDirectFreeBooking = async (cleanEmail) => {
     setIsProcessing(true);
     const amount = priceOf(selectedDuration);
+    const student_tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata';
     const payload = {
       mentor: selectedMentor.name,
       mentor_id: selectedMentor.id,
@@ -408,6 +413,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
       time: selectedTime,
       email: cleanEmail,
       amount: amount,
+      student_tz: student_tz,
       submitted_at: new Date().toISOString()
     };
     try {
@@ -438,6 +444,7 @@ export default function Mentorship({ onShowToast, onNavChange }) {
     setStripeError('');
 
     try {
+      const student_tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata';
       const r = await fetch(`${API_BASE}/api/create-checkout-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -447,7 +454,8 @@ export default function Mentorship({ onShowToast, onNavChange }) {
           dur: selectedDuration,
           date: selectedDate,
           time: selectedTime,
-          email: cleanEmail
+          email: cleanEmail,
+          student_tz: student_tz
         })
       });
 
@@ -1087,19 +1095,27 @@ export default function Mentorship({ onShowToast, onNavChange }) {
                       {loadingAvailability && <span style={{ fontSize: '11px', color: 'var(--primary)', opacity: 0.8 }}>Checking live slots...</span>}
                     </div>
                     <div className="times" style={{ opacity: loadingAvailability ? 0.6 : 1, transition: 'opacity 0.2s' }}>
-                      {selectedMentor.slots.map((t) => {
-                        const isBusy = selectedMentor.busy.includes(t) || bookedSlots.includes(t);
-                        return (
-                          <button
-                            key={t}
-                            className={`tm${isBusy ? ' busy' : ''}${selectedTime === t ? ' on' : ''}`}
-                            disabled={isBusy}
-                            onClick={() => !isBusy && setSelectedTime(t)}
-                          >
-                            {t}
-                          </button>
-                        );
-                      })}
+                      {availableSlots.length > 0 ? (
+                        availableSlots.map((t) => {
+                          const isBusy = bookedSlots.includes(t);
+                          return (
+                            <button
+                              key={t}
+                              className={`tm${isBusy ? ' busy' : ''}${selectedTime === t ? ' on' : ''}`}
+                              disabled={isBusy}
+                              onClick={() => !isBusy && setSelectedTime(t)}
+                            >
+                              {t}
+                            </button>
+                          );
+                        })
+                      ) : (
+                        selectedDate ? (
+                          <div style={{ fontSize: '13px', color: '#888', padding: '10px 0' }}>No slots available on this date.</div>
+                        ) : (
+                          <div style={{ fontSize: '13px', color: '#888', padding: '10px 0' }}>Please select a date first.</div>
+                        )
+                      )}
                     </div>
                     <div className="tz-note">
                       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
