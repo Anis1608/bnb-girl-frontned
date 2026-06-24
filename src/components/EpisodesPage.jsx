@@ -612,6 +612,64 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
       }
     }, 80);
   };
+  const hexToHsl = (hex) => {
+    if (!hex) return { h: 270, s: 70, l: 50 };
+    let r = 0, g = 0, b = 0;
+    hex = hex.replace('#', '');
+    if (hex.length === 3) {
+      r = parseInt(hex[0] + hex[0], 16);
+      g = parseInt(hex[1] + hex[1], 16);
+      b = parseInt(hex[2] + hex[2], 16);
+    } else if (hex.length === 6) {
+      r = parseInt(hex.substring(0, 2), 16);
+      g = parseInt(hex.substring(2, 4), 16);
+      b = parseInt(hex.substring(4, 6), 16);
+    } else {
+      return { h: 270, s: 70, l: 50 };
+    }
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = 0, s = 0, l = (max + min) / 2;
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+    return {
+      h: Math.round(h * 360),
+      s: Math.round(s * 100),
+      l: Math.round(l * 100)
+    };
+  };
+
+  const activeCat = dbCategories.find(c => c.slug === selectedCategory);
+  const gridTitle = activeCat ? activeCat.name : (CAT_LABELS[selectedCategory] || 'All Episodes');
+  
+  let customSecStyle = {};
+  let isDarkTheme = false;
+  let customTitleStyle = {};
+  let customLinkStyle = {};
+
+  if (activeCat) {
+    const hsl = hexToHsl(activeCat.color || '#9333EA');
+    customSecStyle = {
+      background: `linear-gradient(160deg, hsl(${hsl.h}, ${hsl.s}%, 5%) 0%, hsl(${hsl.h}, ${hsl.s}%, 12%) 70%, hsl(${hsl.h}, ${hsl.s}%, 5%) 100%)`,
+      transition: 'background 0.7s ease'
+    };
+    customTitleStyle = { color: '#fff' };
+    customLinkStyle = { color: `hsl(${hsl.h}, ${hsl.s}%, 75%)` };
+    isDarkTheme = true;
+  } else {
+    const staticDarkThemes = ['arts', 'business', 'health', 'tech', 'leadership', 'finance', 'law', 'social'];
+    if (staticDarkThemes.includes(selectedCategory)) {
+      isDarkTheme = true;
+    }
+  }
 
   return (
     <div className="episodes-page-container">
@@ -1157,11 +1215,11 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
       </section>
 
       {/* ── EPISODES GRID ── */}
-      <section className="grid-sec" id="gridSec" data-theme={selectedCategory}>
+      <section className="grid-sec" id="gridSec" data-theme={selectedCategory} style={customSecStyle}>
         <div className="grid-inner">
           <div className="grid-header">
-            <h2 className="grid-title">{CAT_LABELS[selectedCategory] || 'All Episodes'}</h2>
-            <a href="https://www.youtube.com/@BoldandBrilliantgirl" target="_blank" rel="noopener noreferrer" className="grid-yt-link">Watch on YouTube →</a>
+            <h2 className="grid-title" style={customTitleStyle}>{gridTitle}</h2>
+            <a href="https://www.youtube.com/@BoldandBrilliantgirl" target="_blank" rel="noopener noreferrer" className="grid-yt-link" style={customLinkStyle}>Watch on YouTube →</a>
           </div>
 
           <div className="ep-grid">
@@ -1238,9 +1296,17 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
                 );
               })
             ) : (
-              <div style={{ gridColumn: '1 / -1', padding: '60px 20px', textAlign: 'center', color: 'rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px dashed rgba(255,255,255,0.1)' }}>
-                <h3>No episodes found</h3>
-                <p>Try resetting filters or searching another keyword.</p>
+              <div style={{ 
+                gridColumn: '1 / -1', 
+                padding: '60px 20px', 
+                textAlign: 'center', 
+                color: isDarkTheme ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)', 
+                background: isDarkTheme ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)', 
+                borderRadius: '16px', 
+                border: isDarkTheme ? '1px dashed rgba(255,255,255,0.15)' : '1px dashed rgba(0,0,0,0.15)' 
+              }}>
+                <h3 style={{ color: isDarkTheme ? '#fff' : 'var(--bk)', marginBottom: '8px' }}>No episodes found</h3>
+                <p style={{ margin: 0 }}>Try resetting filters or searching another keyword.</p>
               </div>
             )}
 
