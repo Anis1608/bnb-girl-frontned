@@ -669,7 +669,16 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
                 setActiveField(f.id);
                 setTimeout(() => {
                   const el = document.getElementById(`field-${f.id}`);
-                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  if (el) {
+                    const filterBar = document.getElementById('filterBar');
+                    const offset = filterBar ? filterBar.getBoundingClientRect().height : 120;
+                    const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+                    const offsetPosition = elementPosition - offset - 15;
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: 'smooth'
+                    });
+                  }
                 }, 100);
               }}>
                 {f.emoji} {f.name}
