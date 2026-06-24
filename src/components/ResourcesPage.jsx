@@ -209,11 +209,21 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
   const handleTypeCardClick = (type) => {
     setActiveType(type);
     setActiveField('all');
-    // Smooth scroll to the filter bar
-    const el = document.getElementById('filterBar');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    
+    // Scroll to the main resources section body below the sticky filter bar
+    setTimeout(() => {
+      const el = document.getElementById('resourcesBody');
+      if (el) {
+        const filterBar = document.getElementById('filterBar');
+        const offset = filterBar ? filterBar.getBoundingClientRect().height : 120;
+        const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+        const offsetPosition = elementPosition - offset - 15;
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
   };
 
   // Dynamic coming soon resources
@@ -796,7 +806,7 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
       )}
 
       {/* ── MAIN RESOURCES GRID BY FIELDS ── */}
-      <div className="page-body" style={{ background: '#F7F3FF', minHeight: '60vh' }}>
+      <div className="page-body" id="resourcesBody" style={{ background: '#F7F3FF', minHeight: '60vh' }}>
         <style>{`
           .skeleton-box {
             background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 37%, rgba(255, 255, 255, 0.05) 63%) !important;
