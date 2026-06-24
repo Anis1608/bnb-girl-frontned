@@ -4,6 +4,19 @@ import { useApp } from '../context/AppContext';
 export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
   const { cms, userToken } = useApp();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
@@ -23,6 +36,17 @@ export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
 
   return (
     <>
+      <style>{`
+        .bbg-nav, .bbg-mob-bar {
+          transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease !important;
+        }
+        .bbg-nav-hidden {
+          transform: translateY(-100%) !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+          box-shadow: none !important;
+        }
+      `}</style>
       {/* SVG Definitions for Gradients */}
       <svg width="0" height="0" style={{ position: 'absolute', overflow: 'hidden' }}>
         <defs>
@@ -35,7 +59,7 @@ export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
       </svg>
 
       {/* ══ DESKTOP NAV ══ */}
-      <nav className="bbg-nav">
+      <nav className={`bbg-nav ${((activeNav === 'resources' || activeNav === 'episodes') && isScrolled) ? 'bbg-nav-hidden' : ''}`}>
         <a href="/" className="bbg-logo" onClick={(e) => handleLinkClick(e, 'home')}>
           <img src={cms.cms_navbar_logo || "/logo-main.png"} alt="Bold & Brilliant Girls" draggable="false" />
         </a>
@@ -106,7 +130,7 @@ export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
       </nav>
 
       {/* ══ MOBILE TOP BAR ══ */}
-      <div className="bbg-mob-bar">
+      <div className={`bbg-mob-bar ${((activeNav === 'resources' || activeNav === 'episodes') && isScrolled) ? 'bbg-nav-hidden' : ''}`}>
         <a href="/" className="bbg-logo bbg-logo-sm" onClick={(e) => handleLinkClick(e, 'home')}>
           <img src={cms.cms_navbar_logo || "/logo-main.png"} alt="Bold & Brilliant Girls" draggable="false" />
         </a>
