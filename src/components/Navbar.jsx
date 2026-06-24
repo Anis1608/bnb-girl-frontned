@@ -46,6 +46,19 @@ export default function Navbar({ onSearchOpen, activeNav, onNavChange }) {
           pointer-events: none !important;
           box-shadow: none !important;
         }
+        /* Pull sticky filter bar to top when navbar is hidden */
+        .bbg-nav-hidden ~ .route-transition-wrap .filter-bar {
+          top: 0 !important;
+        }
+        /* Transition and hide back-nav button when navbar is hidden */
+        .route-transition-wrap .back-nav {
+          transition: transform 0.3s ease, opacity 0.3s ease, background 0.2s !important;
+        }
+        .bbg-nav-hidden ~ .route-transition-wrap .back-nav {
+          transform: translateY(-80px) !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+        }
       `}</style>
       {/* SVG Definitions for Gradients */}
       <svg width="0" height="0" style={{ position: 'absolute', overflow: 'hidden' }}>
