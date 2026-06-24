@@ -750,109 +750,107 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
       </div>
 
       {/* ── FEATURED WEEKLY RESOURCES (dark theme) ── */}
-      <div className="featured-section">
-        <div className="featured-section__inner">
-          <div className="section-label">
-            <span className="section-label__text">⭐ Featured This Week</span>
-            <div className="section-label__line"></div>
-          </div>
-          <div className="featured-grid">
-            {loading ? (
-              <>
-                <div className="feat-card-big" style={{ opacity: 0.6, pointerEvents: 'none' }}>
-                  <div className="feat-card-big__cover skeleton-box" style={{ height: '240px' }}></div>
-                  <div className="feat-card-big__body" style={{ textAlign: 'left' }}>
-                    <div className="skeleton-box" style={{ height: '10px', width: '30%', marginBottom: '10px', borderRadius: '4px' }}></div>
-                    <div className="skeleton-box" style={{ height: '24px', width: '70%', marginBottom: '12px', borderRadius: '4px' }}></div>
-                    <div className="skeleton-box" style={{ height: '14px', width: '90%', marginBottom: '8px', borderRadius: '4px' }}></div>
-                    <div className="skeleton-box" style={{ height: '14px', width: '50%', marginBottom: '24px', borderRadius: '4px' }}></div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div className="skeleton-box" style={{ height: '14px', width: '80px', borderRadius: '4px' }}></div>
-                      <div className="skeleton-box" style={{ height: '36px', width: '120px', borderRadius: '8px' }}></div>
+      {(loading || featuredResources.length > 0) && (
+        <div className="featured-section">
+          <div className="featured-section__inner">
+            <div className="section-label">
+              <span className="section-label__text">⭐ Featured This Week</span>
+              <div className="section-label__line"></div>
+            </div>
+            <div className="featured-grid">
+              {loading ? (
+                <>
+                  <div className="feat-card-big" style={{ opacity: 0.6, pointerEvents: 'none' }}>
+                    <div className="feat-card-big__cover skeleton-box" style={{ height: '240px' }}></div>
+                    <div className="feat-card-big__body" style={{ textAlign: 'left' }}>
+                      <div className="skeleton-box" style={{ height: '10px', width: '30%', marginBottom: '10px', borderRadius: '4px' }}></div>
+                      <div className="skeleton-box" style={{ height: '24px', width: '70%', marginBottom: '12px', borderRadius: '4px' }}></div>
+                      <div className="skeleton-box" style={{ height: '14px', width: '90%', marginBottom: '8px', borderRadius: '4px' }}></div>
+                      <div className="skeleton-box" style={{ height: '14px', width: '50%', marginBottom: '24px', borderRadius: '4px' }}></div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div className="skeleton-box" style={{ height: '14px', width: '80px', borderRadius: '4px' }}></div>
+                        <div className="skeleton-box" style={{ height: '36px', width: '120px', borderRadius: '8px' }}></div>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="feat-card-sm" style={{ opacity: 0.6, pointerEvents: 'none' }}>
-                  <div className="feat-card-sm__cover skeleton-box" style={{ height: '100%' }}></div>
-                  <div className="feat-card-sm__body" style={{ textAlign: 'left' }}>
-                    <div className="skeleton-box" style={{ height: '10px', width: '30%', marginBottom: '10px', borderRadius: '4px' }}></div>
-                    <div className="skeleton-box" style={{ height: '20px', width: '80%', marginBottom: '12px', borderRadius: '4px' }}></div>
-                    <div className="skeleton-box" style={{ height: '14px', width: '90%', marginBottom: '24px', borderRadius: '4px' }}></div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div className="skeleton-box" style={{ height: '14px', width: '60px', borderRadius: '4px' }}></div>
-                      <div className="skeleton-box" style={{ height: '32px', width: '100px', borderRadius: '8px' }}></div>
+                  <div className="feat-card-sm" style={{ opacity: 0.6, pointerEvents: 'none' }}>
+                    <div className="feat-card-sm__cover skeleton-box" style={{ height: '100%' }}></div>
+                    <div className="feat-card-sm__body" style={{ textAlign: 'left' }}>
+                      <div className="skeleton-box" style={{ height: '10px', width: '30%', marginBottom: '10px', borderRadius: '4px' }}></div>
+                      <div className="skeleton-box" style={{ height: '20px', width: '80%', marginBottom: '12px', borderRadius: '4px' }}></div>
+                      <div className="skeleton-box" style={{ height: '14px', width: '90%', marginBottom: '24px', borderRadius: '4px' }}></div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div className="skeleton-box" style={{ height: '14px', width: '60px', borderRadius: '4px' }}></div>
+                        <div className="skeleton-box" style={{ height: '32px', width: '100px', borderRadius: '8px' }}></div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </>
-            ) : featuredResources.length > 0 ? (
-              featuredResources.map((r, idx) => {
-                const t = TYPE_COLORS[r.type] || TYPE_COLORS.pdf;
-                if (idx === 0) {
-                  return (
-                    <div key={r.uid} className="feat-card-big" onClick={() => handleDownload(r.title)}>
-                      <div className="feat-card-big__cover" style={{ background: r.bg || r.cover_color }}>
-                        <span className="feat-card-big__badge" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff' }}>{t.label}</span>
-                        <span className="feat-card-big__new">NEW</span>
-                        <svg viewBox="0 0 200 140" fill="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: .2 }}>
-                          <circle cx="160" cy="30" r="60" fill="white" />
-                          <circle cx="40" cy="110" r="40" fill="white" />
-                          <rect x="70" y="50" width="60" height="80" rx="8" fill="white" opacity=".3" />
-                          <rect x="80" y="30" width="40" height="10" rx="5" fill="white" opacity=".4" />
-                        </svg>
-                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '6px' }}>
-                          <div style={{ fontSize: '52px', filter: 'drop-shadow(0 4px 20px rgba(0,0,0,0.3))' }}>{r.icon}</div>
-                          {r.pages > 0 && <div style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.15em', color: 'rgba(255,255,255,0.7)' }}>{r.pages}-Page Deep Dive</div>}
+                </>
+              ) : (
+                featuredResources.map((r, idx) => {
+                  const t = TYPE_COLORS[r.type] || TYPE_COLORS.pdf;
+                  if (idx === 0) {
+                    return (
+                      <div key={r.uid} className="feat-card-big" onClick={() => handleDownload(r.title)}>
+                        <div className="feat-card-big__cover" style={{ background: r.bg || r.cover_color }}>
+                          <span className="feat-card-big__badge" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff' }}>{t.label}</span>
+                          <span className="feat-card-big__new">NEW</span>
+                          <svg viewBox="0 0 200 140" fill="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: .2 }}>
+                            <circle cx="160" cy="30" r="60" fill="white" />
+                            <circle cx="40" cy="110" r="40" fill="white" />
+                            <rect x="70" y="50" width="60" height="80" rx="8" fill="white" opacity=".3" />
+                            <rect x="80" y="30" width="40" height="10" rx="5" fill="white" opacity=".4" />
+                          </svg>
+                          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '6px' }}>
+                            <div style={{ fontSize: '52px', filter: 'drop-shadow(0 4px 20px rgba(0,0,0,0.3))' }}>{r.icon}</div>
+                            {r.pages > 0 && <div style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.15em', color: 'rgba(255,255,255,0.7)' }}>{r.pages}-Page Deep Dive</div>}
+                          </div>
+                        </div>
+                        <div className="feat-card-big__body" style={{ textAlign: 'left' }}>
+                          <div className="feat-card-big__field">{r.fieldName}</div>
+                          <div className="feat-card-big__title">{r.title}</div>
+                          <div className="feat-card-big__desc">{r.desc || r.description}</div>
+                          <div className="feat-card-big__footer">
+                            <span className="feat-card-big__ep">{r.ep}</span>
+                            <button className="dl-btn" onClick={(e) => { e.stopPropagation(); handleDownload(r.title); }}>
+                              <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                              </svg>
+                              Download Free
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <div className="feat-card-big__body" style={{ textAlign: 'left' }}>
-                        <div className="feat-card-big__field">{r.fieldName}</div>
-                        <div className="feat-card-big__title">{r.title}</div>
-                        <div className="feat-card-big__desc">{r.desc || r.description}</div>
-                        <div className="feat-card-big__footer">
-                          <span className="feat-card-big__ep">{r.ep}</span>
-                          <button className="dl-btn" onClick={(e) => { e.stopPropagation(); handleDownload(r.title); }}>
-                            <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                            </svg>
-                            Download Free
-                          </button>
+                    );
+                  } else {
+                    return (
+                      <div key={r.uid} className="feat-card-sm" onClick={() => handleDownload(r.title)}>
+                        <div className="feat-card-sm__cover" style={{ background: r.bg || r.cover_color }}>
+                          <div className="feat-card-sm__icon">{r.icon}</div>
+                        </div>
+                        <div className="feat-card-sm__body" style={{ textAlign: 'left' }}>
+                          <div className="feat-card-sm__type">{t.label} · {r.fieldName}</div>
+                          <div className="feat-card-sm__title">{r.title}</div>
+                          <div className="feat-card-sm__desc">{r.desc || r.description}</div>
+                          <div className="feat-card-sm__footer">
+                            {r.pages > 0 && <span className="feat-card-sm__pages">{r.pages} pages</span>}
+                            <button className="dl-btn" style={{ fontSize: '11px', height: '32px', padding: '0 12px' }} onClick={(e) => { e.stopPropagation(); handleDownload(r.title); }}>
+                              <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                              </svg>
+                              Free PDF
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <div key={r.uid} className="feat-card-sm" onClick={() => handleDownload(r.title)}>
-                      <div className="feat-card-sm__cover" style={{ background: r.bg || r.cover_color }}>
-                        <div className="feat-card-sm__icon">{r.icon}</div>
-                      </div>
-                      <div className="feat-card-sm__body" style={{ textAlign: 'left' }}>
-                        <div className="feat-card-sm__type">{t.label} · {r.fieldName}</div>
-                        <div className="feat-card-sm__title">{r.title}</div>
-                        <div className="feat-card-sm__desc">{r.desc || r.description}</div>
-                        <div className="feat-card-sm__footer">
-                          {r.pages > 0 && <span className="feat-card-sm__pages">{r.pages} pages</span>}
-                          <button className="dl-btn" style={{ fontSize: '11px', height: '32px', padding: '0 12px' }} onClick={(e) => { e.stopPropagation(); handleDownload(r.title); }}>
-                            <svg fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                            </svg>
-                            Free PDF
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                }
-              })
-            ) : (
-              <div style={{ gridColumn: '1 / -1', padding: '40px 0', textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
-                No featured resources available this week.
-              </div>
-            )}
+                    );
+                  }
+                })
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* ── MAIN RESOURCES GRID BY FIELDS ── */}
       <div className="page-body" style={{ background: '#F7F3FF', minHeight: '60vh' }}>
