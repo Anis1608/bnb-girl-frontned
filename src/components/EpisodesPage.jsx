@@ -1219,7 +1219,9 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
         <div className="grid-inner">
           <div className="grid-header">
             <h2 className="grid-title" style={customTitleStyle}>{gridTitle}</h2>
-            <a href="https://www.youtube.com/@BoldandBrilliantgirl" target="_blank" rel="noopener noreferrer" className="grid-yt-link" style={customLinkStyle}>Watch on YouTube →</a>
+            {displayedList.length > 0 && (
+              <a href="https://www.youtube.com/@BoldandBrilliantgirl" target="_blank" rel="noopener noreferrer" className="grid-yt-link" style={customLinkStyle}>Watch on YouTube →</a>
+            )}
           </div>
 
           <div className="ep-grid">
