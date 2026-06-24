@@ -186,6 +186,36 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
     return ALL_RESOURCES.filter(r => r.isFeatured || r.is_featured);
   }, [ALL_RESOURCES]);
 
+  // Dynamic counts for each resource type
+  const typeCounts = useMemo(() => {
+    const counts = {
+      pdf: 0,
+      guide: 0,
+      template: 0,
+      worksheet: 0,
+      reading: 0,
+      toolkit: 0,
+      salary: 0,
+      script: 0
+    };
+    ALL_RESOURCES.forEach(r => {
+      if (counts[r.type] !== undefined) {
+        counts[r.type]++;
+      }
+    });
+    return counts;
+  }, [ALL_RESOURCES]);
+
+  const handleTypeCardClick = (type) => {
+    setActiveType(type);
+    setActiveField('all');
+    // Smooth scroll to the filter bar
+    const el = document.getElementById('filterBar');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   // Dynamic coming soon resources
   const pipelineCards = useMemo(() => {
     const cards = [];
@@ -578,24 +608,90 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
             margin: '0 auto'
           }}>
             <div className="hero-stat" style={{ flex: 1, textAlign: 'center', padding: '16px 12px', position: 'relative' }}>
-              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>{cms?.cms_resources_stat_resources_num || '48'}</span>
+              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>{ALL_RESOURCES.length}</span>
               <span className="hero-stat__lbl" style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.35)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.1em' }}>{cms?.cms_resources_stat_resources_lbl || 'Resources'}</span>
             </div>
             <div className="hero-stat" style={{ flex: 1, textAlign: 'center', padding: '16px 12px', position: 'relative', borderLeft: '1px solid rgba(255, 255, 255, 0.07)' }}>
-              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>{cms?.cms_resources_stat_pdfs_num || '28'}</span>
+              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>{typeCounts.pdf}</span>
               <span className="hero-stat__lbl" style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.35)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.1em' }}>{cms?.cms_resources_stat_pdfs_lbl || 'Episode PDFs'}</span>
             </div>
             <div className="hero-stat" style={{ flex: 1, textAlign: 'center', padding: '16px 12px', position: 'relative', borderLeft: '1px solid rgba(255, 255, 255, 0.07)' }}>
-              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>{cms?.cms_resources_stat_fields_num || '8'}</span>
+              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>{fields.length}</span>
               <span className="hero-stat__lbl" style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.35)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.1em' }}>{cms?.cms_resources_stat_fields_lbl || 'Career Fields'}</span>
             </div>
             <div className="hero-stat" style={{ flex: 1, textAlign: 'center', padding: '16px 12px', position: 'relative', borderLeft: '1px solid rgba(255, 255, 255, 0.07)' }}>
-              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>{cms?.cms_resources_stat_templates_num || '12'}</span>
+              <span className="hero-stat__num" style={{ fontFamily: 'var(--font-d)', fontSize: '22px', fontWeight: 900, color: '#FFE100', display: 'block', lineHeight: 1, marginBottom: '4px' }}>{typeCounts.template}</span>
               <span className="hero-stat__lbl" style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.35)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.1em' }}>{cms?.cms_resources_stat_templates_lbl || 'Templates'}</span>
             </div>
           </div>
         </div>
       </section>
+
+      {/* ── RESOURCE TYPES EXPLAINER ── */}
+      <div className="types-section">
+        <div className="types-section__inner">
+          <div style={{ textAlign: 'center', marginBottom: '8px' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.18em', color: 'var(--purple-mid)', background: 'rgba(147,51,234,0.07)', border: '1px solid rgba(147,51,234,0.14)', padding: '4px 14px', borderRadius: '999px', marginBottom: '14px' }}>
+              {cms?.cms_resources_types_kicker || "What's Inside"}
+            </div>
+            {cms?.cms_resources_types_title ? (
+              <h2 style={{ fontFamily: 'var(--font-d)', fontWeight: 900, fontSize: 'clamp(1.6rem,3vw,2.2rem)', color: 'var(--black)', letterSpacing: '-0.02em' }} dangerouslySetInnerHTML={{ __html: cms.cms_resources_types_title }} />
+            ) : (
+              <h2 style={{ fontFamily: 'var(--font-d)', fontWeight: 900, fontSize: 'clamp(1.6rem,3vw,2.2rem)', color: 'var(--black)', letterSpacing: '-0.02em' }}>8 Types of Resources,<br />All Free to Download</h2>
+            )}
+          </div>
+          <div className="types-grid" style={{ marginTop: '36px' }}>
+            <div className="type-card" style={{ cursor: 'pointer' }} onClick={() => handleTypeCardClick('pdf')}>
+              <div className="type-card__icon-wrap" style={{ background: 'rgba(147,51,234,0.1)' }}>📄</div>
+              <div className="type-card__name">Episode PDFs</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_pdf_desc || 'Key takeaways, guest quotes, action items and reflection prompts for every episode.'}</div>
+              <div className="type-card__count" style={{ background: 'rgba(147,51,234,0.08)', color: 'var(--purple-mid)' }}>{typeCounts.pdf} available</div>
+            </div>
+            <div className="type-card" style={{ cursor: 'pointer' }} onClick={() => handleTypeCardClick('guide')}>
+              <div className="type-card__icon-wrap" style={{ background: 'rgba(234,179,8,0.1)' }}>🗺️</div>
+              <div className="type-card__name">Career Guides</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_guide_desc || 'Step-by-step roadmaps to break into each field — qualifications, timelines, first steps.'}</div>
+              <div className="type-card__count" style={{ background: 'rgba(234,179,8,0.08)', color: '#92700A' }}>{typeCounts.guide} available</div>
+            </div>
+            <div className="type-card" style={{ cursor: 'pointer' }} onClick={() => handleTypeCardClick('template')}>
+              <div className="type-card__icon-wrap" style={{ background: 'rgba(236,72,153,0.1)' }}>📝</div>
+              <div className="type-card__name">Templates</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_template_desc || 'Field-specific CV/resume templates, cover letter frameworks, and LinkedIn bio builders.'}</div>
+              <div className="type-card__count" style={{ background: 'rgba(236,72,153,0.08)', color: '#BE185D' }}>{typeCounts.template} available</div>
+            </div>
+            <div className="type-card" style={{ cursor: 'pointer' }} onClick={() => handleTypeCardClick('worksheet')}>
+              <div className="type-card__icon-wrap" style={{ background: 'rgba(16,185,129,0.1)' }}>📓</div>
+              <div className="type-card__name">Workbooks</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_worksheet_desc || 'Goal-setting workbooks, self-assessment guides, and quarterly reflection journals.'}</div>
+              <div className="type-card__count" style={{ background: 'rgba(16,185,129,0.08)', color: '#065F46' }}>{typeCounts.worksheet} available</div>
+            </div>
+            <div className="type-card" style={{ cursor: 'pointer' }} onClick={() => handleTypeCardClick('reading')}>
+              <div className="type-card__icon-wrap" style={{ background: 'rgba(249,115,22,0.1)' }}>📚</div>
+              <div className="type-card__name">Reading Lists</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_reading_desc || 'Curated books, podcasts, and courses recommended directly by our guest experts.'}</div>
+              <div className="type-card__count" style={{ background: 'rgba(249,115,22,0.08)', color: '#9A3412' }}>{typeCounts.reading} available</div>
+            </div>
+            <div className="type-card" style={{ cursor: 'pointer' }} onClick={() => handleTypeCardClick('toolkit')}>
+              <div className="type-card__icon-wrap" style={{ background: 'rgba(99,102,241,0.1)' }}>🧰</div>
+              <div className="type-card__name">Toolkits</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_toolkit_desc || 'Interview prep kits, skill checklists, and everything you need to land your first role.'}</div>
+              <div className="type-card__count" style={{ background: 'rgba(99,102,241,0.08)', color: '#3730A3' }}>{typeCounts.toolkit} available</div>
+            </div>
+            <div className="type-card" style={{ cursor: 'pointer' }} onClick={() => handleTypeCardClick('salary')}>
+              <div className="type-card__icon-wrap" style={{ background: 'rgba(6,182,212,0.1)' }}>📊</div>
+              <div className="type-card__name">Salary Reports</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_salary_desc || 'Real earnings data across industries — so you know your worth before any negotiation.'}</div>
+              <div className="type-card__count" style={{ background: 'rgba(6,182,212,0.08)', color: '#155E75' }}>{typeCounts.salary} available</div>
+            </div>
+            <div className="type-card" style={{ cursor: 'pointer' }} onClick={() => handleTypeCardClick('script')}>
+              <div className="type-card__icon-wrap" style={{ background: 'rgba(244,114,182,0.1)' }}>✉️</div>
+              <div className="type-card__name">Scripts &amp; Emails</div>
+              <div className="type-card__desc">{cms?.cms_resources_type_script_desc || 'Networking email templates, LinkedIn outreach scripts, and mentorship request messages.'}</div>
+              <div className="type-card__count" style={{ background: 'rgba(244,114,182,0.08)', color: '#9D174D' }}>{typeCounts.script} available</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* ── STICKY FILTER BAR ── */}
       <div className="filter-bar" id="filterBar" style={{ zIndex: 100 }}>
@@ -1094,71 +1190,7 @@ export default function ResourcesPage({ onNavChange, onShowToast }) {
         </div>
       </div>
 
-      {/* ── RESOURCE TYPES EXPLAINER ── */}
-      <div className="types-section">
-        <div className="types-section__inner">
-          <div style={{ textAlign: 'center', marginBottom: '8px' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.18em', color: 'var(--purple-mid)', background: 'rgba(147,51,234,0.07)', border: '1px solid rgba(147,51,234,0.14)', padding: '4px 14px', borderRadius: '999px', marginBottom: '14px' }}>
-              {cms?.cms_resources_types_kicker || "What's Inside"}
-            </div>
-            {cms?.cms_resources_types_title ? (
-              <h2 style={{ fontFamily: 'var(--font-d)', fontWeight: 900, fontSize: 'clamp(1.6rem,3vw,2.2rem)', color: 'var(--black)', letterSpacing: '-0.02em' }} dangerouslySetInnerHTML={{ __html: cms.cms_resources_types_title }} />
-            ) : (
-              <h2 style={{ fontFamily: 'var(--font-d)', fontWeight: 900, fontSize: 'clamp(1.6rem,3vw,2.2rem)', color: 'var(--black)', letterSpacing: '-0.02em' }}>8 Types of Resources,<br />All Free to Download</h2>
-            )}
-          </div>
-          <div className="types-grid" style={{ marginTop: '36px' }}>
-            <div className="type-card">
-              <div className="type-card__icon-wrap" style={{ background: 'rgba(147,51,234,0.1)' }}>📄</div>
-              <div className="type-card__name">Episode PDFs</div>
-              <div className="type-card__desc">{cms?.cms_resources_type_pdf_desc || 'Key takeaways, guest quotes, action items and reflection prompts for every episode.'}</div>
-              <div className="type-card__count" style={{ background: 'rgba(147,51,234,0.08)', color: 'var(--purple-mid)' }}>{cms?.cms_resources_stat_pdfs_num || '28'} available</div>
-            </div>
-            <div className="type-card">
-              <div className="type-card__icon-wrap" style={{ background: 'rgba(234,179,8,0.1)' }}>🗺️</div>
-              <div className="type-card__name">Career Guides</div>
-              <div className="type-card__desc">{cms?.cms_resources_type_guide_desc || 'Step-by-step roadmaps to break into each field — qualifications, timelines, first steps.'}</div>
-              <div className="type-card__count" style={{ background: 'rgba(234,179,8,0.08)', color: '#92700A' }}>{cms?.cms_resources_stat_fields_num || '8'} available</div>
-            </div>
-            <div className="type-card">
-              <div className="type-card__icon-wrap" style={{ background: 'rgba(236,72,153,0.1)' }}>📝</div>
-              <div className="type-card__name">Templates</div>
-              <div className="type-card__desc">{cms?.cms_resources_type_template_desc || 'Field-specific CV/resume templates, cover letter frameworks, and LinkedIn bio builders.'}</div>
-              <div className="type-card__count" style={{ background: 'rgba(236,72,153,0.08)', color: '#BE185D' }}>{cms?.cms_resources_stat_templates_num || '12'} available</div>
-            </div>
-            <div className="type-card">
-              <div className="type-card__icon-wrap" style={{ background: 'rgba(16,185,129,0.1)' }}>📓</div>
-              <div className="type-card__name">Workbooks</div>
-              <div className="type-card__desc">{cms?.cms_resources_type_worksheet_desc || 'Goal-setting workbooks, self-assessment guides, and quarterly reflection journals.'}</div>
-              <div className="type-card__count" style={{ background: 'rgba(16,185,129,0.08)', color: '#065F46' }}>6 available</div>
-            </div>
-            <div className="type-card">
-              <div className="type-card__icon-wrap" style={{ background: 'rgba(249,115,22,0.1)' }}>📚</div>
-              <div className="type-card__name">Reading Lists</div>
-              <div className="type-card__desc">{cms?.cms_resources_type_reading_desc || 'Curated books, podcasts, and courses recommended directly by our guest experts.'}</div>
-              <div className="type-card__count" style={{ background: 'rgba(249,115,22,0.08)', color: '#9A3412' }}>8 available</div>
-            </div>
-            <div className="type-card">
-              <div className="type-card__icon-wrap" style={{ background: 'rgba(99,102,241,0.1)' }}>🧰</div>
-              <div className="type-card__name">Toolkits</div>
-              <div className="type-card__desc">{cms?.cms_resources_type_toolkit_desc || 'Interview prep kits, skill checklists, and everything you need to land your first role.'}</div>
-              <div className="type-card__count" style={{ background: 'rgba(99,102,241,0.08)', color: '#3730A3' }}>6 available</div>
-            </div>
-            <div className="type-card">
-              <div className="type-card__icon-wrap" style={{ background: 'rgba(6,182,212,0.1)' }}>📊</div>
-              <div className="type-card__name">Salary Reports</div>
-              <div className="type-card__desc">{cms?.cms_resources_type_salary_desc || 'Real earnings data across industries — so you know your worth before any negotiation.'}</div>
-              <div className="type-card__count" style={{ background: 'rgba(6,182,212,0.08)', color: '#155E75' }}>4 available</div>
-            </div>
-            <div className="type-card">
-              <div className="type-card__icon-wrap" style={{ background: 'rgba(244,114,182,0.1)' }}>✉️</div>
-              <div className="type-card__name">Scripts &amp; Emails</div>
-              <div className="type-card__desc">{cms?.cms_resources_type_script_desc || 'Networking email templates, LinkedIn outreach scripts, and mentorship request messages.'}</div>
-              <div className="type-card__count" style={{ background: 'rgba(244,114,182,0.08)', color: '#9D174D' }}>6 available</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* ── RESOURCE TYPES EXPLAINER REMOVED FROM BOTTOM ── */}
 
       {/* ── COMING SOON ── */}
       <div className="coming-section">
