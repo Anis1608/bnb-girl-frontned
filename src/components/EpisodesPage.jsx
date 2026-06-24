@@ -212,9 +212,16 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
       
       // Scroll to categories filter / episodes list header
       setTimeout(() => {
-        const target = document.getElementById('episodes');
+        const target = document.getElementById('gridSec');
         if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const filterBar = document.getElementById('filterBar');
+          const offset = filterBar ? filterBar.getBoundingClientRect().height : 120;
+          const elementPosition = target.getBoundingClientRect().top + window.scrollY;
+          const offsetPosition = elementPosition - offset - 15;
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
         }
       }, 100);
     }
@@ -281,8 +288,17 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
     setSelectedSubtopic('All');
     setVisibleCount(9);
     setTimeout(() => {
-      const el = document.getElementById('filterBar');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const el = document.getElementById('gridSec');
+      if (el) {
+        const filterBar = document.getElementById('filterBar');
+        const offset = filterBar ? filterBar.getBoundingClientRect().height : 120;
+        const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+        const offsetPosition = elementPosition - offset - 15;
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
     }, 100);
   };
 
@@ -813,10 +829,6 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
                             setHeroQuery('');
                             setSearchQuery('');
                             handleCategorySelect(cat.slug);
-                            setTimeout(() => {
-                              const el = document.getElementById('filterBar');
-                              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            }, 100);
                           }}>
                             {cat.icon} {cat.label}
                           </span>
