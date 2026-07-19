@@ -29,6 +29,12 @@
   --gl: #FEF08A;
 }
 
+/* Skeleton shimmer for pill loading state */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.9; }
+}
+
 *,
 *::before,
 *::after {
@@ -8300,11 +8306,6 @@ textarea.ask-input {
     box-shadow: 0 2px 8px rgba(147, 51, 234, .25)
   }
 
-  /* Skeleton shimmer for pill loading state */
-  @keyframes skeleton-pulse {
-    0%, 100% { opacity: 0.4; }
-    50%       { opacity: 0.9; }
-  }
   .skeleton-pill {
     margin-right: 6px;
     pointer-events: none;
