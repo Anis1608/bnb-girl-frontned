@@ -63,6 +63,83 @@
     <link rel="icon" href="/logo-192x192.png" sizes="192x192">
     <link rel="apple-touch-icon" href="/logo-180x180.png">
     <meta name="msapplication-TileImage" content="/logo-270x270.png">
+
+    <!-- JSON-LD Structured Schema Markup for Instant Indexing & Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://bnbgirl.com/#organization",
+          "name": "Bold & Brilliant Girls",
+          "url": "https://bnbgirl.com/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://bnbgirl.com/logo-512x512.png",
+            "width": 512,
+            "height": 512
+          },
+          "sameAs": [
+            "https://www.youtube.com/@BoldandBrilliantgirl",
+            "https://www.linkedin.com/company/bold-brilliant-girls"
+          ],
+          "description": "A nonprofit platform empowering young women and girls through career guidance, 1-on-1 mentorship, and podcast conversations with professional leaders.",
+          "nonprofitStatus": "Nonprofit501c3"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://bnbgirl.com/#website",
+          "url": "https://bnbgirl.com/",
+          "name": "Bold & Brilliant Girls",
+          "description": "Empowering young women and girls through career conversations & mentorship.",
+          "publisher": {
+            "@id": "https://bnbgirl.com/#organization"
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://bnbgirl.com/episodes?search={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "ItemList",
+          "name": "Key Pages",
+          "description": "Sitemap navigation links for Bold & Brilliant Girls platform.",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "url": "https://bnbgirl.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "url": "https://bnbgirl.com/episodes"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "url": "https://bnbgirl.com/resources"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "url": "https://bnbgirl.com/mentorship"
+            },
+            {
+              "@type": "ListItem",
+              "position": 5,
+              "url": "https://bnbgirl.com/about-us"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
