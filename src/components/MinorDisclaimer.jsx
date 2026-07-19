@@ -303,50 +303,50 @@ export default function MinorDisclaimer() {
               </div>
               <div className="sec-body">
                 <p className="intro">
-                  BB Girls is committed to creating a respectful, safe, and empowering environment for all participants — especially younger members of our community. The following safeguards are in place to protect minors at every step.
+                  BB Girls is committed to creating a respectful, safe, and empowering environment for younger participants. Participants under 18 should involve a parent or guardian before engaging in mentorship interactions.
                 </p>
                 <div className="sgrid">
                   <div className="scard">
                     <div className="scard-ico">
-                      <i className="ti ti-user-shield"></i>
-                    </div>
-                    <div className="scard-title">Parent or guardian involvement</div>
-                    <div className="scard-body">
-                      Participants under 18 should involve a parent or guardian before engaging in any mentorship interactions.
-                    </div>
-                  </div>
-                  <div className="scard">
-                    <div className="scard-ico">
                       <i className="ti ti-lock"></i>
                     </div>
-                    <div className="scard-title">Protect personal information</div>
+                    <div className="scard-title">Protect Personal Info</div>
                     <div className="scard-body">
-                      Users should avoid sharing sensitive personal, financial, or private information in any interaction.
+                      Users should avoid sharing sensitive personal, financial, or private information.
                     </div>
                   </div>
                   <div className="scard">
                     <div className="scard-ico">
                       <i className="ti ti-heart-handshake"></i>
                     </div>
-                    <div className="scard-title">Professional conduct required</div>
+                    <div className="scard-title">Remain Professional</div>
                     <div className="scard-body">
-                      All mentorship interactions must remain professional and appropriate at all times without exception.
+                      Mentorship interactions should remain professional and appropriate.
+                    </div>
+                  </div>
+                  <div className="scard">
+                    <div className="scard-ico">
+                      <i className="ti ti-user-shield"></i>
+                    </div>
+                    <div className="scard-title">Parent/Guardian Presence</div>
+                    <div className="scard-body">
+                      Parents or guardians may be required for certain activities involving minors.
                     </div>
                   </div>
                   <div className="scard">
                     <div className="scard-ico">
                       <i className="ti ti-flag"></i>
                     </div>
-                    <div className="scard-title">Report inappropriate behavior</div>
+                    <div className="scard-title">Report Immediately</div>
                     <div className="scard-body">
-                      Any inappropriate behavior should be reported immediately. BB Girls may restrict or remove any participant.
+                      Any inappropriate behavior should be reported immediately.
                     </div>
                   </div>
                 </div>
                 <div className="callout callout-t" style={{ marginTop: '16px' }}>
                   <i className="ti ti-alert-circle"></i>
                   <p>
-                    Parents or guardians may be required to consent to certain activities involving minors. BB Girls reserves the right to review, restrict, or remove any participation where necessary to maintain community safety.
+                    BB Girls may review, restrict, or remove participation where necessary to maintain community safety.
                   </p>
                 </div>
               </div>

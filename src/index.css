@@ -8233,13 +8233,15 @@ textarea.ask-input {
   /* Sub-topic row */
   .sub-pill-row {
     display: flex;
+    align-items: center;
     gap: 6px;
-    padding: 0 0 8px;
+    padding: 0 0 0;
     overflow-x: auto;
     scrollbar-width: none;
     max-height: 0;
     opacity: 0;
-    transition: max-height .4s ease, opacity .3s ease, padding .3s ease
+    border-top: 0px solid transparent;
+    transition: max-height .4s ease, opacity .3s ease, padding .3s ease, border-color .3s ease
   }
 
   .sub-pill-row::-webkit-scrollbar {
@@ -8249,19 +8251,34 @@ textarea.ask-input {
   .sub-pill-row.visible {
     max-height: 52px;
     opacity: 1;
-    padding-bottom: 8px
+    padding: 8px 0 10px;
+    border-top: 1px solid rgba(147, 51, 234, .08)
+  }
+
+  /* Sub-topic label */
+  .sub-pill-label {
+    flex-shrink: 0;
+    font-family: 'Syne', sans-serif;
+    font-size: .6rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--pm);
+    white-space: nowrap;
+    padding-right: 4px;
+    opacity: 0.7
   }
 
   .sub-pill {
     flex-shrink: 0;
-    padding: 5px 14px;
+    padding: 4px 13px;
     border-radius: 40px;
     font-family: 'DM Sans', sans-serif;
-    font-size: .7rem;
+    font-size: .68rem;
     font-weight: 600;
-    border: 1.5px solid rgba(0, 0, 0, .08);
-    background: #F8F5FF;
-    color: var(--gt);
+    border: 1.5px solid rgba(147, 51, 234, .12);
+    background: rgba(147, 51, 234, .04);
+    color: #6b21a8;
     cursor: pointer;
     white-space: nowrap;
     transition: all .2s;
@@ -8272,13 +8289,44 @@ textarea.ask-input {
 
   .sub-pill:hover {
     border-color: var(--pm);
+    background: rgba(147, 51, 234, .08);
     color: var(--pp)
   }
 
   .sub-pill.active {
     background: linear-gradient(135deg, var(--pp), var(--pm));
     color: #fff;
-    border-color: transparent
+    border-color: transparent;
+    box-shadow: 0 2px 8px rgba(147, 51, 234, .25)
+  }
+
+  /* Level 3 — Specialized Field pills (slightly deeper rose-pink tint) */
+  .specialized-pill-row {
+    margin-left: 2px
+  }
+
+  .specialized-label {
+    color: #be185d !important;
+    opacity: 0.75
+  }
+
+  .specialized-pill {
+    border-color: rgba(190, 24, 93, .15) !important;
+    background: rgba(190, 24, 93, .04) !important;
+    color: #9d174d !important
+  }
+
+  .specialized-pill:hover {
+    border-color: #be185d !important;
+    background: rgba(190, 24, 93, .1) !important;
+    color: #be185d !important
+  }
+
+  .specialized-pill.active {
+    background: linear-gradient(135deg, #ec4899, #be185d) !important;
+    color: #fff !important;
+    border-color: transparent !important;
+    box-shadow: 0 2px 8px rgba(190, 24, 93, .3) !important
   }
 
   .results-count {

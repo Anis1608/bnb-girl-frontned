@@ -177,7 +177,7 @@ const getEpisodeRelevanceScore = (ep, queryStr) => {
 };
 
 export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onShowToast }) {
-  const { episodes: dbEpisodes, categories: dbCategories, loading } = useApp();
+  const { episodes: dbEpisodes, categories: dbCategories, loading, fetchFilteredEpisodes } = useApp();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const [heroQuery, setHeroQuery] = useState('');
@@ -229,9 +229,20 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
 
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSubtopic, setSelectedSubtopic] = useState('All');
+  const [selectedSubtopicId, setSelectedSubtopicId] = useState(null);
+  const [selectedSpecialized, setSelectedSpecialized] = useState('All');
+  const [selectedSpecializedId, setSelectedSpecializedId] = useState(null);
   const [sortOrder, setSortOrder] = useState('newest');
-  const [visibleCount, setVisibleCount] = useState(9);
+  const [visibleCount, setVisibleCount] = useState(24);
   const [placeholder, setPlaceholder] = useState('Search episodes, guests, topics…');
+
+  // Server-side filtered results state
+  const [filteredEpisodes, setFilteredEpisodes] = useState([]);
+  const [filterLoading, setFilterLoading] = useState(true); // true initially so skeleton shows
+  const [totalCount, setTotalCount] = useState(0);
+  const [filterPage, setFilterPage] = useState(1);
+  const PER_PAGE = 24;
+
 
   // Quiz state
   const [quizActive, setQuizActive] = useState(false);
@@ -283,10 +294,22 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
     return () => clearTimeout(timer);
   }, []);
 
+  // When dbEpisodes first loads from context, seed filteredEpisodes
+  // so the grid is not blank before the first server filter call returns
+  useEffect(() => {
+    if (dbEpisodes.length > 0 && filteredEpisodes.length === 0) {
+      setFilteredEpisodes(dbEpisodes);
+      setTotalCount(dbEpisodes.length);
+      setFilterLoading(false);
+    }
+  }, [dbEpisodes]);
+
   const handleCategorySelect = (cat) => {
     setSelectedCategory(cat);
     setSelectedSubtopic('All');
-    setVisibleCount(9);
+    setSelectedSubtopicId(null);
+    setSelectedSpecialized('All');
+    setSelectedSpecializedId(null);
     setTimeout(() => {
       const el = document.getElementById('gridSec');
       if (el) {
@@ -302,9 +325,31 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
     }, 100);
   };
 
+  // Resolve subcategory name -> ID from fetched results
   const handleSubtopicSelect = (sub) => {
     setSelectedSubtopic(sub);
-    setVisibleCount(9);
+    setSelectedSpecialized('All');
+    setSelectedSpecializedId(null);
+    if (sub === 'All') {
+      setSelectedSubtopicId(null);
+    } else {
+      // Find the ID from currently fetched episodes
+      const match = filteredEpisodes.find(ep => ep.subcategory_name === sub);
+      const subId = match ? (match.subcategory_id || null) : null;
+      setSelectedSubtopicId(subId);
+    }
+  };
+
+  // Resolve specialized field name -> ID from fetched results
+  const handleSpecializedSelect = (field) => {
+    setSelectedSpecialized(field);
+    if (field === 'All') {
+      setSelectedSpecializedId(null);
+    } else {
+      const match = filteredEpisodes.find(ep => ep.specialized_field_name === field);
+      const specId = match ? (match.specialized_field_id || null) : null;
+      setSelectedSpecializedId(specId);
+    }
   };
 
   const handleHeroSearchChange = (e) => {
@@ -329,64 +374,118 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
     setSearchQuery('');
   };
 
-  // Derive subtopics dynamically from the episodes database matching the active category
+  // ── Server-side filter effect ────────────────────────────────────────
+  // Fires whenever any filter changes. Debounced for search input.
+  const searchDebounceRef = useRef(null);
+
+  const runServerFilter = async (opts = {}) => {
+    const {
+      catSlug    = selectedCategory,
+      subId      = selectedSubtopicId,
+      specId     = selectedSpecializedId,
+      query      = searchQuery,
+      page       = 1,
+    } = opts;
+
+    setFilterLoading(true);
+    try {
+      const result = await fetchFilteredEpisodes({
+        category_slug:        catSlug !== 'all' ? catSlug : undefined,
+        subcategory_id:       subId || undefined,
+        specialized_field_id: specId || undefined,
+        search:               query || undefined,
+        page,
+        per_page: PER_PAGE,
+      });
+      if (page === 1) {
+        setFilteredEpisodes(result.rows);
+      } else {
+        setFilteredEpisodes(prev => [...prev, ...result.rows]);
+      }
+      setTotalCount(result.total);
+      setFilterPage(page);
+    } catch (e) {
+      console.error('Filter fetch failed:', e);
+    } finally {
+      setFilterLoading(false);
+    }
+  };
+
+  // Run on mount + whenever category/subcategory/specialized changes
+  useEffect(() => {
+    runServerFilter({
+      catSlug: selectedCategory,
+      subId:   selectedSubtopicId,
+      specId:  selectedSpecializedId,
+      query:   searchQuery,
+      page:    1,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategory, selectedSubtopicId, selectedSpecializedId]);
+
+  // Debounce search — wait 400ms after user stops typing
+  useEffect(() => {
+    if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    searchDebounceRef.current = setTimeout(() => {
+      runServerFilter({
+        catSlug: selectedCategory,
+        subId:   selectedSubtopicId,
+        specId:  selectedSpecializedId,
+        query:   searchQuery,
+        page:    1,
+      });
+    }, 400);
+    return () => clearTimeout(searchDebounceRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
+
+  // Load more (next page)
+  const handleLoadMore = () => {
+    runServerFilter({
+      catSlug: selectedCategory,
+      subId:   selectedSubtopicId,
+      specId:  selectedSpecializedId,
+      query:   searchQuery,
+      page:    filterPage + 1,
+    });
+  };
+
+  // Derive subtopics from server-fetched results (or all-episodes context on initial load)
   const getSubtopics = () => {
     if (selectedCategory === 'all') return [];
-    if (dbEpisodes.length > 0) {
-      const catEps = dbEpisodes.filter(ep => ep.category_slug === selectedCategory);
-      const subs = [...new Set(catEps.map(ep => ep.subcategory_name).filter(Boolean))];
-      return ['All', ...subs];
-    }
-    return SUBTOPICS[selectedCategory] || [];
+    const source = filteredEpisodes.length > 0 ? filteredEpisodes : dbEpisodes.filter(ep => ep.category_slug === selectedCategory);
+    const subs = [...new Set(source.map(ep => ({ name: ep.subcategory_name, id: ep.specialized_field_id })).filter(s => s.name).map(s => s.name))];
+    return ['All', ...subs];
+  };
+
+  // For Level 3 — derive from filtered results when subcategory is active
+  const getSpecializedFields = () => {
+    if (selectedSubtopic === 'All' || selectedCategory === 'all') return [];
+    // Use all fetched episodes for this category to show all possible specialized fields
+    const source = filteredEpisodes.filter(ep => ep.subcategory_name === selectedSubtopic);
+    const fields = [...new Set(source.map(ep => ({ name: ep.specialized_field_name, id: ep.specialized_field_id })).filter(f => f.name).map(f => f.name))];
+    return fields.length > 0 ? ['All', ...fields] : [];
   };
 
   const activeSubtopics = getSubtopics();
+  const activeSpecializedFields = getSpecializedFields();
 
-  // Filter & sort database items
-  const getFilteredEpisodes = () => {
-    let list = dbEpisodes || [];
-
-    // Filter by Category
-    if (selectedCategory !== 'all') {
-      list = list.filter(ep => ep.category_slug === selectedCategory || ep.catSlug === selectedCategory || ep.cat === selectedCategory);
-    }
-
-    // Filter by Subtopic
-    if (selectedSubtopic !== 'All') {
-      list = list.filter(ep => ep.subcategory_name === selectedSubtopic || ep.subtopic === selectedSubtopic);
-    }
-
-    // Filter by Search Query (Advanced Relevance Scoring)
-    if (searchQuery.trim().length > 0) {
-      list = list
-        .map(ep => ({
-          ...ep,
-          _score: getEpisodeRelevanceScore(ep, searchQuery)
-        }))
-        .filter(ep => ep._score > 0);
-      
-      // Sort by search relevance score descending
-      list.sort((a, b) => b._score - a._score);
-    }
-
-    // Sort order
-    if (sortOrder === 'newest') {
-      // Keep defined order (which is newest first)
-    } else if (sortOrder === 'popular') {
-      list = [...list].sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+  // Sort server-fetched results client-side (server returns newest first by default)
+  const getSortedEpisodes = () => {
+    let list = [...filteredEpisodes];
+    if (sortOrder === 'popular') {
+      list.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
     } else if (sortOrder === 'az') {
-      list = [...list].sort((a, b) => {
-        const nameA = a.name || a.guest || '';
-        const nameB = b.name || b.guest || '';
-        return nameA.localeCompare(nameB);
-      });
+      list.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
     }
-
+    // 'newest' = default server order (created_at desc)
     return list;
   };
 
-  const filteredList = getFilteredEpisodes();
-  const displayedList = filteredList.slice(0, visibleCount);
+  const filteredList   = getSortedEpisodes();
+  const displayedList  = filteredList; // server already paginated
+  const hasMore        = filteredList.length < totalCount;
+
 
   const latestEpisode = dbEpisodes.length > 0 ? dbEpisodes[0] : { title: 'Loading...', name: 'Guest', guest: 'Guest', epNum: '', n: '', thumb: '', ytId: '', yt: '', dur: '' };
   const featuredEpisode = dbEpisodes.length > 0 ? (dbEpisodes.find(ep => ep.is_featured) || dbEpisodes[0]) : { title: 'Loading...', name: 'Guest', guest: 'Guest', epNum: '', n: '', bio: '', highlights: '', role: '', tags: [], thumb: '', ytId: '', yt: '', dur: '' };
@@ -1133,20 +1232,48 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
               )}
             </div>
             
-            {/* Subtopic pills */}
+            {/* Level 2 — Subtopic pills */}
             <div className={`sub-pill-row ${selectedCategory !== 'all' ? 'visible' : ''}`}>
-              {selectedCategory !== 'all' && activeSubtopics.map((sub, i) => (
-                <button 
-                  key={i}
-                  className={`sub-pill ${selectedSubtopic === sub ? 'active' : ''}`}
-                  onClick={() => handleSubtopicSelect(sub)}
-                >
-                  {sub}
-                </button>
-              ))}
+              {selectedCategory !== 'all' && (
+                <>
+                  <span className="sub-pill-label">Topics</span>
+                  {activeSubtopics.map((sub, i) => (
+                    <button 
+                      key={i}
+                      className={`sub-pill ${selectedSubtopic === sub ? 'active' : ''}`}
+                      onClick={() => handleSubtopicSelect(sub)}
+                    >
+                      {sub}
+                    </button>
+                  ))}
+                </>
+              )}
+            </div>
+
+            {/* Level 3 — Specialized Field pills */}
+            <div className={`sub-pill-row specialized-pill-row ${activeSpecializedFields.length > 0 ? 'visible' : ''}`}>
+              {activeSpecializedFields.length > 0 && (
+                <>
+                  <span className="sub-pill-label specialized-label">Specialized</span>
+                  {activeSpecializedFields.map((field, i) => (
+                    <button
+                      key={i}
+                      className={`sub-pill specialized-pill ${selectedSpecialized === field ? 'active' : ''}`}
+                      onClick={() => handleSpecializedSelect(field)}
+                    >
+                      {field}
+                    </button>
+                  ))}
+                </>
+              )}
             </div>
           </div>
-          <div className="results-count">Showing {filteredList.length} episodes</div>
+          <div className="results-count">
+            {filterLoading
+              ? 'Loading…'
+              : `Showing ${filteredList.length} of ${totalCount} episode${totalCount !== 1 ? 's' : ''}`
+            }
+          </div>
         </div>
       </div>
 
@@ -1236,8 +1363,8 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
             )}
           </div>
 
-          <div className="ep-grid">
-            {loading ? (
+          <div className="ep-grid" style={filterLoading && filteredEpisodes.length > 0 ? { opacity: 0.5, pointerEvents: 'none', transition: 'opacity .2s' } : { opacity: 1, transition: 'opacity .3s' }}>
+            {(loading || (filterLoading && filteredEpisodes.length === 0)) ? (
               Array.from({ length: 6 }).map((_, idx) => (
                 <div key={idx} className="ep-card" style={{ opacity: 0.6, pointerEvents: 'none' }}>
                   <div className="card-thumb skeleton-box" style={{ height: '200px', width: '100%', borderRadius: '12px' }}></div>
@@ -1352,9 +1479,14 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
             )}
           </div>
 
-          {visibleCount < filteredList.length && (
+          {hasMore && !filterLoading && (
             <div className="load-more-wrap">
-              <button className="btn-lm" onClick={() => setVisibleCount(visibleCount + 6)}>↓ Load More Episodes</button>
+              <button className="btn-lm" onClick={handleLoadMore}>↓ Load More Episodes</button>
+            </div>
+          )}
+          {filterLoading && filteredList.length > 0 && (
+            <div style={{ textAlign: 'center', padding: '24px 0', opacity: 0.5, fontFamily: 'DM Sans, sans-serif', fontSize: '.85rem' }}>
+              Loading more…
             </div>
           )}
         </div>

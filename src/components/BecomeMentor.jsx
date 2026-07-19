@@ -2,6 +2,49 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 
+const CATEGORY_TAXONOMY = [
+  {
+    name: "Business",
+    subcategories: ["Entrepreneurship", "Startups", "Small Business", "Leadership", "Operations", "Marketing", "Sales", "E-commerce", "Branding", "Freelancing", "Consulting", "Management"]
+  },
+  {
+    name: "Technology",
+    subcategories: ["Software Engineering", "AI & Machine Learning", "Data Science", "Cybersecurity", "UX/UI Design", "Product Management", "Cloud Computing", "Web Development", "Mobile Development", "Blockchain", "Gaming", "Tech Startups"]
+  },
+  {
+    name: "Healthcare",
+    subcategories: ["Nursing", "Medicine", "Mental Health", "Public Health", "Physical Therapy", "Nutrition", "Fitness", "Healthcare Administration", "Alternative Medicine", "Women’s Health"]
+  },
+  {
+    name: "Finance",
+    subcategories: ["Personal Finance", "Investment Banking", "Accounting & Operation", "Wealth Management & Financial Planning", "Structuring, financing,Portfolio Management", "Real Estate Finance", "Cryptocurrency", "FinTech", "Venture Capital", "Relationship Management", "Corporate Finance"]
+  },
+  {
+    name: "Law",
+    subcategories: ["Corporate Law", "Criminal Law", "Family Law", "Immigration Law", "Intellectual Property", "Human Rights", "Legal Tech", "Compliance", "Government Policy"]
+  },
+  {
+    name: "Social Impact & Community",
+    subcategories: ["Nonprofits", "Social Work", "Education", "Advocacy", "Community Leadership", "DEI", "Humanitarian Work", "Youth Development", "Public Service"]
+  },
+  {
+    name: "Creative & Media",
+    subcategories: ["Content Creation", "Podcasting", "Film & TV", "Photography", "Music", "Writing", "Graphic Design", "Fashion", "Influencer Careers", "Digital Media"]
+  },
+  {
+    name: "Education & Academia",
+    subcategories: ["Teaching", "Research", "Higher Education", "Academic Leadership", "Online Learning", "EdTech"]
+  },
+  {
+    name: "Government & Public Sector",
+    subcategories: ["Public Administration", "Politics", "International Relations", "Urban Planning", "Public Policy", "Military", "Law Enforcement"]
+  },
+  {
+    name: "Lifestyle Careers",
+    subcategories: ["Remote Work", "Digital Nomad", "Work-Life Balance", "Productivity", "Career Change", "Motherhood & Career", "Gen Z Careers"]
+  }
+];
+
 export default function BecomeMentor({ onShowToast }) {
   const { API_BASE } = useApp();
   const navigate = useNavigate();
@@ -15,8 +58,14 @@ export default function BecomeMentor({ onShowToast }) {
   const [yearsExp, setYearsExp] = useState('');
   const [bio, setBio] = useState('');
   const [motivation, setMotivation] = useState('');
-  const [expertise, setExpertise] = useState([]);
-  const [otherExpertise, setOtherExpertise] = useState('');
+  const [age, setAge] = useState('');
+  const [guardianEmail, setGuardianEmail] = useState('');
+  const [category1, setCategory1] = useState('');
+  const [subcategory1, setSubcategory1] = useState('');
+  const [category2, setCategory2] = useState('');
+  const [subcategory2, setSubcategory2] = useState('');
+  const [writeIn3, setWriteIn3] = useState('');
+  const [writeIn4, setWriteIn4] = useState('');
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState('');
 
@@ -103,14 +152,6 @@ export default function BecomeMentor({ onShowToast }) {
     }
   };
 
-  const toggleExpertise = (option) => {
-    if (expertise.includes(option)) {
-      setExpertise(expertise.filter(item => item !== option));
-    } else {
-      setExpertise([...expertise, option]);
-    }
-  };
-
   const handleNext = () => {
     if (step === 0 && (!name.trim() || !email.trim())) {
       onShowToast('⚠️', 'Missing Info', 'Please provide your name and email address.');
@@ -143,12 +184,21 @@ export default function BecomeMentor({ onShowToast }) {
       formData.append('bio', bio);
       formData.append('motivation', motivation);
       formData.append('timezone', Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York');
+      
+      if (age) {
+        formData.append('age', age);
+      }
+      if (age && parseInt(age, 10) < 18 && guardianEmail) {
+        formData.append('guardian_email', guardianEmail);
+      }
 
       // Consolidate expertise options
-      const selectedExpertise = [...expertise];
-      if (otherExpertise.trim()) {
-        selectedExpertise.push(otherExpertise.trim());
-      }
+      const selectedExpertise = [];
+      if (category1) selectedExpertise.push(`${category1} (${subcategory1})`);
+      if (category2 && subcategory2) selectedExpertise.push(`${category2} (${subcategory2})`);
+      if (writeIn3.trim()) selectedExpertise.push(writeIn3.trim());
+      if (writeIn4.trim()) selectedExpertise.push(writeIn4.trim());
+      
       formData.append('expertise', selectedExpertise.join(', '));
 
       if (photoFile) {
@@ -265,13 +315,37 @@ export default function BecomeMentor({ onShowToast }) {
           </h1>
           <p style={{
             fontSize: '1.05rem',
-            color: 'rgba(255,255,255,0.6)',
+            color: 'rgba(255,255,255,0.75)',
             lineHeight: 1.6,
-            maxWidth: '560px',
-            margin: '0 auto'
+            maxWidth: '600px',
+            margin: '0 auto 20px'
           }}>
-            Share your story, guide ambitious young minds, and help rewrite the future of women in technology & leadership.
+            One conversation can change a career — and your time can change lives beyond it.
           </p>
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.03)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '16px',
+            padding: '24px',
+            maxWidth: '600px',
+            margin: '0 auto 40px',
+            textAlign: 'left',
+            fontSize: '0.88rem',
+            lineHeight: '1.6',
+            color: 'rgba(255, 255, 255, 0.8)'
+          }}>
+            <p style={{ margin: '0 0 16px 0' }}>
+              We are a nonprofit platform empowering girls through mentorship, career guidance, and opportunity. Any proceeds from mentees are donated to charities supporting women and girls, including charities of your choice.
+            </p>
+            <p style={{ margin: '0 0 16px 0', fontWeight: '600', color: '#FEF08A' }}>
+              Your guidance/time creates impact twice — by shaping a future and supporting meaningful change.
+            </p>
+            <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.06)', margin: '16px 0' }} />
+            <h4 style={{ margin: '0 0 8px 0', color: '#fff', fontSize: '0.92rem', fontWeight: 600 }}>Do we collect fees?</h4>
+            <p style={{ margin: 0, fontSize: '0.82rem', color: 'rgba(255, 255, 255, 0.65)' }}>
+              In some cases, mentees may contribute a small fee for mentorship sessions or platform access. As a nonprofit initiative, any proceeds collected are donated to charities and initiatives supporting women and girls, including charities selected by mentors whenever possible.
+            </p>
+          </div>
         </div>
 
         {/* Progress Tracker */}
@@ -516,7 +590,52 @@ export default function BecomeMentor({ onShowToast }) {
                         style={inputStyle}
                       />
                     </div>
+
+                    {/* Age input */}
+                    <div style={{ flex: 1, minWidth: '140px' }}>
+                      <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: 'rgba(255,255,255,0.8)', marginBottom: '8px' }}>
+                        Age *
+                      </label>
+                      <input
+                        type="number"
+                        min="10"
+                        max="100"
+                        required
+                        value={age}
+                        onChange={(e) => setAge(e.target.value)}
+                        placeholder="e.g. 25"
+                        style={inputStyle}
+                      />
+                    </div>
                   </div>
+
+                  {/* Parent consent guardian email if under 18 */}
+                  {age !== '' && parseInt(age, 10) < 18 && (
+                    <div style={{
+                      background: 'rgba(236,72,153,0.06)',
+                      border: '1px solid rgba(236,72,153,0.18)',
+                      borderRadius: '12px',
+                      padding: '16px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '8px'
+                    }}>
+                      <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: 'rgba(255,255,255,0.8)' }}>
+                        Parent / Guardian Email *
+                      </label>
+                      <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+                        Since you are under 18, we require a parent or guardian's email for consent to register as a mentor.
+                      </p>
+                      <input
+                        type="email"
+                        required
+                        value={guardianEmail}
+                        onChange={(e) => setGuardianEmail(e.target.value)}
+                        placeholder="parent@email.com"
+                        style={inputStyle}
+                      />
+                    </div>
+                  )}
 
                   {/* Photo Upload Section with Live Preview */}
                   <div>
@@ -577,56 +696,125 @@ export default function BecomeMentor({ onShowToast }) {
               {step === 1 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'rgba(255,255,255,0.8)', marginBottom: '4px' }}>
-                      Select Areas of Expertise
+                    <label style={{ display: 'block', fontSize: '0.88rem', fontWeight: 700, color: '#FEF08A', marginBottom: '8px' }}>
+                      Professional Categories &amp; Subcategories
                     </label>
-                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginBottom: '16px' }}>
-                      Select all categories that apply to your professional experience.
+                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.45)', marginBottom: '16px' }}>
+                      Select up to two main categories and their respective subcategories to describe your expertise.
                     </p>
+                  </div>
 
-                    <div style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: '12px'
-                    }}>
-                      {expertiseOptions.map((opt) => {
-                        const isSelected = expertise.includes(opt);
-                        return (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => toggleExpertise(opt)}
-                            style={{
-                              padding: '10px 16px',
-                              borderRadius: '24px',
-                              background: isSelected ? 'rgba(147, 51, 234, 0.25)' : 'rgba(255,255,255,0.04)',
-                              border: isSelected ? '1.5px solid #A855F7' : '1.5px solid rgba(255,255,255,0.1)',
-                              color: isSelected ? '#E9D5FF' : 'rgba(255,255,255,0.7)',
-                              fontSize: '0.8rem',
-                              fontWeight: 600,
-                              cursor: 'pointer',
-                              transition: 'all 0.2s ease'
-                            }}
-                          >
-                            {opt}
-                          </button>
-                        );
-                      })}
+                  {/* Category 1 Row */}
+                  <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                    <div style={{ flex: 1, minWidth: '240px' }}>
+                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: '6px' }}>
+                        Primary Category *
+                      </label>
+                      <select
+                        required
+                        value={category1}
+                        onChange={(e) => {
+                          setCategory1(e.target.value);
+                          setSubcategory1('');
+                        }}
+                        style={inputStyle}
+                      >
+                        <option value="">Select Primary Category</option>
+                        {CATEGORY_TAXONOMY.map(c => (
+                          <option key={c.name} value={c.name}>{c.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div style={{ flex: 1, minWidth: '240px' }}>
+                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: '6px' }}>
+                        Primary Subcategory *
+                      </label>
+                      <select
+                        required
+                        disabled={!category1}
+                        value={subcategory1}
+                        onChange={(e) => setSubcategory1(e.target.value)}
+                        style={inputStyle}
+                      >
+                        <option value="">Select Subcategory</option>
+                        {category1 && CATEGORY_TAXONOMY.find(c => c.name === category1)?.subcategories.map(sub => (
+                          <option key={sub} value={sub}>{sub}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
 
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: 'rgba(255,255,255,0.8)', marginBottom: '8px' }}>
-                      Other / Custom Expertise (Optional)
-                    </label>
-                    <input
-                      type="text"
-                      maxLength={100}
-                      value={otherExpertise}
-                      onChange={(e) => setOtherExpertise(e.target.value)}
-                      placeholder="e.g. Cyber Security, Mobile Development"
-                      style={inputStyle}
-                    />
+                  {/* Category 2 Row */}
+                  <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                    <div style={{ flex: 1, minWidth: '240px' }}>
+                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: '6px' }}>
+                        Secondary Category (Optional)
+                      </label>
+                      <select
+                        value={category2}
+                        onChange={(e) => {
+                          setCategory2(e.target.value);
+                          setSubcategory2('');
+                        }}
+                        style={inputStyle}
+                      >
+                        <option value="">Select Secondary Category</option>
+                        {CATEGORY_TAXONOMY.map(c => (
+                          <option key={c.name} value={c.name}>{c.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div style={{ flex: 1, minWidth: '240px' }}>
+                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: '6px' }}>
+                        Secondary Subcategory (Optional)
+                      </label>
+                      <select
+                        disabled={!category2}
+                        value={subcategory2}
+                        onChange={(e) => setSubcategory2(e.target.value)}
+                        style={inputStyle}
+                      >
+                        <option value="">Select Subcategory</option>
+                        {category2 && CATEGORY_TAXONOMY.find(c => c.name === category2)?.subcategories.map(sub => (
+                          <option key={sub} value={sub}>{sub}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.08)', margin: '8px 0' }} />
+
+                  {/* Write-in Categories 3 and 4 */}
+                  <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                    <div style={{ flex: 1, minWidth: '240px' }}>
+                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: '6px' }}>
+                        Custom Focus Area 3 (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={100}
+                        value={writeIn3}
+                        onChange={(e) => setWriteIn3(e.target.value)}
+                        placeholder="e.g. Prompt Engineering, Brand Strategy"
+                        style={inputStyle}
+                      />
+                    </div>
+
+                    <div style={{ flex: 1, minWidth: '240px' }}>
+                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)', marginBottom: '6px' }}>
+                        Custom Focus Area 4 (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={100}
+                        value={writeIn4}
+                        onChange={(e) => setWriteIn4(e.target.value)}
+                        placeholder="e.g. Mobile Development, Remote Work"
+                        style={inputStyle}
+                      />
+                    </div>
                   </div>
                 </div>
               )}

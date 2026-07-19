@@ -151,13 +151,37 @@ export default function BecomeGuest({ onShowToast }) {
           </h1>
           <p style={{
             fontSize: '1.05rem',
-            color: 'rgba(255,255,255,0.6)',
+            color: 'rgba(255,255,255,0.75)',
             lineHeight: 1.6,
-            maxWidth: '560px',
-            margin: '0 auto'
+            maxWidth: '600px',
+            margin: '0 auto 20px'
           }}>
             Share your expertise, inspire our listeners, and tell your unique career story on the Bold & Brilliant Girls Podcast.
           </p>
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.03)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '16px',
+            padding: '24px',
+            maxWidth: '600px',
+            margin: '0 auto 40px',
+            textAlign: 'left',
+            fontSize: '0.88rem',
+            lineHeight: '1.6',
+            color: 'rgba(255, 255, 255, 0.8)'
+          }}>
+            <p style={{ margin: '0 0 16px 0' }}>
+              We are a nonprofit platform empowering girls through mentorship, career guidance, and opportunity. Any proceeds from mentees are donated to charities supporting women and girls, including charities of your choice.
+            </p>
+            <p style={{ margin: '0 0 16px 0', fontWeight: '600', color: '#FEF08A' }}>
+              Your guest feature creates impact twice — by sharing a future and supporting meaningful change.
+            </p>
+            <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.06)', margin: '16px 0' }} />
+            <h4 style={{ margin: '0 0 8px 0', color: '#fff', fontSize: '0.92rem', fontWeight: 600 }}>Do we collect fees?</h4>
+            <p style={{ margin: 0, fontSize: '0.82rem', color: 'rgba(255, 255, 255, 0.65)' }}>
+              In some cases, mentees may contribute a small fee for mentorship sessions or platform access. As a nonprofit initiative, any proceeds collected are donated to charities and initiatives supporting women and girls, including charities selected by mentors whenever possible.
+            </p>
+          </div>
         </div>
 
         {/* Main Form Area */}

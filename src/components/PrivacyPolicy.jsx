@@ -285,24 +285,34 @@ export default function PrivacyPolicy() {
           {/* CONTENT DISCLAIMER */}
           <section className="policy-section" id="content">
             <span className="section-tag">Content Disclaimer</span>
-            <h2>Content Disclaimer</h2>
+            <h2>Mentorship &amp; Content Disclaimer</h2>
 
-            <p>The Bold & Brilliant Girls podcast, website, and all associated content are intended for inspirational and educational purposes only.</p>
+            <p>The Bold &amp; Brilliant Girls platform, website, podcast, and all associated content are intended for inspirational and educational purposes only.</p>
 
-            <h3>Not Professional Advice</h3>
             <div className="highlight-box pink">
-              <div className="highlight-title">📢 Important Notice</div>
-              <p style={{ margin: 0, fontSize: '15px' }}>Content published by BBG, including guest interviews, mentor guidance, career guides, and PDF resources, does <strong>not</strong> constitute professional legal, financial, medical, or psychological advice. Always consult a qualified professional for advice specific to your situation.</p>
+              <div className="highlight-title">📢 Mentorship Disclaimer</div>
+              <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.6' }}>
+                BB Girls provides a platform intended to encourage mentorship, learning, and career conversations. While we aim to foster meaningful and supportive connections, BB Girls does not independently verify all mentor or mentee backgrounds, qualifications, statements, or advice.
+              </p>
+              <p style={{ margin: '10px 0 0 0', fontSize: '15px', lineHeight: '1.6' }}>
+                Mentorship conversations and interactions are voluntary and occur at the discretion of participants. Any advice, guidance, opinions, or information shared by mentors or mentees are their own and should not be considered professional, legal, financial, medical, educational, or psychological advice.
+              </p>
             </div>
 
-            <h3>Guest Opinions</h3>
-            <p>Views, opinions, and experiences expressed by podcast guests are their own and do not necessarily represent the views of Bold & Brilliant Girls, its team, or sponsors. We do not independently verify all claims made by guests during episodes.</p>
+            <h3>BB Girls is not responsible for:</h3>
+            <ul>
+              <li>Decisions made based on mentorship conversations.</li>
+              <li>Outcomes resulting from mentor or mentee interactions.</li>
+              <li>Conduct, communications, or meetings occurring outside the BB Girls platform.</li>
+            </ul>
+            <p>Participants are encouraged to use good judgment, maintain respectful boundaries, and prioritize personal safety in all interactions. BB Girls does not supervise or monitor private meetings, calls, or communications between participants and encourages all users to exercise discretion and prioritize personal safety.</p>
 
-            <h3>Accuracy of Information</h3>
-            <p>We strive to ensure all published content is current and accurate, however information may become outdated. We recommend verifying career statistics, salary data, and industry information through authoritative sources before making important decisions.</p>
+            <h3>No Guarantee &amp; Independent Relationship Clause</h3>
+            <p>BB Girls does not guarantee admissions outcomes, internships or employment opportunities, mentorship availability, responses from mentors, or specific career, educational, or personal outcomes. The mentorship experience may vary for each participant. Mentors participate independently and are not employees, representatives, agents, or contractors of BB Girls.</p>
 
-            <h3>External Links</h3>
-            <p>Our website, episode PDFs, and resource guides may contain links to external websites. BBG is not responsible for the content, privacy practices, or accuracy of third-party websites. Inclusion of a link does not constitute endorsement.</p>
+            <h3>Mentorship Fees &amp; Payment Disclaimer</h3>
+            <p>Certain mentorship opportunities or platform features may require payment or participation fees. Any fees collected are intended to support the operation, growth, accessibility, and mission-driven initiatives of BB Girls.</p>
+            <p>Payment of a mentorship fee does not guarantee a specific mentor match, admission, internship, scholarship, or job placement, any guaranteed outcome or result, or ongoing mentor availability. Unless otherwise stated, mentorship fees are non-refundable once mentorship access, sessions, or introductions have been provided. BB Girls reserves the right to modify mentorship offerings, pricing, scheduling, or platform features at any time.</p>
           </section>
 
           <div className="section-divider"></div>
@@ -352,26 +362,24 @@ export default function PrivacyPolicy() {
           {/* MINOR PARTICIPATION POLICY */}
           <section className="policy-section" id="minors">
             <span className="section-tag">Minor Participation</span>
-            <h2>Minor Participation Policy</h2>
+            <h2>Minor Participation &amp; Safety Policy</h2>
 
             <div className="highlight-box dark">
-              <div className="highlight-title">🛡️ Child Safety First</div>
-              <p>The safety and wellbeing of young people is our highest priority. We have specific safeguards in place for any participant under the age of 18.</p>
+              <div className="highlight-title">🛡️ Minor Participation &amp; Safety Policy</div>
+              <p style={{ margin: 0, fontSize: '15px', lineHeight: '1.6' }}>
+                BB Girls is committed to creating a respectful, safe, and empowering environment for younger participants. Participants under 18 should involve a parent or guardian before engaging in mentorship interactions.
+              </p>
             </div>
 
-            <h3>Age of Participants</h3>
-            <p>The BBG mentorship programme welcomes applicants aged 14–25. General use of the website (listening to episodes, accessing resources, participating in the career quiz) is appropriate for all ages.</p>
-
-            <h3>Under-18 Safeguards</h3>
+            <h3>For the safety of participants:</h3>
             <ul>
-              <li>Mentorship applicants under 18 must provide a parent or guardian email address. We will contact the parent/guardian to confirm consent before proceeding with any match.</li>
-              <li>Parental/guardian consent is required in writing before any under-18 participant is featured in a podcast episode.</li>
-              <li>Mentorship sessions involving under-18 participants follow a structured, documented format with regular check-ins from the BBG team.</li>
-              <li>Under-18 participants in the community are not permitted to share personal identifying information (school name, home address, or phone number) in public discussion areas.</li>
+              <li>Users should avoid sharing sensitive personal, financial, or private information.</li>
+              <li>Mentorship interactions should remain professional and appropriate.</li>
+              <li>Parents or guardians may be required for certain activities involving minors.</li>
+              <li>Any inappropriate behavior should be reported immediately.</li>
             </ul>
-
-            <h3>Data Protection for Minors</h3>
-            <p>We collect only the minimum necessary personal data from under-18 participants. Parent/guardian data collected for consent purposes is stored securely and not used for marketing. We will never share a minor's personal information with third parties without explicit written parental consent.</p>
+            
+            <p>BB Girls may review, restrict, or remove participation where necessary to maintain community safety.</p>
 
             <h3>Reporting Concerns</h3>
             <p>If you have a concern about the safety of a minor in our community, please contact us immediately at <a href="mailto:sanah@bnbgirls.com" style={{ color: 'var(--purple-mid)', fontWeight: 600 }}>sanah@bnbgirls.com</a>. We take all safeguarding concerns seriously and will respond within 24 hours.</p>

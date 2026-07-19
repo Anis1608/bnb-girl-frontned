@@ -161,35 +161,72 @@ export default function AppContextProvider({ children }) {
   });
 
   // Format DB episode to frontend EP structure
-  const formatDbEpisode = (ep) => ({
-    id: ep.id || ep._id,
-    n: ep.episode_number || '',
-    title: ep.title || '',
-    guest: ep.guest_name || '',
-    role: ep.guest_role || '',
-    cat: ep.category_name || (ep.category_id && ep.category_id.name) || '',
-    category_slug: ep.category_slug || (ep.category_id && ep.category_id.slug) || '',
-    subcategory_name: ep.subcategory_name || (ep.subcategory_id && ep.subcategory_id.name) || '',
-    dur: ep.duration || '',
-    isNew: ep.is_new === 1 || ep.is_new === true,
-    is_mentor: ep.is_mentor === true || ep.is_mentor === 1 || ep.is_mentor === 'true',
-    thumb: ep.youtube_id ? `https://img.youtube.com/vi/${ep.youtube_id}/mqdefault.jpg` : 'https://placehold.co/640x360/0F0A1E/fff?text=Podcast',
-    photo: ep.guest_photo || 'https://placehold.co/64x64/9333EA/fff?text=Guest',
-    prog: 0,
-    yt: ep.youtube_id || '',
-    spotify: ep.spotify_url || '',
-    audio: ep.audio_url || '',
-    pdf: ep.pdf_url || '',
-    tags: typeof ep.tags === 'string' ? ep.tags.split(',').map(t => t.trim()) : (ep.tags || []),
-    bio: ep.guest_bio || '',
-    quote: ep.guest_quote || '',
-    facts: [
-      { l: 'Based in', v: ep.guest_role ? ep.guest_role.split(' · ')[1] || 'Global' : 'Global' },
-      { l: 'Episode', v: `EP. ${ep.episode_number || ''}` },
-      { l: 'Duration', v: ep.duration || '' },
-      { l: 'Industry', v: ep.category_name || (ep.category_id && ep.category_id.name) || '' }
-    ]
-  });
+  const formatDbEpisode = (ep) => {
+    const guestName   = ep.guest_name || '';
+    const epNum       = ep.episode_number || '';
+    const catName     = ep.category_name || (ep.category_id && ep.category_id.name) || '';
+    const catSlug     = ep.category_slug || (ep.category_id && ep.category_id.slug) || '';
+
+    // Generate a consistent gradient per category
+    const gradients = {
+      business:  'linear-gradient(135deg,#6B21A8,#EC4899)',
+      technology:'linear-gradient(135deg,#1e40af,#7c3aed)',
+      healthcare:'linear-gradient(135deg,#0f766e,#7c3aed)',
+      finance:   'linear-gradient(135deg,#b45309,#d97706)',
+      law:       'linear-gradient(135deg,#374151,#6B21A8)',
+      'creative-media': 'linear-gradient(135deg,#be185d,#9333ea)',
+      'social-impact':  'linear-gradient(135deg,#065f46,#7c3aed)',
+      'education-academia': 'linear-gradient(135deg,#1d4ed8,#06b6d4)',
+    };
+    const grad = gradients[catSlug] || 'linear-gradient(135deg,#6B21A8,#EC4899)';
+
+    // Avatar initials
+    const av = guestName ? guestName.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase() : 'G';
+
+    return {
+      id: ep.id || ep._id,
+      n: epNum,
+      epNum,           // alias used by episode card
+      name: guestName, // alias — card uses ep.name
+      guest: guestName,
+      title: ep.title || '',
+      role: ep.guest_role || '',
+      cat: catName,
+      catL: catName,   // alias — card uses ep.catL for the category badge
+      category_name: catName,
+      category_slug: catSlug,
+      subcategory_name: ep.subcategory_name || (ep.subcategory_id && ep.subcategory_id.name) || '',
+      subcategory_id: ep.subcategory_id ? (ep.subcategory_id._id || ep.subcategory_id) : null,
+      specialized_field_name: ep.specialized_field_name || (ep.specialized_field_id && ep.specialized_field_id.name) || '',
+      specialized_field_id: ep.specialized_field_id ? (ep.specialized_field_id._id || ep.specialized_field_id) : null,
+      dur: ep.duration || '',
+      isNew: ep.is_new === 1 || ep.is_new === true,
+      is_mentor: ep.is_mentor === true || ep.is_mentor === 1 || ep.is_mentor === 'true',
+      thumb: ep.youtube_id ? `https://img.youtube.com/vi/${ep.youtube_id}/mqdefault.jpg` : 'https://placehold.co/640x360/0F0A1E/fff?text=Podcast',
+      photo: ep.guest_photo || 'https://placehold.co/64x64/9333EA/fff?text=Guest',
+      av,   // avatar initials — card uses ep.av
+      grad, // gradient — card uses ep.grad
+      prog: 0,
+      yt: ep.youtube_id || '',
+      ytId: ep.youtube_id || '',
+      spotify: ep.spotify_url || '',
+      audio: ep.audio_url || '',
+      pdf: ep.pdf_url || '',
+      tags: typeof ep.tags === 'string' ? ep.tags.split(',').map(t => t.trim()).filter(Boolean) : (ep.tags || []),
+      bio: ep.guest_bio || '',
+      quote: ep.guest_quote || '',
+      is_featured: ep.is_featured === 1 || ep.is_featured === true,
+      facts: [
+        { l: 'Based in', v: ep.guest_role ? ep.guest_role.split(' · ')[1] || 'Global' : 'Global' },
+        { l: 'Episode',  v: `EP. ${epNum}` },
+        { l: 'Duration', v: ep.duration || '' },
+        { l: 'Industry', v: catName }
+      ]
+    };
+  };
+
+
+
 
   // Group DB resources by categories
   const groupResourcesByCategories = (cats, resList) => {
@@ -223,9 +260,22 @@ export default function AppContextProvider({ children }) {
   };
 
   const loadData = async () => {
+    // Cache bust: if cached episodes don't have specialized_field_name, clear old cache
+    try {
+      const cached = localStorage.getItem('bbg_episodes');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed.length > 0 && parsed[0].specialized_field_name === undefined) {
+          localStorage.removeItem('bbg_episodes');
+          localStorage.removeItem('bbg_featured_episodes');
+        }
+      }
+    } catch (e) {}
+
     if (!checkHasCache()) {
       setLoading(true);
     }
+
     try {
       // 0. Fetch CMS — always fetch fresh so admin changes reflect immediately
       try {
@@ -266,8 +316,8 @@ export default function AppContextProvider({ children }) {
         setCacheItem('bbg_categories', JSON.stringify(catsData));
       }
 
-      // 3. Fetch Episodes
-      const epsRes = await fetch(`${API_BASE}/api/episodes?per_page=100`);
+      // 3. Fetch Episodes (initial unfiltered load — first page for homepage/featured)
+      const epsRes = await fetch(`${API_BASE}/api/episodes?per_page=50`);
       if (epsRes.ok) {
         const epsData = await epsRes.json();
         const formatted = epsData.rows.map(formatDbEpisode);
@@ -539,6 +589,49 @@ export default function AppContextProvider({ children }) {
     loadData();
   }, []);
 
+  /**
+   * fetchFilteredEpisodes
+   * ─────────────────────
+   * Server-side filtered fetch — works across ALL episodes in DB.
+   * Call this whenever the user changes a filter (category, subcategory,
+   * specialized field, or search query).
+   *
+   * @param {Object} filters
+   *   category_slug       {string}  - e.g. 'business'
+   *   subcategory_id      {string}  - MongoDB ObjectId string
+   *   specialized_field_id {string} - MongoDB ObjectId string
+   *   search              {string}  - free text
+   *   page                {number}  - 1-indexed page
+   *   per_page            {number}  - results per page (default 24)
+   * @returns {{ rows: Episode[], total: number }}
+   */
+  const fetchFilteredEpisodes = async (filters = {}) => {
+    const {
+      category_slug,
+      subcategory_id,
+      specialized_field_id,
+      search,
+      page     = 1,
+      per_page = 24,
+    } = filters;
+
+    const params = new URLSearchParams();
+    params.set('per_page', per_page);
+    params.set('page', page);
+    if (category_slug && category_slug !== 'all') params.set('category_slug', category_slug);
+    if (subcategory_id)       params.set('subcategory_id', subcategory_id);
+    if (specialized_field_id) params.set('specialized_field_id', specialized_field_id);
+    if (search && search.trim()) params.set('search', search.trim());
+
+    const res = await fetch(`${API_BASE}/api/episodes?${params.toString()}`);
+    if (!res.ok) throw new Error('Failed to fetch filtered episodes');
+    const data = await res.json();
+    return {
+      rows:  data.rows.map(formatDbEpisode),
+      total: data.total,
+    };
+  };
+
   return (
     <AppContext.Provider value={{
       stats,
@@ -550,6 +643,7 @@ export default function AppContextProvider({ children }) {
       loading,
       cms,
       refreshData: loadData,
+      fetchFilteredEpisodes,
       submitForm,
       userToken,
       userProfile,
