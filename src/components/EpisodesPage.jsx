@@ -247,6 +247,8 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
   // DB-fetched taxonomy for pills (all subcategories / specialized fields, not just those in episodes)
   const [dbSubcategories, setDbSubcategories] = useState([]);
   const [dbSpecializedFields, setDbSpecializedFields] = useState([]);
+  const [subcategoryLoading, setSubcategoryLoading] = useState(false);
+  const [specializedLoading, setSpecializedLoading] = useState(false);
 
 
 
@@ -463,52 +465,53 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
     if (selectedCategory === 'all') {
       setDbSubcategories([]);
       setDbSpecializedFields([]);
+      setSubcategoryLoading(false);
       return;
     }
+    setSubcategoryLoading(true);
+    setDbSubcategories([]); // clear immediately so old pills don't flash
     fetch(`${API_BASE}/api/subcategories?category_slug=${selectedCategory}`)
       .then(r => r.ok ? r.json() : [])
-      .then(data => setDbSubcategories(Array.isArray(data) ? data : []))
-      .catch(() => setDbSubcategories([]));
+      .then(data => {
+        setDbSubcategories(Array.isArray(data) ? data : []);
+        setSubcategoryLoading(false);
+      })
+      .catch(() => { setDbSubcategories([]); setSubcategoryLoading(false); });
   }, [selectedCategory]);
 
   // Fetch ALL specialized fields for selected subcategory from DB
   useEffect(() => {
     if (!selectedSubtopicId) {
       setDbSpecializedFields([]);
+      setSpecializedLoading(false);
       return;
     }
+    setSpecializedLoading(true);
+    setDbSpecializedFields([]); // clear immediately
     fetch(`${API_BASE}/api/subcategories/${selectedSubtopicId}/specialized-fields`)
       .then(r => r.ok ? r.json() : [])
-      .then(data => setDbSpecializedFields(Array.isArray(data) ? data : []))
-      .catch(() => setDbSpecializedFields([]));
+      .then(data => {
+        setDbSpecializedFields(Array.isArray(data) ? data : []);
+        setSpecializedLoading(false);
+      })
+      .catch(() => { setDbSpecializedFields([]); setSpecializedLoading(false); });
   }, [selectedSubtopicId]);
 
-  // Level 2 pills: from DB subcategories (ALL subcategories, not just those with episodes)
+  // Level 2 pills: ONLY from DB — no fallback (prevents double-render flicker)
   const getSubtopics = () => {
     if (selectedCategory === 'all') return [];
-    if (dbSubcategories.length > 0) {
-      return ['All', ...dbSubcategories.map(s => s.name)];
-    }
-    // Fallback: derive from filtered episodes while DB fetch is pending
-    const source = filteredEpisodes.length > 0 ? filteredEpisodes : dbEpisodes.filter(ep => ep.category_slug === selectedCategory);
-    const subs = [...new Set(source.map(ep => ep.subcategory_name).filter(Boolean))];
-    return subs.length > 0 ? ['All', ...subs] : [];
+    return dbSubcategories.map(s => s.name); // empty [] while loading — pills appear all at once
   };
 
-  // Level 3 pills: from DB specialized fields (ALL fields, not just those with episodes)
+  // Level 3 pills: ONLY from DB — no fallback
   const getSpecializedFields = () => {
     if (selectedSubtopic === 'All' || selectedCategory === 'all') return [];
-    if (dbSpecializedFields.length > 0) {
-      return ['All', ...dbSpecializedFields.map(f => f.name)];
-    }
-    // Fallback: derive from filtered episodes while DB fetch is pending
-    const source = filteredEpisodes.filter(ep => ep.subcategory_name === selectedSubtopic);
-    const fields = [...new Set(source.map(ep => ep.specialized_field_name).filter(Boolean))];
-    return fields.length > 0 ? ['All', ...fields] : [];
+    return dbSpecializedFields.map(f => f.name);
   };
 
-  const activeSubtopics = getSubtopics();
+  const activeSubtopics       = getSubtopics();
   const activeSpecializedFields = getSpecializedFields();
+
 
 
   // Sort server-fetched results client-side (server returns newest first by default)
@@ -1278,36 +1281,75 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
               {selectedCategory !== 'all' && (
                 <>
                   <span className="sub-pill-label">Topics</span>
-                  {activeSubtopics.map((sub, i) => (
-                    <button 
-                      key={i}
-                      className={`sub-pill ${selectedSubtopic === sub ? 'active' : ''}`}
-                      onClick={() => handleSubtopicSelect(sub)}
-                    >
-                      {sub}
-                    </button>
-                  ))}
+                  {subcategoryLoading ? (
+                    // Skeleton shimmer while DB fetch is in progress
+                    Array.from({ length: 5 }).map((_, i) => (
+                      <span key={i} className="sub-pill skeleton-pill" style={{
+                        display: 'inline-block', width: `${60 + i * 15}px`, height: '28px',
+                        borderRadius: '20px', background: 'rgba(147,51,234,0.1)',
+                        animation: 'skeleton-pulse 1.2s ease-in-out infinite',
+                        verticalAlign: 'middle'
+                      }} />
+                    ))
+                  ) : (
+                    <>
+                      <button
+                        className={`sub-pill ${selectedSubtopic === 'All' ? 'active' : ''}`}
+                        onClick={() => handleSubtopicSelect('All')}
+                      >All</button>
+                      {activeSubtopics.map((sub, i) => (
+                        <button
+                          key={i}
+                          className={`sub-pill ${selectedSubtopic === sub ? 'active' : ''}`}
+                          onClick={() => handleSubtopicSelect(sub)}
+                        >
+                          {sub}
+                        </button>
+                      ))}
+                    </>
+                  )}
                 </>
               )}
             </div>
 
             {/* Level 3 — Specialized Field pills */}
-            <div className={`sub-pill-row specialized-pill-row ${activeSpecializedFields.length > 0 ? 'visible' : ''}`}>
-              {activeSpecializedFields.length > 0 && (
+            <div className={`sub-pill-row specialized-pill-row ${(specializedLoading || activeSpecializedFields.length > 0) && selectedSubtopic !== 'All' ? 'visible' : ''}`}>
+              {selectedSubtopic !== 'All' && (
                 <>
-                  <span className="sub-pill-label specialized-label">Specialized</span>
-                  {activeSpecializedFields.map((field, i) => (
-                    <button
-                      key={i}
-                      className={`sub-pill specialized-pill ${selectedSpecialized === field ? 'active' : ''}`}
-                      onClick={() => handleSpecializedSelect(field)}
-                    >
-                      {field}
-                    </button>
-                  ))}
+                  {specializedLoading ? (
+                    <>
+                      <span className="sub-pill-label specialized-label">Specialized</span>
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <span key={i} className="sub-pill skeleton-pill" style={{
+                          display: 'inline-block', width: `${70 + i * 12}px`, height: '28px',
+                          borderRadius: '20px', background: 'rgba(236,72,153,0.1)',
+                          animation: 'skeleton-pulse 1.2s ease-in-out infinite',
+                          verticalAlign: 'middle'
+                        }} />
+                      ))}
+                    </>
+                  ) : activeSpecializedFields.length > 0 ? (
+                    <>
+                      <span className="sub-pill-label specialized-label">Specialized</span>
+                      <button
+                        className={`sub-pill specialized-pill ${selectedSpecialized === 'All' ? 'active' : ''}`}
+                        onClick={() => handleSpecializedSelect('All')}
+                      >All</button>
+                      {activeSpecializedFields.map((field, i) => (
+                        <button
+                          key={i}
+                          className={`sub-pill specialized-pill ${selectedSpecialized === field ? 'active' : ''}`}
+                          onClick={() => handleSpecializedSelect(field)}
+                        >
+                          {field}
+                        </button>
+                      ))}
+                    </>
+                  ) : null}
                 </>
               )}
             </div>
+
           </div>
           <div className="results-count">
             {filterLoading
