@@ -13,6 +13,49 @@ export const useApp = () => {
 };
 
 export default function AppContextProvider({ children }) {
+  const [consentSettings, setConsentSettings] = useState(() => {
+    try {
+      const cached = localStorage.getItem('bbg_consent_settings');
+      return cached ? JSON.parse(cached) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const setCacheItem = (key, value) => {
+    if (consentSettings && consentSettings.performance === false) {
+      return;
+    }
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      console.error('Failed to set localStorage item:', e);
+    }
+  };
+
+  const clearCache = () => {
+    const keysToRemove = [
+      'bbg_stats', 'bbg_episodes', 'bbg_featured_episodes', 'bbg_categories',
+      'bbg_mentors', 'bbg_resources', 'bbg_cms', 'bbg_sub_clicked', 'bbg_sub_verified'
+    ];
+    keysToRemove.forEach(k => {
+      try {
+        localStorage.removeItem(k);
+      } catch (e) {}
+    });
+  };
+
+  const updateConsent = (newSettings) => {
+    setConsentSettings(newSettings);
+    try {
+      localStorage.setItem('bbg_consent_settings', JSON.stringify(newSettings));
+    } catch (e) {}
+
+    if (newSettings.performance === false) {
+      clearCache();
+    }
+  };
+
   const [stats, setStats] = useState(() => {
     try {
       const cached = localStorage.getItem('bbg_stats');
@@ -191,11 +234,7 @@ export default function AppContextProvider({ children }) {
           const cmsData = await cmsRes.json();
           window.__CMS_DATA__ = cmsData;
           setCms(cmsData);
-          try {
-            localStorage.setItem('bbg_cms', JSON.stringify(cmsData));
-          } catch (e) {
-            console.error('Error saving CMS cache:', e);
-          }
+          setCacheItem('bbg_cms', JSON.stringify(cmsData));
         }
       } catch (cmsErr) {
         console.warn('CMS fetch failed, using cached data:', cmsErr);
@@ -215,9 +254,7 @@ export default function AppContextProvider({ children }) {
           views_unit: statsData.views_unit || 'M+'
         };
         setStats(formattedStats);
-        try {
-          localStorage.setItem('bbg_stats', JSON.stringify(formattedStats));
-        } catch (e) {}
+        setCacheItem('bbg_stats', JSON.stringify(formattedStats));
       }
 
       // 2. Fetch Categories
@@ -226,9 +263,7 @@ export default function AppContextProvider({ children }) {
       if (catsRes.ok) {
         catsData = await catsRes.json();
         setCategories(catsData);
-        try {
-          localStorage.setItem('bbg_categories', JSON.stringify(catsData));
-        } catch (e) {}
+        setCacheItem('bbg_categories', JSON.stringify(catsData));
       }
 
       // 3. Fetch Episodes
@@ -237,17 +272,13 @@ export default function AppContextProvider({ children }) {
         const epsData = await epsRes.json();
         const formatted = epsData.rows.map(formatDbEpisode);
         setEpisodes(formatted);
-        try {
-          localStorage.setItem('bbg_episodes', JSON.stringify(formatted));
-        } catch (e) {}
+        setCacheItem('bbg_episodes', JSON.stringify(formatted));
         
         // Featured ones (Editor's Picks)
         const featured = formatted.filter(ep => ep.is_featured || ep.n === '01');
         const featuredList = featured.length > 0 ? featured : formatted.slice(0, 4);
         setFeaturedEpisodes(featuredList);
-        try {
-          localStorage.setItem('bbg_featured_episodes', JSON.stringify(featuredList));
-        } catch (e) {}
+        setCacheItem('bbg_featured_episodes', JSON.stringify(featuredList));
       }
 
       // 4. Fetch Mentors
@@ -255,9 +286,7 @@ export default function AppContextProvider({ children }) {
       if (mentorsRes.ok) {
         const mentorsData = await mentorsRes.json();
         setMentors(mentorsData);
-        try {
-          localStorage.setItem('bbg_mentors', JSON.stringify(mentorsData));
-        } catch (e) {}
+        setCacheItem('bbg_mentors', JSON.stringify(mentorsData));
       }
 
       // 5. Fetch Resources
@@ -266,9 +295,7 @@ export default function AppContextProvider({ children }) {
         const resData = await resRes.json();
         const grouped = groupResourcesByCategories(catsData, resData.rows);
         setResources(grouped);
-        try {
-          localStorage.setItem('bbg_resources', JSON.stringify(grouped));
-        } catch (e) {}
+        setCacheItem('bbg_resources', JSON.stringify(grouped));
       }
     } catch (err) {
       console.error('Error fetching dynamic platform data:', err);
@@ -539,6 +566,8 @@ export default function AppContextProvider({ children }) {
       fetchMentorBookings,
       fetchMentorQuestions,
       updateMentorProfile,
+      consentSettings,
+      updateConsent,
       API_BASE
     }}>
       {children}

@@ -2163,7 +2163,7 @@ export default function JoinUs({ onShowToast, onNavChange }) {
                             onChange={(e) => handleInputChange('name', e.target.value, setName)}
                             maxLength={50}
                           />
-                          <span className="emsg">Please enter your name.</span>
+                          {errors.name && <span className="emsg">Please enter your name.</span>}
                         </div>
                         <div className={`fg ${errors.age ? 'has-err' : ''}`} id="fg-age">
                           <label htmlFor="f-age">Age * (14–25)</label>
@@ -2178,7 +2178,7 @@ export default function JoinUs({ onShowToast, onNavChange }) {
                             value={age}
                             onChange={(e) => handleInputChange('age', e.target.value, setAge)}
                           />
-                          <span className="emsg">Must be 14–25.</span>
+                          {errors.age && <span className="emsg">Must be 14–25.</span>}
                         </div>
                       </div>
 
@@ -2194,7 +2194,7 @@ export default function JoinUs({ onShowToast, onNavChange }) {
                           value={email}
                           onChange={(e) => handleInputChange('email', e.target.value, setEmail)}
                         />
-                        <span className="emsg">Please enter a valid email.</span>
+                        {errors.email && <span className="emsg">Please enter a valid email.</span>}
                       </div>
 
                       {showGuardianField && (
@@ -2218,7 +2218,7 @@ export default function JoinUs({ onShowToast, onNavChange }) {
                               value={guardianEmail}
                               onChange={(e) => handleInputChange('guardianEmail', e.target.value, setGuardianEmail)}
                             />
-                            <span className="emsg">Please enter a valid guardian email.</span>
+                            {errors.guardianEmail && <span className="emsg">Please enter a valid guardian email.</span>}
                           </div>
                         </div>
                       )}
@@ -2245,7 +2245,7 @@ export default function JoinUs({ onShowToast, onNavChange }) {
                           <option value="Sports & Wellness">Sports &amp; Wellness</option>
                           <option value="Still figuring it out">Still figuring it out</option>
                         </select>
-                        <span className="emsg">Please select your field.</span>
+                        {errors.field && <span className="emsg">Please select your field.</span>}
                       </div>
 
                       <div className="fg">

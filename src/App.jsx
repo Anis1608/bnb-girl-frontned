@@ -32,6 +32,8 @@ import BecomeGuest from './components/BecomeGuest';
 import MentorDashboard from './components/MentorDashboard';
 import UnsubscribePage from './components/UnsubscribePage';
 import './App.css';
+import ConsentBanner from './components/ConsentBanner';
+import AccessibilityWidget from './components/AccessibilityWidget';
 
 
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -453,6 +455,10 @@ export default function App() {
         toast={toast}
         onClose={hideToast}
       />
+
+      {/* Compliance & Accessibility Components */}
+      <ConsentBanner />
+      <AccessibilityWidget />
     </>
   );
 }

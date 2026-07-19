@@ -12319,3 +12319,112 @@ textarea.ask-input {
     grid-template-columns: 1fr 1fr !important
   }
 }
+
+/* ==========================================
+   ADA COMPLIANCE / ACCESSIBILITY OVERRIDES
+   ========================================== */
+.acc-large-text {
+  font-size: 112% !important;
+}
+.acc-large-text h1, .acc-large-text .hero__h1 {
+  font-size: 3.2rem !important;
+}
+.acc-large-text h2 {
+  font-size: 2.1rem !important;
+}
+.acc-large-text p, .acc-large-text span, .acc-large-text li, .acc-large-text a, .acc-large-text button {
+  font-size: 1.08rem !important;
+}
+
+.acc-xlarge-text {
+  font-size: 122% !important;
+}
+.acc-xlarge-text h1, .acc-xlarge-text .hero__h1 {
+  font-size: 3.6rem !important;
+}
+.acc-xlarge-text h2 {
+  font-size: 2.4rem !important;
+}
+.acc-xlarge-text p, .acc-xlarge-text span, .acc-xlarge-text li, .acc-xlarge-text a, .acc-xlarge-text button {
+  font-size: 1.2rem !important;
+}
+
+/* High Contrast: dark slate background and high contrast text (yellow, cyan, white) */
+.acc-high-contrast {
+  --page-bg: #000000 !important;
+  --page-text: #FFFF00 !important;
+  --card-bg: #111111 !important;
+  --grey-text: #FFFFFF !important;
+  --grey-muted: #00FFFF !important;
+  --purple-deep: #000000 !important;
+  --purple-mid: #FFFF00 !important;
+  --pink-flame: #00FFFF !important;
+  background-color: #000000 !important;
+  color: #FFFF00 !important;
+}
+.acc-high-contrast * {
+  background-color: transparent !important;
+  color: #FFFF00 !important;
+  border-color: #FFFF00 !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+.acc-high-contrast body, 
+.acc-high-contrast div, 
+.acc-high-contrast section, 
+.acc-high-contrast header, 
+.acc-high-contrast footer,
+.acc-high-contrast main,
+.acc-high-contrast .glass-box,
+.acc-high-contrast .card {
+  background-color: #000000 !important;
+}
+.acc-high-contrast a, 
+.acc-high-contrast button {
+  color: #00FFFF !important;
+  text-decoration: underline !important;
+}
+.acc-high-contrast input, 
+.acc-high-contrast select, 
+.acc-high-contrast textarea {
+  background-color: #111111 !important;
+  border: 2px solid #FFFF00 !important;
+  color: #FFFFFF !important;
+}
+
+/* Monochrome style */
+.acc-monochrome {
+  filter: grayscale(100%) !important;
+}
+
+/* Underline Links */
+.acc-underline-links a {
+  text-decoration: underline !important;
+}
+
+/* Keyboard Navigation Outlines */
+.acc-focus-outline *:focus {
+  outline: 3px solid #EC4899 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px rgba(236, 72, 153, 0.4) !important;
+}
+
+/* Dyslexia friendly font swap */
+.acc-dyslexic-font {
+  --font-d: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  --font-b: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+.acc-dyslexic-font * {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* Reduce Motion overrides */
+.acc-reduce-motion *,
+.acc-reduce-motion *::before,
+.acc-reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
