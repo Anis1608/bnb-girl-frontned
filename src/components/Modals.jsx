@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EP } from './Episodes';
+import { useApp } from '../context/AppContext';
 
 // 1. VIDEO MODAL (Pure YouTube player)
 export function VideoModal({ videoId, onClose }) {
@@ -389,6 +390,7 @@ const GUEST_INFO = [
 
 export function GuestModal({ episodeIndex, onClose, onOpenVideo, onOpenAudio, onShowToast }) {
   const navigate = useNavigate();
+  const { submitForm } = useApp();
   const [activeTab, setActiveTab] = useState('about'); // 'about' | 'ask'
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -414,13 +416,27 @@ export function GuestModal({ episodeIndex, onClose, onOpenVideo, onOpenAudio, on
 
   if (episodeIndex === null || !episode) return null;
 
-  const handleAskSubmit = (e) => {
+  const handleAskSubmit = async (e) => {
     e.preventDefault();
     if (!name.trim() || !question.trim()) {
       alert('Please fill in name and question.');
       return;
     }
-    setIsSuccess(true);
+    try {
+      await submitForm('ask_guest', {
+        name,
+        email,
+        question,
+        guest_for: episode.guest
+      });
+      setIsSuccess(true);
+      if (onShowToast) {
+        onShowToast('✨', 'Question Sent!', `Thank you for asking ${episode.guest.split(' ')[0]}!`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.message || 'Failed to submit question.');
+    }
   };
 
   const handleAskReset = () => {

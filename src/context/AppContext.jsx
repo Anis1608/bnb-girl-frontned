@@ -475,6 +475,20 @@ export default function AppContextProvider({ children }) {
     return data.bookings || [];
   };
 
+  const fetchMentorQuestions = async () => {
+    if (!mentorToken) return [];
+    const res = await fetch(`${API_BASE}/api/mentor/questions`, {
+      headers: {
+        'Authorization': `Bearer ${mentorToken}`
+      }
+    });
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || 'Failed to fetch questions');
+    }
+    return data.questions || [];
+  };
+
   const updateMentorProfile = async (profileFields) => {
     if (!mentorToken) throw new Error('Not logged in as mentor');
     const res = await fetch(`${API_BASE}/api/mentor/profile`, {
@@ -523,6 +537,7 @@ export default function AppContextProvider({ children }) {
       loginMentorWithGoogle,
       logoutMentor,
       fetchMentorBookings,
+      fetchMentorQuestions,
       updateMentorProfile,
       API_BASE
     }}>

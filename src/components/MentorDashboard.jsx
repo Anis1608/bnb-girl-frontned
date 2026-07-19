@@ -11,6 +11,7 @@ export default function MentorDashboard({ onShowToast }) {
     loginMentorWithGoogle,
     logoutMentor,
     fetchMentorBookings,
+    fetchMentorQuestions,
     updateMentorProfile,
     API_BASE
   } = useApp();
@@ -55,6 +56,10 @@ export default function MentorDashboard({ onShowToast }) {
   const [loadingBookings, setLoadingBookings] = useState(false);
   const [savingSettings, setSavingSettings] = useState(false);
 
+  // Questions list
+  const [questions, setQuestions] = useState([]);
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
+
   // Password Update State
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -72,6 +77,7 @@ export default function MentorDashboard({ onShowToast }) {
   useEffect(() => {
     if (mentorToken) {
       loadBookings();
+      loadQuestions();
     }
   }, [mentorToken]);
 
@@ -219,6 +225,18 @@ export default function MentorDashboard({ onShowToast }) {
       setError('Failed to fetch scheduled mentorship sessions.');
     } finally {
       setLoadingBookings(false);
+    }
+  };
+
+  const loadQuestions = async () => {
+    setLoadingQuestions(true);
+    try {
+      const data = await fetchMentorQuestions();
+      setQuestions(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingQuestions(false);
     }
   };
 
@@ -682,6 +700,15 @@ export default function MentorDashboard({ onShowToast }) {
           >
             <svg viewBox="0 0 24 24" className="menu-icon"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>
             Availability &amp; Profile
+          </button>
+
+          <button
+            className={`menu-item ${activeSection === 'questions' ? 'active' : ''}`}
+            onClick={() => setActiveSection('questions')}
+          >
+            <svg viewBox="0 0 24 24" className="menu-icon" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Student Questions
+            {questions.length > 0 && <span className="menu-badge" style={{ background: '#9333EA' }}>{questions.length}</span>}
           </button>
 
           <a
@@ -1397,6 +1424,66 @@ export default function MentorDashboard({ onShowToast }) {
                     </button>
                   </div>
                 </form>
+              </div>
+            )}
+
+            {/* 4. QUESTIONS VIEW */}
+            {activeSection === 'questions' && (
+              <div>
+                <div className="ws-title-row">
+                  <div>
+                    <h2>Student Questions</h2>
+                    <p>Questions submitted by students on your podcast episodes and guest profile.</p>
+                  </div>
+                </div>
+
+                {loadingQuestions ? (
+                  <div style={{ textAlign: 'center', padding: '48px 0', color: '#9ca3af' }}>
+                    Loading questions...
+                  </div>
+                ) : questions.length === 0 ? (
+                  <div style={{ background: 'rgba(255,255,255,0.02)', padding: '64px', borderRadius: '20px', border: '1px solid var(--border-light)', textAlign: 'center', color: '#9ca3af' }}>
+                    <span style={{ fontSize: '36px', display: 'block', marginBottom: '16px' }}>💬</span>
+                    <h3>No questions found</h3>
+                    <p>Students haven't asked any questions on your episodes yet.</p>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {questions.map(q => (
+                      <div key={q._id} style={{
+                        background: 'rgba(255,255,255,0.02)',
+                        border: '1px solid var(--border-light)',
+                        borderRadius: '16px',
+                        padding: '20px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '12px'
+                      }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <strong style={{ fontSize: '15px', color: '#fff' }}>{q.data.name || 'Anonymous Student'}</strong>
+                            <span style={{ fontSize: '12.5px', color: '#9ca3af', marginLeft: '8px' }}>({q.data.email || 'No email'})</span>
+                          </div>
+                          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)' }}>
+                            {new Date(q.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </span>
+                        </div>
+                        <p style={{
+                          margin: 0,
+                          fontSize: '14px',
+                          lineHeight: '1.6',
+                          color: '#e5e7eb',
+                          background: 'rgba(255,255,255,0.01)',
+                          padding: '12px 16px',
+                          borderRadius: '8px',
+                          borderLeft: '3px solid #9333EA'
+                        }}>
+                          "{q.data.question}"
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
