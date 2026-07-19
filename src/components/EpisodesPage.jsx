@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { API_BASE } from '../context/AppContext';
 
 export const EPS = {};
 
@@ -238,10 +239,15 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
 
   // Server-side filtered results state
   const [filteredEpisodes, setFilteredEpisodes] = useState([]);
-  const [filterLoading, setFilterLoading] = useState(true); // true initially so skeleton shows
+  const [filterLoading, setFilterLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const [filterPage, setFilterPage] = useState(1);
   const PER_PAGE = 24;
+
+  // DB-fetched taxonomy for pills (all subcategories / specialized fields, not just those in episodes)
+  const [dbSubcategories, setDbSubcategories] = useState([]);
+  const [dbSpecializedFields, setDbSpecializedFields] = useState([]);
+
 
 
   // Quiz state
@@ -310,6 +316,8 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
     setSelectedSubtopicId(null);
     setSelectedSpecialized('All');
     setSelectedSpecializedId(null);
+    setDbSubcategories([]);
+    setDbSpecializedFields([]);
     setTimeout(() => {
       const el = document.getElementById('gridSec');
       if (el) {
@@ -450,25 +458,58 @@ export default function EpisodesPage({ onOpenGuestModal, onOpenAudioPlayer, onSh
     });
   };
 
-  // Derive subtopics from server-fetched results (or all-episodes context on initial load)
+  // Fetch ALL subcategories for selected category from DB (not derived from episodes)
+  useEffect(() => {
+    if (selectedCategory === 'all') {
+      setDbSubcategories([]);
+      setDbSpecializedFields([]);
+      return;
+    }
+    fetch(`${API_BASE}/api/subcategories?category_slug=${selectedCategory}`)
+      .then(r => r.ok ? r.json() : [])
+      .then(data => setDbSubcategories(Array.isArray(data) ? data : []))
+      .catch(() => setDbSubcategories([]));
+  }, [selectedCategory]);
+
+  // Fetch ALL specialized fields for selected subcategory from DB
+  useEffect(() => {
+    if (!selectedSubtopicId) {
+      setDbSpecializedFields([]);
+      return;
+    }
+    fetch(`${API_BASE}/api/subcategories/${selectedSubtopicId}/specialized-fields`)
+      .then(r => r.ok ? r.json() : [])
+      .then(data => setDbSpecializedFields(Array.isArray(data) ? data : []))
+      .catch(() => setDbSpecializedFields([]));
+  }, [selectedSubtopicId]);
+
+  // Level 2 pills: from DB subcategories (ALL subcategories, not just those with episodes)
   const getSubtopics = () => {
     if (selectedCategory === 'all') return [];
+    if (dbSubcategories.length > 0) {
+      return ['All', ...dbSubcategories.map(s => s.name)];
+    }
+    // Fallback: derive from filtered episodes while DB fetch is pending
     const source = filteredEpisodes.length > 0 ? filteredEpisodes : dbEpisodes.filter(ep => ep.category_slug === selectedCategory);
-    const subs = [...new Set(source.map(ep => ({ name: ep.subcategory_name, id: ep.specialized_field_id })).filter(s => s.name).map(s => s.name))];
-    return ['All', ...subs];
+    const subs = [...new Set(source.map(ep => ep.subcategory_name).filter(Boolean))];
+    return subs.length > 0 ? ['All', ...subs] : [];
   };
 
-  // For Level 3 — derive from filtered results when subcategory is active
+  // Level 3 pills: from DB specialized fields (ALL fields, not just those with episodes)
   const getSpecializedFields = () => {
     if (selectedSubtopic === 'All' || selectedCategory === 'all') return [];
-    // Use all fetched episodes for this category to show all possible specialized fields
+    if (dbSpecializedFields.length > 0) {
+      return ['All', ...dbSpecializedFields.map(f => f.name)];
+    }
+    // Fallback: derive from filtered episodes while DB fetch is pending
     const source = filteredEpisodes.filter(ep => ep.subcategory_name === selectedSubtopic);
-    const fields = [...new Set(source.map(ep => ({ name: ep.specialized_field_name, id: ep.specialized_field_id })).filter(f => f.name).map(f => f.name))];
+    const fields = [...new Set(source.map(ep => ep.specialized_field_name).filter(Boolean))];
     return fields.length > 0 ? ['All', ...fields] : [];
   };
 
   const activeSubtopics = getSubtopics();
   const activeSpecializedFields = getSpecializedFields();
+
 
   // Sort server-fetched results client-side (server returns newest first by default)
   const getSortedEpisodes = () => {
